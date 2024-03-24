@@ -6,7 +6,7 @@ export const Navbar = async () => {
   const session = await getServerAuthSession()
 
   return (
-    <div className="p-4 border-b w-full h-[54px] flex items-center bg-white shadow-sm">
+    <div className="p-4 border-b w-full h-[54px] flex items-center bg-background shadow-sm">
       <NavbarRoutes session={session} />
     </div>
   )
