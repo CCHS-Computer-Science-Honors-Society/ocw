@@ -1,11 +1,15 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
+  jsonb,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -30,13 +34,13 @@ export const posts = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
+      () => new Date(),
     ),
   },
   (example) => ({
     createdByIdIdx: index("created_by_idx").on(example.createdById),
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );
 
 export const users = createTable("user", {
@@ -83,7 +87,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_user_id_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -106,7 +110,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_user_id_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -125,5 +129,70 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
+
+export const courses = createTable(
+  "courses",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    subjectId: text("subject_id").notNull(),
+    name: text("name").notNull(),
+    isPublic: boolean("is_public").default(false).notNull(),
+    imageUrl: text("image_url").default("/placeholder.png").notNull(),
+    unitLength: integer("units_length").default(0).notNull(),
+    description: text("description").notNull(),
+  },
+  (t) => ({
+    isPublicIdx: index("isPublicCourseIdx").on(t.isPublic),
+  }),
+);
+
+export const courseRelations = relations(courses, ({ many }) => ({
+  units: many(units),
+}));
+
+export const units = createTable("units", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  courseId: uuid("courseId")
+    .notNull()
+    .references(() => courses.id),
+  name: varchar("name", {
+    length: 30,
+  }).notNull(),
+  description: text("description").notNull(),
+  order: integer("order").notNull(),
+});
+
+export const unitsRelations = relations(units, ({ one, many }) => ({
+  course: one(courses, {
+    fields: [units.courseId],
+    references: [courses.id],
+  }),
+  lessons: many(lessons),
+}));
+
+export const contentTypeEnum = pgEnum("content_type", [
+  "google_docs",
+  "notion",
+  "tiptap",
+]);
+
+export const lessons = createTable("lessons", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  position: integer("position").notNull(),
+  contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
+  description: text("description").notNull(),
+  content: jsonb("content"),
+  unitId: uuid("unitId")
+    .notNull()
+    .references(() => units.id),
+  title: text("title").notNull(),
+});
+
+export const lessonsRelations = relations(lessons, ({ one }) => ({
+  unit: one(units, {
+    fields: [lessons.unitId],
+    references: [units.id],
+  }),
+}));
