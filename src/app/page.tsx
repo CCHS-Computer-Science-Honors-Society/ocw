@@ -1,4 +1,4 @@
-"use client";
+import Link from "next/link";
 
 export default function Page() {
   return (
@@ -17,60 +17,30 @@ export default function Page() {
         <p className="animate-fade-in-delay mb-8 text-lg text-gray-600 md:text-xl">
           We're building something amazing. Check back soon!
         </p>
-        <div className="animate-pulse-slow">
+        <div className="animate-pulse-slow mb-8">
           <div className="mx-auto h-1 w-16 rounded-full bg-red-500"></div>
         </div>
+        <div className="animate-fade-in-delay-2 flex flex-wrap justify-center gap-4 text-sm md:text-base">
+          <Link
+            href="https://forms.gle/fnj7jfZAZCtwzAyD8"
+            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
+          >
+            Want to Contribute
+          </Link>
+          <Link
+            href="https://forms.gle/BhgdRNW7sF8p1vDv6"
+            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
+          >
+            Want to help write content
+          </Link>
+          <Link
+            href="https://forms.gle/Yxs4EqDQ3Sr5ZSbB7"
+            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
+          >
+            Want to help design
+          </Link>
+        </div>
       </div>
-      <style jsx global>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 1s ease-out forwards;
-        }
-
-        .animate-fade-in-delay {
-          opacity: 0;
-          animation: fadeIn 1s ease-out forwards;
-          animation-delay: 0.3s;
-        }
-
-        .animate-pulse-slow {
-          animation: pulse 3s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 }
