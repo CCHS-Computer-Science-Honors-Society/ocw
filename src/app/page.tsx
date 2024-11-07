@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
       <div className="mx-auto w-full max-w-3xl text-center">
         <div className="animate-float relative mx-auto mb-12 w-full max-w-lg">
           <img
@@ -17,30 +17,37 @@ export default function Page() {
         <p className="animate-fade-in-delay mb-8 text-lg text-gray-600 md:text-xl">
           We're building something amazing. Check back soon!
         </p>
-        <div className="animate-pulse-slow mb-8">
+        <div className="mb-8 animate-pulse">
           <div className="mx-auto h-1 w-16 rounded-full bg-red-500"></div>
         </div>
-        <div className="animate-fade-in-delay-2 flex flex-wrap justify-center gap-4 text-sm md:text-base">
-          <Link
-            href="https://forms.gle/fnj7jfZAZCtwzAyD8"
-            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
-          >
-            Want to Contribute
-          </Link>
-          <Link
-            href="https://forms.gle/BhgdRNW7sF8p1vDv6"
-            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
-          >
-            Want to help write content
-          </Link>
-          <Link
-            href="https://forms.gle/Yxs4EqDQ3Sr5ZSbB7"
-            className="text-blue-600 transition-colors duration-300 hover:text-blue-800"
-          >
-            Want to help design
-          </Link>
-        </div>
+        <nav className="animate-fade-in" aria-label="Contribution options">
+          <ul className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+            {[
+              {
+                href: "https://forms.gle/fnj7jfZAZCtwzAyD8",
+                text: "Want to Contribute",
+              },
+              {
+                href: "https://forms.gle/BhgdRNW7sF8p1vDv6",
+                text: "Want to help write content",
+              },
+              {
+                href: "https://forms.gle/Yxs4EqDQ3Sr5ZSbB7",
+                text: "Want to help design",
+              },
+            ].map((link, index) => (
+              <li key={index}>
+                <Link
+                  href={link.href}
+                  className="hover:text-primary-600 focus:ring-primary-500 text-primary transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                >
+                  {link.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-    </div>
+    </main>
   );
 }
