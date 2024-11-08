@@ -175,6 +175,7 @@ export const unitsRelations = relations(units, ({ one, many }) => ({
 export const contentTypeEnum = pgEnum("content_type", [
   "google_docs",
   "notion",
+  "quizlet",
   "tiptap",
 ]);
 
