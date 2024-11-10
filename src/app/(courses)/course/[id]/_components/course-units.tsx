@@ -70,7 +70,7 @@ export default async function CoursePage(props: {
                         {unit.lessons.map((lesson) => (
                           <li key={lesson.id}>
                             <a
-                              href={`/course/${course.id}/lesson/${lesson.id}`}
+                              href={`/course/${course.id}/${unit.id}/${lesson.id}`}
                               className="block text-sm text-muted-foreground hover:text-primary"
                             >
                               {lesson.title}
