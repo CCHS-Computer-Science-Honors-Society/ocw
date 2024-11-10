@@ -14,6 +14,11 @@ export const getSidebarData = hard_cache(
       },
       orderBy: asc(units.order),
       with: {
+        course: {
+          columns: {
+            name: true,
+          },
+        },
         lessons: {
           orderBy: asc(lessons.position),
           columns: {

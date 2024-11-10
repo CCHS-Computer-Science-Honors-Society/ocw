@@ -87,7 +87,10 @@ function LessonsSidebar(props: { data: SidebarData; courseId: string }) {
     <div className="h-min-screen relative w-[408px] overflow-hidden rounded-2xl bg-white shadow-lg">
       <div className="flex items-center justify-center bg-[#3f3f46] p-4">
         <BookIcon className="h-6 w-6 text-white" />
-        <h1 className="ml-2 text-lg text-white">Intro to CS</h1>
+        <h1 className="ml-2 text-lg text-white">
+          {data[0]?.course.name ??
+            "Something is wrong here, please contact support"}
+        </h1>
       </div>
       <ScrollArea className="p-4 text-sm">
         <div className="mb-4 flex items-center justify-between text-[#6e6e73]">
@@ -195,10 +198,9 @@ function LessonsSidebar(props: { data: SidebarData; courseId: string }) {
   );
 }
 
-function TextIcon(props: any) {
+function TextIcon() {
   return (
     <svg
-      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"

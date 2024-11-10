@@ -13,6 +13,7 @@ export default async function Sidebar({
 }) {
   const courseId = (await params).id;
   const data = await getSidebarData(courseId);
+  console.log(data);
   return (
     <div className={className}>
       <LessonsSidebar courseId={courseId} data={data} />
