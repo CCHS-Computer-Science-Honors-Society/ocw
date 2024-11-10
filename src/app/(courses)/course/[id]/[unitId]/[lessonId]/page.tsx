@@ -1,4 +1,4 @@
-export default function Page({
+export default async function Page({
   params,
 }: {
   params: Promise<{
@@ -7,5 +7,6 @@ export default function Page({
     lessonId: string;
   }>;
 }) {
-  return <div></div>;
+  const lessonId = (await params).lessonId;
+  return <div>{lessonId}</div>;
 }

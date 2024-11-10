@@ -1,5 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Sidebar from "./_components/sidebar";
+import Navbar from "@/components/navbar";
+import { UserMenu } from "@/components/user-menu";
 
 export default function Layout({
   children,
@@ -11,10 +13,13 @@ export default function Layout({
   }>;
 }) {
   return (
-    <div className="h-screen w-full">
+    <div className="flex h-screen w-full flex-col">
+      <Navbar userNav={<UserMenu />} />
       <div className="flex h-full flex-row">
-        <div className="w-full bg-muted/40">
-          <Sidebar className="p-5" params={params} />
+        <div className="w-1/4">
+          <Suspense fallback={<div />}>
+            <Sidebar className="p-5" params={params} />
+          </Suspense>
         </div>
         {children}
       </div>
