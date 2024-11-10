@@ -9,7 +9,7 @@ import { Menu, X } from "lucide-react";
 import { VercelTabs } from "./ui/vercel-tabs";
 
 const navItems = [
-  { label: "Courses", href: "/courses" },
+  { label: "Courses", href: "/" },
   { label: "About", href: "/about" },
   { label: "Resources", href: "/resources" },
 ];
