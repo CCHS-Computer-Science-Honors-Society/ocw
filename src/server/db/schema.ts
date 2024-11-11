@@ -1,4 +1,5 @@
 import { relations, sql } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
 import { type JSONContent } from "novel";
 import {
   boolean,
@@ -10,7 +11,6 @@ import {
   primaryKey,
   text,
   timestamp,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
@@ -144,7 +144,9 @@ export const verificationTokens = createTable(
 export const courses = createTable(
   "courses",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
     subjectId: text("subject_id").notNull(),
     name: text("name").notNull(),
     aliases: text("aliases").array().notNull().default([]),
@@ -174,7 +176,7 @@ export const courses = createTable(
 export const courseUsers = createTable(
   "course_users",
   {
-    courseId: uuid("course_id")
+    courseId: text("course_id")
       .notNull()
       .references(() => courses.id),
     userId: text("user_id")
@@ -213,8 +215,10 @@ export const courseRelations = relations(courses, ({ many }) => ({
 export const units = createTable(
   "units",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    courseId: uuid("courseId")
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    courseId: text("courseId")
       .notNull()
       .references(() => courses.id),
     name: varchar("name", {
@@ -257,14 +261,16 @@ export const contentTypeEnum = pgEnum("content_type", [
 export const lessons = createTable(
   "lessons",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
     position: integer("position").notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
     description: text("description").notNull(),
     content: jsonb("content")
       .$type<JSONContent>()
       .default(defaultEditorContent),
-    unitId: uuid("unitId")
+    unitId: text("unitId")
       .notNull()
       .references(() => units.id),
     title: text("title").notNull(),
