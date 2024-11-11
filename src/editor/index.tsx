@@ -29,10 +29,16 @@ import { Separator } from "@/components/ui/separator";
 
 const extensions = [...defaultExtensions, slashCommand];
 
-const Editor = () => {
-  const [initialContent, setInitialContent] = useState<null | JSONContent>(
-    null,
-  );
+const Editor = ({
+  content,
+  readOnly,
+  lessonId,
+}: {
+  content: JSONContent;
+  readOnly: boolean;
+  lessonId: string;
+}) => {
+  const [initialContent, setInitialContent] = useState<JSONContent>(content);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [charsCount, setCharsCount] = useState();
 
@@ -62,7 +68,7 @@ const Editor = () => {
       window.localStorage.setItem("novel-content", JSON.stringify(json));
       window.localStorage.setItem(
         "markdown",
-        editor.storage.markdown.getMarkdown() as string,
+        editor.storage.markdown.getMarkdown(),
       );
       setSaveStatus("Saved");
     },
@@ -70,7 +76,7 @@ const Editor = () => {
   );
 
   useEffect(() => {
-    const content = window.localStorage.getItem("novel-content");
+    const content = window.localStorage.getItem(`novel-content-${lessonId}`);
     if (content) setInitialContent(JSON.parse(content) as JSONContent);
     else setInitialContent(defaultEditorContent);
   }, []);
@@ -116,6 +122,7 @@ const Editor = () => {
             setSaveStatus("Unsaved");
           }}
           slotAfter={<ImageResizer />}
+          editable={readOnly === true}
         >
           <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
             <EditorCommandEmpty className="px-2 text-muted-foreground">

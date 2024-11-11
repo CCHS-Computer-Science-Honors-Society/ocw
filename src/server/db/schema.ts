@@ -1,4 +1,5 @@
 import { relations, sql } from "drizzle-orm";
+import { type JSONContent } from "novel";
 import {
   boolean,
   index,
@@ -13,6 +14,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { defaultEditorContent } from "@/lib/content";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -259,7 +261,9 @@ export const lessons = createTable(
     position: integer("position").notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
     description: text("description").notNull(),
-    content: jsonb("content"),
+    content: jsonb("content")
+      .$type<JSONContent>()
+      .default(defaultEditorContent),
     unitId: uuid("unitId")
       .notNull()
       .references(() => units.id),

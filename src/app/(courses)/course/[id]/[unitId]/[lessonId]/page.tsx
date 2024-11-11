@@ -1,21 +1,5 @@
-import { unstable_cache } from "@/lib/cache";
-import { db } from "@/server/db";
+import { getLesson } from "@/server/api/scripts/lessons";
 import { notFound } from "next/navigation";
-
-const getLesson = unstable_cache(
-  (id: string) =>
-    db.query.lessons.findFirst({
-      where: (lessons, { eq }) => eq(lessons.id, id),
-      columns: {
-        id: true,
-        title: true,
-        contentType: true,
-        description: true,
-        content: true,
-      },
-    }),
-  ["lesson"],
-);
 
 export default async function Page({
   params,
