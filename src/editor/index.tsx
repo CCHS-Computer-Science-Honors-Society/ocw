@@ -23,9 +23,9 @@ import { NodeSelector } from "./selectors/node-selector";
 import { MathSelector } from "./selectors/math-selector";
 
 import hljs from "highlight.js";
-import { defaultEditorContent } from "@/lib/content";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
 
 const extensions = [...defaultExtensions, slashCommand];
 
@@ -41,6 +41,7 @@ const Editor = ({
   const [initialContent, setInitialContent] = useState<JSONContent>(content);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [charsCount, setCharsCount] = useState();
+  const { mutate: update } = api.lesson.update.useMutation();
 
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
@@ -65,26 +66,32 @@ const Editor = ({
         "html-content",
         highlightCodeblocks(editor.getHTML()),
       );
-      window.localStorage.setItem("novel-content", JSON.stringify(json));
+      window.localStorage.setItem(
+        `novel-content-${lessonId}`,
+        JSON.stringify(json),
+      );
       window.localStorage.setItem(
         "markdown",
         editor.storage.markdown.getMarkdown(),
       );
+      console.log(JSON.stringify(json));
+      update({
+        id: lessonId,
+        content: JSON.stringify(json),
+      });
       setSaveStatus("Saved");
     },
     500,
   );
 
   useEffect(() => {
-    const content = window.localStorage.getItem(`novel-content-${lessonId}`);
-    if (content) setInitialContent(JSON.parse(content) as JSONContent);
-    else setInitialContent(defaultEditorContent);
-  }, []);
-
-  if (!initialContent) return null;
+    const contentI = window.localStorage.getItem(`novel-content-${lessonId}`);
+    if (contentI) setInitialContent(JSON.parse(contentI) as JSONContent);
+    else setInitialContent(content);
+  }, [content, lessonId]);
 
   return (
-    <div className="relative w-full max-w-screen-lg">
+    <div className="relative w-full">
       <div className="absolute right-5 top-5 z-10 mb-5 flex gap-2">
         <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
           {saveStatus}
@@ -122,7 +129,7 @@ const Editor = ({
             setSaveStatus("Unsaved");
           }}
           slotAfter={<ImageResizer />}
-          editable={readOnly === true}
+          editable={!readOnly}
         >
           <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
             <EditorCommandEmpty className="px-2 text-muted-foreground">

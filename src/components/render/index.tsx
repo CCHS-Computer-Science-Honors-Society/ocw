@@ -1,6 +1,7 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
 import type { Session } from "next-auth";
 import { TiptapLesson } from "./tiptap";
+import { Notion } from "./notion";
 
 export default function RenderLesson({
   lesson,
@@ -16,6 +17,7 @@ export default function RenderLesson({
   if (!lesson) return null;
 
   let readOnly = true;
+
   if (isDisplay) {
     readOnly = true;
   }
@@ -37,15 +39,17 @@ export default function RenderLesson({
     case "quizlet":
       return <div>Quizlet Dawg</div>;
     case "notion":
-      return <div>Notion Dawg</div>;
+      return (
+        <div>
+          <Notion embedId={lesson.embedId} />
+        </div>
+      );
     case "google_docs":
       return <div>Google Docs Dawg</div>;
   }
-
-  return null;
 }
 
-function checkIsEdit(session: Session | null, courseId: string) {
+export function checkIsEdit(session: Session | null, courseId: string) {
   if (!session) return false;
   const { user } = session;
   if (!user) return false;

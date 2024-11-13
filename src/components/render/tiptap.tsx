@@ -1,6 +1,8 @@
+"use client";
 import Editor from "@/editor";
 import { defaultEditorContent } from "@/lib/content";
 import type { JSONContent } from "novel";
+import { useParams } from "next/navigation";
 
 export function TiptapLesson({
   content,
@@ -14,11 +16,17 @@ export function TiptapLesson({
   descirption: string;
 }) {
   const editorContent = content ?? defaultEditorContent;
+  const { lessonId } = useParams();
+  console.log(lessonId);
 
   if (isEdit) {
     return (
       <div>
-        <Editor content={editorContent} readOnly={true} lessonId={title} />
+        <Editor
+          content={editorContent}
+          readOnly={true}
+          lessonId={lessonId! as string}
+        />
       </div>
     );
   }
