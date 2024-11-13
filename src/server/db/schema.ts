@@ -266,6 +266,7 @@ export const lessons = createTable(
       .$defaultFn(() => createId()),
     position: integer("position").notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
+    embedId: text("embedId"),
     description: text("description").notNull(),
     content: jsonb("content")
       .$type<JSONContent>()

@@ -8,6 +8,7 @@ export const getLesson = unstable_cache(
       columns: {
         id: true,
         title: true,
+        embedId: true,
         contentType: true,
         description: true,
         content: true,

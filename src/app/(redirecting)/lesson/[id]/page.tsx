@@ -1,9 +1,7 @@
 //given a link to /lesson/[id] we will redirect the user to the actual lesson in the course
 import { redirect, notFound } from "next/navigation";
 import { hard_cache } from "@/lib/cache";
-import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
-import { courses, lessons, units } from "@/server/db/schema";
 
 const getMinimalLesson = hard_cache(
   async (id: string) => {
