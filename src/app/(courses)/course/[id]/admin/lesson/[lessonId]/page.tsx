@@ -1,5 +1,4 @@
 import RenderLesson from "@/components/render";
-import Editor from "@/editor";
 import { getLesson } from "@/server/api/scripts/lessons";
 import { auth } from "@/server/auth";
 
