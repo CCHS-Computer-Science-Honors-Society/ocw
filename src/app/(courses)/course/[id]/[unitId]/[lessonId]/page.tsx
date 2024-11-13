@@ -1,5 +1,10 @@
 import { getLesson } from "@/server/api/scripts/lessons";
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const RenderLesson = dynamic(() => import("@/components/render"), {
+  loading: () => <div>Loading...</div>,
+});
 
 export default async function Page({
   params,
@@ -10,23 +15,17 @@ export default async function Page({
     lessonId: string;
   }>;
 }) {
-  const lessonId = (await params).lessonId;
+  const { lessonId, id } = await params;
+
   const lesson = await getLesson(lessonId);
 
   if (!lesson) {
     return notFound();
   }
 
-  switch (lesson.contentType) {
-    case "google_docs":
-      return <div>google docs</div>;
-    case "notion":
-      return <div>notion</div>;
-    case "quizlet":
-      return <div>quizlet</div>;
-    case "tiptap":
-      return <div>tiptap</div>;
-  }
-
-  return <div>Unknown content type</div>;
+  return (
+    <div className="w-full max-w-screen-lg">
+      <RenderLesson isDisplay lesson={lesson} courseId={id} session={null} />
+    </div>
+  );
 }
