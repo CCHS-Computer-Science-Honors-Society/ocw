@@ -5,7 +5,7 @@ import { BookIcon, ChevronLeftIcon } from "lucide-react";
 import { memo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SidebarData } from "../../_queries";
+import { type SidebarData } from "../../_queries";
 import { useParams } from "next/navigation";
 
 function ChevronRightIcon(props: any) {

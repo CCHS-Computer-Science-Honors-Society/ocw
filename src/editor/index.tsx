@@ -61,7 +61,7 @@ const Editor = ({
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
       const json = editor.getJSON();
-      setCharsCount(editor.storage.characterCount.words()!);
+      setCharsCount(editor.storage.characterCount.words());
       window.localStorage.setItem(
         "html-content",
         highlightCodeblocks(editor.getHTML()),

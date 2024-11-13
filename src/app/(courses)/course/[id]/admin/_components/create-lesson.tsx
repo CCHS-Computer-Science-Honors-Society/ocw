@@ -94,7 +94,7 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
       switch (data.contentType) {
         case "notion":
           // Extract Notion page ID from URL
-          const notionMatch = data.embedUrl.match(/([a-f0-9]{32})/);
+          const notionMatch = /([a-f0-9]{32})/.exec(data.embedUrl);
           if (notionMatch) {
             content = { embedId: notionMatch[1] };
           }
