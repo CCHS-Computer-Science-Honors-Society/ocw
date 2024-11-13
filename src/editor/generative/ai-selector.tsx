@@ -47,7 +47,7 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
       {hasCompletion && (
         <div className="flex max-h-[400px]">
           <ScrollArea>
-            <div className="prose p-2 px-4 prose-sm">
+            <div className="prose prose-sm p-2 px-4">
               <Markdown>{completion}</Markdown>
             </div>
           </ScrollArea>
@@ -56,7 +56,7 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
 
       {isLoading && (
         <div className="flex h-12 w-full items-center px-4 text-sm font-medium text-muted-foreground text-purple-500">
-          <Magic className="mr-2 h-4 w-4 shrink-0  " />
+          <Magic className="mr-2 h-4 w-4 shrink-0" />
           AI is thinking
           <div className="ml-2 mt-1">
             <CrazySpinner />
@@ -70,7 +70,11 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
               value={inputValue}
               onValueChange={setInputValue}
               autoFocus
-              placeholder={hasCompletion ? "Tell AI what to do next" : "Ask AI to edit or generate..."}
+              placeholder={
+                hasCompletion
+                  ? "Tell AI what to do next"
+                  : "Ask AI to edit or generate..."
+              }
               onFocus={() => addAIHighlight(editor)}
             />
             <Button
@@ -83,7 +87,9 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
                   }).then(() => setInputValue(""));
 
                 const slice = editor.state.selection.content();
-                const text = editor.storage.markdown.serializer.serialize(slice.content);
+                const text = editor.storage.markdown.serializer.serialize(
+                  slice.content,
+                );
 
                 complete(text, {
                   body: { option: "zap", command: inputValue },
@@ -102,7 +108,11 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
               completion={completion}
             />
           ) : (
-            <AISelectorCommands onSelect={(value, option) => complete(value, { body: { option } })} />
+            <AISelectorCommands
+              onSelect={(value, option) =>
+                complete(value, { body: { option } })
+              }
+            />
           )}
         </>
       )}

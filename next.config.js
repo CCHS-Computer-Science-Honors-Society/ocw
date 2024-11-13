@@ -16,14 +16,13 @@ const config = {
 
   //FIX: this will lead to high bills
   images: {
-     remotePatterns: [
-       {
-         protocol: "https",
-         hostname: "**",
-       },
-     ],
-   },
-
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 };
 
 export default config;
