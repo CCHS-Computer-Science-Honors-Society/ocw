@@ -16,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { api } from "@/trpc/react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const formSchema = z.object({
@@ -25,17 +24,18 @@ const formSchema = z.object({
 });
 
 // fix this propdrilling shit
-function CreateUnit({ courseId, order }: { courseId: string; order: number }) {
+function CreateUnit({ courseId }: { courseId: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
+  /*
   const { mutate: createUnit } = api.lesson.createUnit.useMutation({
     onSuccess: () => {
-      setOpen(false);
       form.reset();
     },
   });
+  */
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -104,13 +104,7 @@ function CreateUnit({ courseId, order }: { courseId: string; order: number }) {
   );
 }
 
-export function CreateUnitPopup({
-  courseId,
-  order,
-}: {
-  courseId: string;
-  order: number;
-}) {
+export function CreateUnitPopup({ courseId }: { courseId: string }) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -119,7 +113,7 @@ export function CreateUnitPopup({
         <Button variant="outline"> Create Unit </Button>
       </DialogTrigger>
       <DialogContent>
-        <CreateUnit courseId={courseId} order={order} />
+        <CreateUnit courseId={courseId} />
       </DialogContent>
     </Dialog>
   );

@@ -6,25 +6,37 @@ import { Edit } from "lucide-react";
 import { auth } from "@/server/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 
+function getLink(id: string, unitId?: string, lessonId?: string) {
+  if (lessonId) {
+    return `/course/${id}/admin/lesson/${lessonId}`;
+  }
+  if (unitId) {
+    return `/course/${id}/admin/unit/${unitId}`;
+  }
+  return `/course/${id}/admin`;
+}
+
 export default async function EditButton({
   params,
 }: {
   params: Promise<{
     id: string;
-    lessonId: string;
+    lessonId?: string;
+    unitId?: string;
   }>;
 }) {
-  const { lessonId, id } = await params;
+  const { lessonId, unitId, id } = await params;
 
+  const link = getLink(id, unitId, lessonId);
   const session = await auth();
 
   const hasEdit = checkIsEdit(session, id);
 
   if (!hasEdit) return null;
   return (
-    <div className="relative min-h-screen">
+    <div className="relative">
       <Link
-        href={`/course/${id}/admin/lesson/${lessonId}`}
+        href={link}
         className={cn(
           buttonVariants({ variant: "default", size: "icon" }),
           "fixed bottom-4 right-4 rounded-full shadow-lg transition-shadow duration-200 hover:shadow-xl",

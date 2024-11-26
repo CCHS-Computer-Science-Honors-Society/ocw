@@ -20,7 +20,7 @@ function Navbar({ userNav }: { userNav: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-background">
+    <nav className="border bg-background">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">

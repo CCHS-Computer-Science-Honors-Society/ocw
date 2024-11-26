@@ -74,9 +74,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
-  alternates: {
-    canonical: "https://ocw.cherrycreekschools.org",
-  },
 };
 
 export default function RootLayout({

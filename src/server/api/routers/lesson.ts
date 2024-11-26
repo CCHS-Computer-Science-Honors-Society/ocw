@@ -44,19 +44,32 @@ export const lessonRouter = createTRPCRouter({
         title: z.string().min(1, "Title is required"),
         embedId: z.string().optional(),
         content: z.any().optional(),
+        description: z.string(),
+        unitId: z.string(),
         contentType: z
           .enum(["tiptap", "quizlet", "notion", "google_docs"])
           .default("tiptap"),
-        position: z.number().optional(),
+        position: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const { title, content, embedId, position, contentType } = input;
+      const {
+        title,
+        content,
+        description,
+        unitId,
+        embedId,
+        position,
+        contentType,
+      } = input;
+
       const c = content as JSONContent;
       await ctx.db.insert(lessons).values({
         contentType,
+        description,
         position,
+        unitId,
         content: c,
         embedId,
         title,

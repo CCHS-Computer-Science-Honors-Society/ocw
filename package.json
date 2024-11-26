@@ -87,6 +87,7 @@
     "tiptap-extension-global-drag-handle": "^0.1.16",
     "use-debounce": "^10.0.4",
     "vaul": "^1.1.1",
+    "vitest": "^2.1.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {

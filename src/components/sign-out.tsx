@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
+import Link from "next/link";
 
 export function SignOut() {
   const [isLoading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ export function SignOut() {
 
   const handleSignOut = () => {
     setLoading(true);
-    router.push("/sign-out");
+    router.push("/logout");
     router.refresh();
   };
 
@@ -23,23 +24,14 @@ export function SignOut() {
 }
 
 export const SignInButton = () => {
-  const [isLoading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleSignIn = () => {
-    setLoading(true);
-    router.push("/sign-in");
-    router.refresh();
-  };
-
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8"
-      onClick={handleSignIn}
+    <Link
+      className={buttonVariants({
+        variant: "ghost",
+      })}
+      href="/login"
     >
-      <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></span>
-    </Button>
+      Sign In
+    </Link>
   );
 };

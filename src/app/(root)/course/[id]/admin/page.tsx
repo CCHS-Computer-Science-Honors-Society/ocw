@@ -27,7 +27,7 @@ export default async function Page({
   return (
     <div>
       <CreateLessonForm units={combobox} position={data.units.length + 100} />
-      <CreateUnitPopup order={data.units.length + 1} courseId={courseId} />
+      <CreateUnitPopup courseId={courseId} />
     </div>
   );
 }

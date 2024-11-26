@@ -1,5 +1,6 @@
 import { hard_cache, unstable_cache } from "@/lib/cache";
 import { db } from "@/server/db";
+import { asc } from "drizzle-orm";
 
 export const getCourses = hard_cache(
   () => db.query.courses.findMany(),
@@ -28,7 +29,7 @@ export const getCourseById = unstable_cache(
               },
             },
           },
-          orderBy: (units, { desc }) => desc(units.order),
+          orderBy: (units) => asc(units.order),
         },
       },
     }),
