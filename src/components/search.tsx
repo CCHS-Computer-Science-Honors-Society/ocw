@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 
@@ -14,7 +14,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 
 type SearchResult = {
   courses: Array<{ id: string; name: string }>;
@@ -32,7 +31,6 @@ export function SearchDropdownComponent() {
     lessons: [],
   });
 
-  const router = useRouter();
   const params = useParams();
 
   React.useEffect(() => {

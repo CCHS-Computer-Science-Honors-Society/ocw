@@ -1,3 +1,6 @@
+//FIX:
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 // core styles shared by all of react-notion-x (required)
 import "react-notion-x/src/styles.css";

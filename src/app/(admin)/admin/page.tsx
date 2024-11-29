@@ -1,6 +1,6 @@
 import { auth } from "@/server/auth";
 import React from "react";
-import { UserTable } from "./_components/users-table";
+import UserTable from "./_components/users-table";
 
 export default async function Layout() {
   const session = await auth();

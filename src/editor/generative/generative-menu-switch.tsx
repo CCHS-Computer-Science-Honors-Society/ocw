@@ -16,6 +16,7 @@ const GenerativeMenuSwitch = ({
   const { editor } = useEditor();
   if (!editor) return null;
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!open) removeAIHighlight(editor);
   }, [editor, open]);

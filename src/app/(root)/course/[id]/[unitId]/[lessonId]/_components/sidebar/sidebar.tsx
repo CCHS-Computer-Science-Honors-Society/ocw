@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { type SidebarData } from "../../_queries";
 import { useParams } from "next/navigation";
 
-function ChevronRightIcon(props: any) {
+function ChevronRightIcon(props: { className: string }) {
   return (
     <svg
       {...props}
@@ -198,7 +198,7 @@ function LessonsSidebar(props: { data: SidebarData; courseId: string }) {
   );
 }
 
-function TextIcon(props: any) {
+function TextIcon(props: { className: string }) {
   return (
     <svg
       {...props}

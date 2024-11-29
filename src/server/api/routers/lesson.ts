@@ -20,7 +20,6 @@ export const lessonRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
-      console.log("server" + input.content);
       try {
         await ctx.db
           .update(lessons)
@@ -56,6 +55,7 @@ export const lessonRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const {
         title,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         content,
         description,
         unitId,

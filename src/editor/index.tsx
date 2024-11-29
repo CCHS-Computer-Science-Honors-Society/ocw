@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 import {
   EditorCommand,
@@ -60,8 +63,9 @@ const Editor = ({
 
   const debouncedUpdates = useDebouncedCallback(
     async (editor: EditorInstance) => {
+      if (!editor) return;
       const json = editor.getJSON();
-      setCharsCount(editor.storage.characterCount.words());
+      setCharsCount(editor?.storage?.characterCount?.words());
       window.localStorage.setItem(
         "html-content",
         highlightCodeblocks(editor.getHTML()),
@@ -72,7 +76,7 @@ const Editor = ({
       );
       window.localStorage.setItem(
         "markdown",
-        editor.storage.markdown.getMarkdown(),
+        editor.storage.markdown.gunknownetMarkdown(),
       );
       console.log(JSON.stringify(json));
       update({

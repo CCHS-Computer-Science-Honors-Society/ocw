@@ -37,7 +37,7 @@ const onUpload = (file: File) => {
       {
         loading: "Uploading image...",
         success: "Image uploaded successfully.",
-        error: (e) => {
+        error: (e: Error) => {
           reject(e);
           return e.message;
         },

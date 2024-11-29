@@ -33,7 +33,6 @@ export default function RenderLesson({
           content={lesson.content}
           title={lesson.title}
           isEdit={readOnly}
-          descirption={lesson.description}
         />
       );
     case "quizlet":

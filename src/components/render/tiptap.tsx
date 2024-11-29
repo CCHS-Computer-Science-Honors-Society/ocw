@@ -8,12 +8,10 @@ export function TiptapLesson({
   content,
   title,
   isEdit,
-  descirption,
 }: {
   content: JSONContent | null;
   title: string;
   isEdit: boolean;
-  descirption: string;
 }) {
   const editorContent = content ?? defaultEditorContent;
   const { lessonId } = useParams();
