@@ -1,6 +1,7 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "@/server/db";
 import {
@@ -9,6 +10,41 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import type { CourseRole, UserRole } from "./types";
+
+async function userStatus(id: string) {
+  const session = {
+    user: {
+      id: id,
+    },
+  };
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.id, session.user.id),
+    columns: {
+      role: true,
+      id: true,
+    },
+  });
+
+  const courseRosel = await db.query.courseUsers.findMany({
+    where: (courseUsers, { eq }) => eq(courseUsers.userId, session.user.id),
+    columns: {
+      role: true,
+      courseId: true,
+    },
+  });
+
+  return {
+    role: user?.role ?? "user",
+    courses: courseRosel.reduce(
+      (acc, curr) => {
+        acc[curr.courseId] = curr.role;
+        return acc;
+      },
+      {} as Record<string, CourseRole>,
+    ),
+  };
+}
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,6 +56,8 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      role: UserRole;
+      courses?: Record<string, CourseRole>;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -39,6 +77,8 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     DiscordProvider,
+    GoogleProvider,
+
     /**
      * ...add more providers here.
      *
@@ -56,12 +96,17 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: async ({ session, user }) => {
+      const data = await userStatus(user.id);
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          role: data.role,
+          courses: data.courses ?? undefined,
+          id: user.id,
+        },
+      };
+    },
   },
 } satisfies NextAuthConfig;

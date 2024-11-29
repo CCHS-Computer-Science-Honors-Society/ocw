@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/prosemirror.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -72,9 +73,6 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
-  },
-  alternates: {
-    canonical: "https://ocw.cherrycreekschools.org",
   },
 };
 

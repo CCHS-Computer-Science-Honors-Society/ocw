@@ -1,4 +1,6 @@
 import { relations, sql } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
+import { type JSONContent } from "novel";
 import {
   boolean,
   index,
@@ -9,10 +11,10 @@ import {
   primaryKey,
   text,
   timestamp,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { defaultEditorContent } from "@/lib/content";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -49,6 +51,12 @@ export const users = createTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
+  role: varchar("role", {
+    length: 255,
+    enum: ["admin", "user"],
+  })
+    .notNull()
+    .default("user"),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("email_verified", {
     mode: "date",
@@ -59,6 +67,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  courses: many(courseUsers),
 }));
 
 export const accounts = createTable(
@@ -135,9 +144,12 @@ export const verificationTokens = createTable(
 export const courses = createTable(
   "courses",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
     subjectId: text("subject_id").notNull(),
     name: text("name").notNull(),
+    aliases: text("aliases").array().notNull().default([]),
     isPublic: boolean("is_public").default(false).notNull(),
     imageUrl: text("image_url").default("/placeholder.png").notNull(),
     unitLength: integer("units_length").default(0).notNull(),
@@ -145,24 +157,91 @@ export const courses = createTable(
   },
   (t) => ({
     isPublicIdx: index("isPublicCourseIdx").on(t.isPublic),
+
+    nameTrgmIndex: index("course_name_trgm_index")
+      .using("gin", sql`${t.name} gin_trgm_ops`)
+      .concurrently(),
+    // GIN Index for Full-Text Search
+    nameSearchIndex: index("course_name_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.name})`,
+    ),
+    descriptionSearchIndex: index("course_description_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.description})`,
+    ),
   }),
 );
 
-export const courseRelations = relations(courses, ({ many }) => ({
-  units: many(units),
+export const courseUsers = createTable(
+  "course_users",
+  {
+    courseId: text("course_id")
+      .notNull()
+      .references(() => courses.id),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    role: varchar("role", {
+      length: 255,
+      enum: ["admin", "editor", "user"],
+    })
+      .notNull()
+      .default("user"),
+  },
+  (t) => ({
+    compoundKey: primaryKey({
+      columns: [t.courseId, t.userId],
+    }),
+  }),
+);
+
+export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
+  course: one(courses, {
+    fields: [courseUsers.courseId],
+    references: [courses.id],
+  }),
+  user: one(users, {
+    fields: [courseUsers.userId],
+    references: [users.id],
+  }),
 }));
 
-export const units = createTable("units", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  courseId: uuid("courseId")
-    .notNull()
-    .references(() => courses.id),
-  name: varchar("name", {
-    length: 30,
-  }).notNull(),
-  description: text("description").notNull(),
-  order: integer("order").notNull(),
-});
+export const courseRelations = relations(courses, ({ many }) => ({
+  units: many(units),
+  users: many(courseUsers),
+}));
+
+export const units = createTable(
+  "units",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    courseId: text("courseId")
+      .notNull()
+      .references(() => courses.id),
+    name: varchar("name", {
+      length: 30,
+    }).notNull(),
+    description: text("description").notNull(),
+    order: integer("order").notNull(),
+  },
+  (t) => ({
+    // GIN Index for Full-Text Search
+    nameTrgmIndex: index("unit_name_trgm_index")
+      .using("gin", sql`${t.name} gin_trgm_ops`)
+      .concurrently(),
+    nameSearchIndex: index("units_name_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.name})`,
+    ),
+    descriptionSearchIndex: index("units_description_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.description})`,
+    ),
+  }),
+);
 
 export const unitsRelations = relations(units, ({ one, many }) => ({
   course: one(courses, {
@@ -175,20 +254,42 @@ export const unitsRelations = relations(units, ({ one, many }) => ({
 export const contentTypeEnum = pgEnum("content_type", [
   "google_docs",
   "notion",
+  "quizlet",
   "tiptap",
 ]);
 
-export const lessons = createTable("lessons", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  position: integer("position").notNull(),
-  contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
-  description: text("description").notNull(),
-  content: jsonb("content"),
-  unitId: uuid("unitId")
-    .notNull()
-    .references(() => units.id),
-  title: text("title").notNull(),
-});
+export const lessons = createTable(
+  "lessons",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    position: integer("position").notNull(),
+    contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
+    embedId: text("embedId"),
+    description: text("description").notNull(),
+    content: jsonb("content")
+      .$type<JSONContent>()
+      .default(defaultEditorContent),
+    unitId: text("unitId")
+      .notNull()
+      .references(() => units.id),
+    title: text("title").notNull(),
+  },
+  (t) => ({
+    nameSearchIndex: index("units_title_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.title})`,
+    ),
+    nameTrgmIndex: index("lesson_title_trgm_index")
+      .using("gin", sql`${t.title} gin_trgm_ops`)
+      .concurrently(),
+    descriptionSearchIndex: index("lessons_description_search_index").using(
+      "gin",
+      sql`to_tsvector('english', ${t.description})`,
+    ),
+  }),
+);
 
 export const lessonsRelations = relations(lessons, ({ one }) => ({
   unit: one(units, {

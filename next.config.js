@@ -6,12 +6,25 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-  // check during CI
+  // check during CI so it doesn't block the build
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  experimental: {
+    ppr: "incremental",
+  },
+
+  //FIX: this will lead to high bills
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
 };
 
