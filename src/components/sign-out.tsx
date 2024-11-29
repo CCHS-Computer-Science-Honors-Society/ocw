@@ -29,7 +29,7 @@ export const SignInButton = () => {
       className={buttonVariants({
         variant: "ghost",
       })}
-      href="/login"
+      href="/api/auth/signin"
     >
       Sign In
     </Link>
