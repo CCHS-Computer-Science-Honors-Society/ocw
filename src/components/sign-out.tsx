@@ -12,7 +12,7 @@ export function SignOut() {
 
   const handleSignOut = () => {
     setLoading(true);
-    router.push("/logout");
+    router.push("/api/auth/signout");
     router.refresh();
   };
 
