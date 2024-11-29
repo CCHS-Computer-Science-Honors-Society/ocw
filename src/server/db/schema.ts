@@ -13,39 +13,9 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { type AdapterAccount } from "next-auth/adapters";
 import { defaultEditorContent } from "@/lib/content";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTable;
-
-export const posts = createTable(
-  "post",
-  {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
-
-export const users = createTable("user", {
+export const users = pgTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
@@ -65,83 +35,38 @@ export const users = createTable("user", {
   image: varchar("image", { length: 255 }),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-  courses: many(courseUsers),
-}));
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  ipAddress: text("ipAddress"),
+  userAgent: text("userAgent"),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+});
 
-export const accounts = createTable(
-  "account",
-  {
-    userId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    type: varchar("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
-    provider: varchar("provider", { length: 255 }).notNull(),
-    providerAccountId: varchar("provider_account_id", {
-      length: 255,
-    }).notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: varchar("token_type", { length: 255 }),
-    scope: varchar("scope", { length: 255 }),
-    id_token: text("id_token"),
-    session_state: varchar("session_state", { length: 255 }),
-  },
-  (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-    userIdIdx: index("account_user_id_idx").on(account.userId),
-  }),
-);
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("accountId").notNull(),
+  providerId: text("providerId").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  accessToken: text("accessToken"),
+  refreshToken: text("refreshToken"),
+  idToken: text("idToken"),
+  expiresAt: timestamp("expiresAt"),
+  password: text("password"),
+});
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+});
 
-export const sessions = createTable(
-  "session",
-  {
-    sessionToken: varchar("session_token", { length: 255 })
-      .notNull()
-      .primaryKey(),
-    userId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (session) => ({
-    userIdIdx: index("session_user_id_idx").on(session.userId),
-  }),
-);
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
-
-export const verificationTokens = createTable(
-  "verification_token",
-  {
-    identifier: varchar("identifier", { length: 255 }).notNull(),
-    token: varchar("token", { length: 255 }).notNull(),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }),
-);
-
-export const courses = createTable(
+export const courses = pgTable(
   "courses",
   {
     id: text("id")
@@ -155,25 +80,25 @@ export const courses = createTable(
     unitLength: integer("units_length").default(0).notNull(),
     description: text("description").notNull(),
   },
-  (t) => ({
-    isPublicIdx: index("isPublicCourseIdx").on(t.isPublic),
+  (t) => [
+    index("isPublicCourseIdx").on(t.isPublic),
 
-    nameTrgmIndex: index("course_name_trgm_index")
+    index("course_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
     // GIN Index for Full-Text Search
-    nameSearchIndex: index("course_name_search_index").using(
+    index("course_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("course_description_search_index").using(
+    index("course_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
-export const courseUsers = createTable(
+export const courseUsers = pgTable(
   "course_users",
   {
     courseId: text("course_id")
@@ -189,11 +114,11 @@ export const courseUsers = createTable(
       .notNull()
       .default("user"),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.courseId, t.userId],
     }),
-  }),
+  ],
 );
 
 export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
@@ -212,7 +137,7 @@ export const courseRelations = relations(courses, ({ many }) => ({
   users: many(courseUsers),
 }));
 
-export const units = createTable(
+export const units = pgTable(
   "units",
   {
     id: text("id")
@@ -227,20 +152,20 @@ export const units = createTable(
     description: text("description").notNull(),
     order: integer("order").notNull(),
   },
-  (t) => ({
+  (t) => [
     // GIN Index for Full-Text Search
-    nameTrgmIndex: index("unit_name_trgm_index")
+    index("unit_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-    nameSearchIndex: index("units_name_search_index").using(
+    index("units_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("units_description_search_index").using(
+    index("units_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const unitsRelations = relations(units, ({ one, many }) => ({
@@ -258,7 +183,7 @@ export const contentTypeEnum = pgEnum("content_type", [
   "tiptap",
 ]);
 
-export const lessons = createTable(
+export const lessons = pgTable(
   "lessons",
   {
     id: text("id")
@@ -276,19 +201,19 @@ export const lessons = createTable(
       .references(() => units.id),
     title: text("title").notNull(),
   },
-  (t) => ({
-    nameSearchIndex: index("units_title_search_index").using(
+  (t) => [
+    index("units_title_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.title})`,
     ),
-    nameTrgmIndex: index("lesson_title_trgm_index")
+    index("lesson_title_trgm_index")
       .using("gin", sql`${t.title} gin_trgm_ops`)
       .concurrently(),
-    descriptionSearchIndex: index("lessons_description_search_index").using(
+    index("lessons_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const lessonsRelations = relations(lessons, ({ one }) => ({
