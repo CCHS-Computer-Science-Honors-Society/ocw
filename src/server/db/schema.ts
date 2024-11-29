@@ -7,7 +7,7 @@ import {
   integer,
   jsonb,
   pgEnum,
-  pgTableCreator,
+  pgTable,
   primaryKey,
   text,
   timestamp,
@@ -22,7 +22,7 @@ import { defaultEditorContent } from "@/lib/content";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `topsecret_${name}`);
+export const createTable = pgTable;
 
 export const posts = createTable(
   "post",
