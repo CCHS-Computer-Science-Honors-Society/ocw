@@ -62,10 +62,11 @@ export async function UserMenu({ onlySignOut }: { onlySignOut?: boolean }) {
               <Link href="/account">
                 <DropdownMenuItem>Account</DropdownMenuItem>
               </Link>
-
-              <Link href="/docs">
-                <DropdownMenuItem>Support</DropdownMenuItem>
-              </Link>
+              {session.user.role === "admin" ? (
+                <Link href="/admin">
+                  <DropdownMenuItem>Admin</DropdownMenuItem>
+                </Link>
+              ) : null}
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />

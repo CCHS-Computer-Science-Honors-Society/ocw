@@ -1,34 +1,23 @@
-import { db } from "@/server/db";
-import { auth } from "@/server/auth";
+"use server"; // don't forget to add this!
+
+import { adminAction } from "@/server/api/actions";
+import { updateUserInput } from "@/validators/users";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { users } from "@/server/db/schema";
+import { db } from "@/server/db";
 import { eq } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { z } from "zod";
 
-export async function getUsers(page = 1, perPage = 10) {
-  const offset = (page - 1) * perPage;
-  const userList = await db.select().from(users).limit(perPage).offset(offset);
-  const totalUsersResult = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(users);
-  const totalCount = totalUsersResult[0]?.count ?? 0;
+export const updateUserAction = adminAction
+  .schema(updateUserInput)
+  .action(async ({ parsedInput }) => {
+    await db.update(users).set(parsedInput).where(eq(users.id, parsedInput.id));
+    revalidateTag("users");
+  });
 
-  return {
-    users: userList,
-    totalPages: Math.ceil(totalCount / perPage),
-    currentPage: page,
-  };
-}
-
-export async function updateUser(
-  id: string,
-  data: { name?: string; role?: "admin" | "user"; image?: string },
-) {
-  const session = await auth();
-
-  if (session?.user.role !== "admin") {
-    throw new Error("Unauthorized");
-  }
-
-  await db.update(users).set(data).where(eq(users.id, id));
-  return { success: true };
-}
+export const deleteUserAction = adminAction
+  .schema(z.object({ id: z.string() }))
+  .action(async ({ parsedInput }) => {
+    await db.delete(users).where(eq(users.id, parsedInput.id));
+    revalidateTag("users");
+  });
