@@ -13,10 +13,7 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    ppr: "incremental",
-  },
-
+  experimental: {},
   //FIX: this will lead to high bills
   images: {
     remotePatterns: [
