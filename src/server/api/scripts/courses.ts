@@ -18,8 +18,10 @@ export const getCourseById = unstable_cache(
         units: {
           columns: {
             id: true,
+            order: true,
             name: true,
           },
+          where: (units, { eq }) => eq(units.isPublished, true),
           with: {
             lessons: {
               columns: {

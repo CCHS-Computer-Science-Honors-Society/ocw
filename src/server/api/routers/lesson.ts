@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { eq, max, sql } from "drizzle-orm";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { lessons, units } from "@/server/db/schema";
+import { courses, lessons, units } from "@/server/db/schema";
 import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
 
@@ -83,18 +83,37 @@ export const lessonRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1, "Name is required"),
         description: z.string().min(1, "Description is required"),
-        order: z.number().min(1, "Order is required"),
         courseId: z.string(),
+        position: z.number().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { name, description } = input;
+      const { name, description, courseId } = input;
+
+      // Get the highest order value for the given course
+      const highestOrder = await ctx.db
+        .select({ maxOrder: max(units.order) })
+        .from(units)
+        .where(eq(units.courseId, courseId));
+
+      // Calculate the new order (increment by 1 or start at 1 if no units exist)
+      const newOrder = (highestOrder[0]?.maxOrder ?? 0) + 1;
+
+      // Insert the new unit with the calculated order
       await ctx.db.insert(units).values({
-        order: input.order,
         name,
         description,
-        courseId: input.courseId,
+        courseId,
+        order: input.position ?? newOrder,
       });
+
+      // Update the course's unit counter
+      await ctx.db
+        .update(courses)
+        .set({
+          unitLength: sql`${courses.unitLength} + 1`,
+        })
+        .where(eq(courses.id, courseId));
 
       revalidateTag("getCourseById");
     }),

@@ -11,6 +11,7 @@ export const getLesson = unstable_cache(
         embedId: true,
         contentType: true,
         description: true,
+        quizletPassword: true,
         content: true,
       },
     }),
