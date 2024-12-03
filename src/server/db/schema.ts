@@ -225,6 +225,7 @@ export const units = createTable(
       length: 30,
     }).notNull(),
     description: text("description").notNull(),
+    isPublished: boolean("is_published").default(false).notNull(),
     order: integer("order").notNull(),
   },
   (t) => ({
