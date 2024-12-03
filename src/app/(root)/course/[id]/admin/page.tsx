@@ -1,7 +1,11 @@
-import { getCourseById } from "@/server/api/scripts";
-import { CreateLessonForm } from "./_components/create-lesson";
-import React from "react";
+import React, { Suspense } from "react";
 import { CreateUnitPopup } from "./_components/create-unit";
+import { UnitsForm } from "./_components/units-dnd-form";
+import { CreateLesson } from "./_components/create";
+import { db } from "@/server/db";
+import { notFound } from "next/navigation";
+import { count, eq } from "drizzle-orm";
+import { units } from "@/server/db/schema";
 
 export default async function Page({
   params,
@@ -11,23 +15,36 @@ export default async function Page({
   }>;
 }) {
   const courseId = (await params).id;
-  const data = await getCourseById(courseId);
+  const [data] = await Promise.all([
+    db.query.courses.findFirst({
+      where: (courses, { eq }) => eq(courses.id, courseId),
+      columns: {
+        id: true,
+        name: true,
+        description: true,
+        unitLength: true,
+      },
+    }),
+  ]);
 
   if (!data) {
-    return <div>Course not found :(</div>;
+    notFound();
   }
-
-  const combobox = data.units.map((unit) => {
-    return {
-      name: unit.name,
-      id: unit.id,
-    };
-  });
-
   return (
-    <div>
-      <CreateLessonForm units={combobox} position={data.units.length + 100} />
-      <CreateUnitPopup courseId={courseId} />
+    <div className="container mx-auto flex flex-col gap-10 pt-10">
+      <div className="flex flex-row justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">{data.name}</h1>
+        </div>
+        <div className="flex flex-row gap-4">
+          <CreateLesson courseId={courseId} />
+          <CreateUnitPopup courseId={courseId} />
+        </div>
+      </div>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <UnitsForm courseId={courseId} />
+      </Suspense>
     </div>
   );
 }

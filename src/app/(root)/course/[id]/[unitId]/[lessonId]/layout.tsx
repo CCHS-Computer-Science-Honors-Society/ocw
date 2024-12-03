@@ -16,7 +16,7 @@ export default function Layout({
       <div className="flex h-full w-full flex-row">
         <div className="w-1/4">
           <Suspense fallback={<div />}>
-            <Sidebar className="p-5" params={params} />
+            <Sidebar className="hidden p-5 md:block" params={params} />
           </Suspense>
         </div>
         {children}

@@ -84,7 +84,7 @@ function LessonsSidebar(props: { data: SidebarData; courseId: string }) {
   };
 
   return (
-    <div className="h-min-screen relative w-[408px] overflow-hidden rounded-2xl bg-white shadow-lg">
+    <div className="h-min-screen w-[408px] overflow-hidden rounded-2xl bg-white shadow-lg">
       <div className="flex items-center justify-center bg-[#3f3f46] p-4">
         <BookIcon className="h-6 w-6 text-white" />
         <h1 className="ml-2 text-lg text-white">

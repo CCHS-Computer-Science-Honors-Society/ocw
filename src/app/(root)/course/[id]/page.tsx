@@ -88,7 +88,7 @@ export default async function CoursePage(props: {
                     <AccordionTrigger className="px-4 hover:no-underline">
                       <div className="flex items-center gap-4">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
-                          1
+                          {course.units.indexOf(unit) + 1}
                         </div>
                         <div className="text-left">
                           <div className="font-semibold">{unit.name}</div>
