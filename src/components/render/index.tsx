@@ -10,7 +10,7 @@ const TiptapLesson = dynamic(
 );
 
 const GoogleDocsLesson = dynamic(
-  () => import("./google-docs").then((mod) => mod.GoogleDocsLesson),
+  () => import("./google-docs").then((mod) => mod.GoogleDocsEmbed),
   {
     loading: () => <p>Loading...</p>,
   },
@@ -73,7 +73,12 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return <GoogleDocsLesson />;
+      return (
+        <GoogleDocsLesson
+          embedId={lesson.embedId}
+          password={lesson.quizletPassword}
+        />
+      );
   }
 }
 
