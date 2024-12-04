@@ -1,4 +1,4 @@
-import { hard_cache, unstable_cache } from "@/lib/cache";
+import { hard_cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { asc } from "drizzle-orm";
 
@@ -6,11 +6,11 @@ export const getCourses = hard_cache(
   () => db.query.courses.findMany(),
   ["getCourses"],
   {
-    revalidate: 1,
+    revalidate: 60 * 60 * 24,
   },
 );
 
-export const getCourseById = unstable_cache(
+export const getCourseById = hard_cache(
   (id: string) =>
     db.query.courses.findFirst({
       where: (courses, { eq }) => eq(courses.id, id),
@@ -36,4 +36,7 @@ export const getCourseById = unstable_cache(
       },
     }),
   ["getCourseById"],
+  {
+    revalidate: 60 * 60 * 24,
+  },
 );
