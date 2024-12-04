@@ -7,7 +7,7 @@ export const getLesson = unstable_cache(
       where: (lessons, { eq }) => eq(lessons.id, id),
       columns: {
         id: true,
-        title: true,
+        name: true,
         embedId: true,
         contentType: true,
         description: true,

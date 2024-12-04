@@ -205,7 +205,7 @@ function LessonsSidebar({
                     href={`/course/${courseId}/${lesson.unitId}/${lesson.id}`}
                   >
                     <GetIcon type={lesson.contentType} />
-                    <span className="ml-2">{lesson.title}</span>
+                    <span className="ml-2">{lesson.name}</span>
                   </Link>
                 ))}
               </motion.div>

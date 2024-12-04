@@ -104,7 +104,7 @@ export default async function CoursePage(props: {
                             href={`/course/${course.id}/${unit.id}/${lesson.id}`}
                             className="block text-[#1e3a7b] hover:underline"
                           >
-                            {lesson.title}
+                            {lesson.name}
                           </Link>
                         ))}
                       </div>

@@ -244,7 +244,8 @@ export const lessons = createTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => createId()),
-    position: integer("position").notNull(),
+    order: integer("order").notNull(),
+    isPublished: boolean("isPublished").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
     embedId: text("embedId"),
     description: text("description").notNull(),
@@ -255,15 +256,15 @@ export const lessons = createTable(
     unitId: text("unitId")
       .notNull()
       .references(() => units.id),
-    title: text("title").notNull(),
+    name: text("name").notNull(),
   },
   (t) => ({
     nameSearchIndex: index("units_title_search_index").using(
       "gin",
-      sql`to_tsvector('english', ${t.title})`,
+      sql`to_tsvector('english', ${t.name})`,
     ),
     nameTrgmIndex: index("lesson_title_trgm_index")
-      .using("gin", sql`${t.title} gin_trgm_ops`)
+      .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
     descriptionSearchIndex: index("lessons_description_search_index").using(
       "gin",

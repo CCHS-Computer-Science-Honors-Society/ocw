@@ -1,5 +1,5 @@
-import { eq, max, sql } from "drizzle-orm";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { asc, eq, max, sql } from "drizzle-orm";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { courses, lessons, units } from "@/server/db/schema";
 import type { JSONContent } from "novel";
@@ -116,5 +116,19 @@ export const lessonRouter = createTRPCRouter({
         .where(eq(courses.id, courseId));
 
       revalidateTag("getCourseById");
+    }),
+  getLessonsForDashboard: publicProcedure
+    .input(z.object({ courseId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.lessons.findMany({
+        columns: {
+          id: true,
+          name: true,
+          position: true,
+          isPublished: true,
+        },
+        where: eq(units.courseId, input.courseId),
+        orderBy: asc(units.order),
+      });
     }),
 });

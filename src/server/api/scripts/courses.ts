@@ -26,7 +26,7 @@ export const getCourseById = hard_cache(
             lessons: {
               columns: {
                 id: true,
-                title: true,
+                name: true,
                 contentType: true,
               },
             },

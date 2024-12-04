@@ -22,10 +22,10 @@ export const getSidebarData = hard_cache(
           },
         },
         lessons: {
-          orderBy: asc(lessons.position),
+          orderBy: asc(lessons.order),
           columns: {
             id: true,
-            title: true,
+            name: true,
             contentType: true,
             unitId: true,
           },

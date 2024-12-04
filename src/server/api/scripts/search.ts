@@ -40,12 +40,12 @@ const lessonsQuery = async (query: string) =>
   await db
     .select({
       id: lessons.id,
-      name: lessons.title,
+      name: lessons.name,
     })
     .from(lessons)
     .where(
       or(
-        sql`to_tsvector('english', ${lessons.title}) @@ to_tsquery('english', ${query})`,
+        sql`to_tsvector('english', ${lessons.name}) @@ to_tsquery('english', ${query})`,
         sql`to_tsvector('english', ${lessons.description}) @@ to_tsquery('english', ${query})`,
       ),
     )
