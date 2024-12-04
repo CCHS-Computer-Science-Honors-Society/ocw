@@ -23,6 +23,7 @@ export const getSidebarData = hard_cache(
         },
         lessons: {
           orderBy: asc(lessons.order),
+          where: (lessons, { eq }) => eq(lessons.isPublished, true),
           columns: {
             id: true,
             name: true,
