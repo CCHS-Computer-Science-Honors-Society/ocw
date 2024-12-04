@@ -24,8 +24,6 @@ export default async function Page({
   }
 
   return (
-    <div className="w-full max-w-screen-lg">
-      <RenderLesson isDisplay lesson={lesson} courseId={id} session={null} />
-    </div>
+    <RenderLesson isDisplay lesson={lesson} courseId={id} session={null} />
   );
 }

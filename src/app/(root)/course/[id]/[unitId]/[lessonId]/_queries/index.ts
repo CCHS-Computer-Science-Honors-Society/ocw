@@ -6,11 +6,13 @@ import { asc } from "drizzle-orm";
 export const getSidebarData = hard_cache(
   (courseId: string) =>
     db.query.units.findMany({
-      where: (units, { eq }) => eq(units.courseId, courseId),
+      where: (units, { eq, and }) =>
+        and(eq(units.courseId, courseId), eq(units.isPublished, true)),
       columns: {
         id: true,
         order: true,
         name: true,
+        courseId: true,
       },
       orderBy: asc(units.order),
       with: {
@@ -24,6 +26,7 @@ export const getSidebarData = hard_cache(
           columns: {
             id: true,
             title: true,
+            contentType: true,
             unitId: true,
           },
         },
