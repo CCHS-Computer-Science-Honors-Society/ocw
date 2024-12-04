@@ -55,7 +55,7 @@ export default function RenderLesson({
       return (
         <TiptapLesson
           content={lesson.content}
-          title={lesson.title}
+          title={lesson.name}
           isEdit={readOnly}
         />
       );
