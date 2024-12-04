@@ -142,7 +142,7 @@ function LessonsSidebar({
       collapsible="offcanvas"
     >
       <div className="w-full overflow-hidden">
-        <SidebarHeader className="flex items-center justify-center bg-gray-800 p-4">
+        <SidebarHeader className="flex flex-row items-center justify-center bg-gray-800 p-4">
           <BookIcon className="h-6 w-6 text-white" />
           <h1 className="ml-2 text-lg text-white">
             {data[0]?.course?.name ??
