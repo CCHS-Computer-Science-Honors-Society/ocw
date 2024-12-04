@@ -45,10 +45,10 @@ export default async function Layout({
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/courses"></BreadcrumbLink>
+                <BreadcrumbItem className="">
+                  <BreadcrumbLink href="/courses">Home</BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbSeparator className="" />
                 <BreadcrumbItem>
                   <BreadcrumbPage>{data[0]?.course.name}</BreadcrumbPage>
                 </BreadcrumbItem>
