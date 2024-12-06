@@ -22,7 +22,6 @@ export const unitsRouter = createTRPCRouter({
     .input(
       z.object({
         courseId: z.string(),
-        required: z.enum(["editor"]),
         data: z.object({
           id: z.string(),
           name: z.string().optional(),

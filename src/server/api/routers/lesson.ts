@@ -11,8 +11,9 @@ export const lessonRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         title: z.string().optional(),
-        description: z.string().optional(),
+        embedId: z.string().optional(),
         content: z.any().optional(),
+        isPublished: z.boolean().optional(),
         contentType: z
           .enum(["tiptap", "quizlet", "notion", "google_docs"])
           .optional(),
@@ -24,9 +25,10 @@ export const lessonRouter = createTRPCRouter({
         await ctx.db
           .update(lessons)
           .set({
-            title: input.title,
-            description: input.description,
+            name: input.title,
+            embedId: input.embedId,
             content: input.content as JSONContent,
+            isPublished: input.isPublished,
             contentType: input.contentType,
           })
           .where(eq(lessons.id, id));
@@ -48,7 +50,6 @@ export const lessonRouter = createTRPCRouter({
         contentType: z
           .enum(["tiptap", "quizlet", "notion", "google_docs"])
           .default("tiptap"),
-        position: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -57,22 +58,29 @@ export const lessonRouter = createTRPCRouter({
         title,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         content,
-        description,
         unitId,
         embedId,
-        position,
         contentType,
       } = input;
+
+      // Get the highest order value for the given course
+      const highestOrder = await ctx.db
+        .select({ maxOrder: max(units.order) })
+        .from(lessons)
+        .where(eq(lessons.unitId, unitId));
+
+      // Calculate the new order (increment by 1 or start at 1 if no units exist)
+      const newOrder = (highestOrder[0]?.maxOrder ?? 0) + 1;
 
       const c = content as JSONContent;
       await ctx.db.insert(lessons).values({
         contentType,
-        description,
-        position,
         unitId,
+        isPublished: false,
+        order: newOrder,
         content: c,
         embedId,
-        title,
+        name: title,
       });
 
       revalidateTag("getCourseById");
@@ -118,17 +126,41 @@ export const lessonRouter = createTRPCRouter({
       revalidateTag("getCourseById");
     }),
   getLessonsForDashboard: publicProcedure
-    .input(z.object({ courseId: z.string() }))
+    .input(z.object({ unitId: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.query.lessons.findMany({
         columns: {
           id: true,
           name: true,
-          position: true,
+          order: true,
           isPublished: true,
         },
-        where: eq(units.courseId, input.courseId),
-        orderBy: asc(units.order),
+        where: eq(lessons.unitId, input.unitId),
+        orderBy: asc(lessons.order),
+      });
+    }),
+  reorder: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        data: z.array(
+          z.object({
+            id: z.string(),
+            position: z.number(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        const updates = input.data.map((item) =>
+          tx
+            .update(lessons)
+            .set({ order: item.position })
+            .where(eq(lessons.id, item.id)),
+        );
+
+        await Promise.all(updates);
       });
     }),
 });

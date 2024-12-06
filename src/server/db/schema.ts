@@ -248,7 +248,6 @@ export const lessons = createTable(
     isPublished: boolean("isPublished").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
     embedId: text("embedId"),
-    description: text("description").notNull(),
     quizletPassword: text("quizletPassword"),
     content: jsonb("content")
       .$type<JSONContent>()
@@ -266,10 +265,24 @@ export const lessons = createTable(
     nameTrgmIndex: index("lesson_title_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-    descriptionSearchIndex: index("lessons_description_search_index").using(
-      "gin",
-      sql`to_tsvector('english', ${t.description})`,
-    ),
+  }),
+);
+
+export const lessonEmbed = createTable(
+  "lesson_embed",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    lessonId: text("lesson_id")
+      .notNull()
+      .references(() => lessons.id),
+    embedUrl: text("embed_url").notNull(),
+  },
+  (t) => ({
+    compoundKey: primaryKey({
+      columns: [t.lessonId, t.embedUrl],
+    }),
   }),
 );
 

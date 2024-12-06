@@ -1,7 +1,7 @@
+import { hard_cache } from "@/lib/cache";
 import { db } from "@/server/db";
-import { unstable_cache } from "next/cache";
 
-export const getLesson = unstable_cache(
+export const getLesson = hard_cache(
   (id: string) =>
     db.query.lessons.findFirst({
       where: (lessons, { eq, and }) =>
@@ -11,12 +11,14 @@ export const getLesson = unstable_cache(
         name: true,
         embedId: true,
         contentType: true,
-        description: true,
         quizletPassword: true,
         content: true,
       },
     }),
   ["lesson"],
+  {
+    revalidate: 60 * 60 * 24,
+  },
 );
 
 export type Lesson = Awaited<ReturnType<typeof getLesson>>;

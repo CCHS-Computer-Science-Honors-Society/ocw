@@ -40,7 +40,7 @@ export default async function Layout({
       <LessonSidebar data={data} courseId={courseId} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 flex-row items-center justify-between gap-2 px-4">
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center text-3xl">
             <SidebarTrigger className="-ml-1 text-3xl" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
