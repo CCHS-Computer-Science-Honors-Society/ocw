@@ -28,7 +28,7 @@ const formSchema = z.object({
   name: z.string(),
   isPublished: z.boolean(),
   embedId: z.string().optional(),
-  contentType: z.string(),
+  contentType: z.enum(["tiptap", "quizlet", "notion", "google_docs"]),
 });
 type FormSchema = z.infer<typeof formSchema>;
 
