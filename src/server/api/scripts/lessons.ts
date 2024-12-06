@@ -11,6 +11,7 @@ export const getLesson = hard_cache(
         name: true,
         embedId: true,
         contentType: true,
+        isPublished: true,
         quizletPassword: true,
         content: true,
       },

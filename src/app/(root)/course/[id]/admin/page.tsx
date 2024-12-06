@@ -4,8 +4,6 @@ import { UnitsForm } from "./_components/units-dnd-form";
 import { CreateLesson } from "./_components/create";
 import { db } from "@/server/db";
 import { notFound } from "next/navigation";
-import { count, eq } from "drizzle-orm";
-import { units } from "@/server/db/schema";
 
 export default async function Page({
   params,

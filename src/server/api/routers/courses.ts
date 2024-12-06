@@ -25,13 +25,19 @@ export const courseRouter = createTRPCRouter({
         content: z.object({
           name: z.string().min(1).max(50).optional(),
           subjectId: z.string().optional(),
-          aliases: z.array(z.string()).nonempty("Please at least one item").optional(),
+          aliases: z
+            .array(z.string())
+            .nonempty("Please at least one item")
+            .optional(),
           isPublic: z.boolean().optional(),
           description: z.string().min(1).max(500).optional(),
-        })
+        }),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.update(courses).set(input.content).where(eq(courses.id, input.courseId))
+      await ctx.db
+        .update(courses)
+        .set(input.content)
+        .where(eq(courses.id, input.courseId));
     }),
 });

@@ -17,6 +17,7 @@ export async function CoursesGrid({
     .from(courses)
     .where(
       and(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         name ? like(courses.name, `%${name}%`) : undefined,
         subjectId ? eq(courses.subjectId, subjectId as string) : undefined,
         eq(courses.isPublic, true),
