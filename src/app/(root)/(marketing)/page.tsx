@@ -18,3 +18,5 @@ export default function Page() {
     </div>
   );
 }
+
+export const experimental_ppr = true;

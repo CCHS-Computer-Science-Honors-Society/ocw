@@ -8,6 +8,8 @@ import { notFound } from "next/navigation";
 import { getCourseById } from "@/server/api/scripts";
 import { type Metadata } from "next";
 import Link from "next/link";
+import Navbar from "@/components/navbar";
+import { UserMenu } from "@/components/user-menu";
 
 export async function generateMetadata({
   params,
@@ -51,9 +53,10 @@ export default async function CoursePage(props: {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
+      <Navbar userNav={<UserMenu />} />
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="border-r bg-white p-6 md:w-96">
+        <div className="hidden border-r bg-white p-6 lg:block lg:w-96">
           <div className="mb-6 rounded-lg bg-blue-100 p-4">
             <h2 className="text-xl font-bold text-blue-800">{course.name}</h2>
             <p className="mt-1 text-sm text-blue-600">
@@ -119,3 +122,5 @@ export default async function CoursePage(props: {
     </div>
   );
 }
+
+export const experimental_ppr = true;
