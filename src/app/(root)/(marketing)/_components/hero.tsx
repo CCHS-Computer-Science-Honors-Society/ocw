@@ -39,10 +39,10 @@ export function HeroSection() {
             { value: "3,806", label: "Students" },
           ].map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
-              <span className="text-5xl font-bold text-primary">
+              <span className="text-2xl font-bold text-primary sm:text-5xl">
                 {stat.value}
               </span>
-              <span className="text-lg text-muted-foreground">
+              <span className="text-md text-muted-foreground sm:text-lg">
                 {stat.label}
               </span>
             </div>
