@@ -22,3 +22,5 @@ export default function Layout({
     </div>
   );
 }
+
+export const experimental_ppr = true;

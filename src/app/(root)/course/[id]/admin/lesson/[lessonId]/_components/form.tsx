@@ -65,11 +65,7 @@ export function UpdateLesson({
       title: values.name,
       isPublished: values.isPublished,
       embedId: values.embedId,
-      contentType: values.contentType as
-        | "tiptap"
-        | "quizlet"
-        | "notion"
-        | "google_docs",
+      contentType: values.contentType,
     });
   }
 

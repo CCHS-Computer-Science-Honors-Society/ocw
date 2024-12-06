@@ -13,7 +13,11 @@ const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {},
+  experimental: {
+    inlineCss: true,
+    ppr: "incremental",
+    reactCompiler: true,
+  },
   //FIX: this will lead to high bills
   images: {
     remotePatterns: [
