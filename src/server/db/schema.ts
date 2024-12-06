@@ -70,12 +70,12 @@ export const accounts = createTable(
     id_token: text("id_token"),
     session_state: varchar("session_state", { length: 255 }),
   },
-  (account) => ({
-    compoundKey: primaryKey({
+  (account) => [
+    primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-    userIdIdx: index("account_user_id_idx").on(account.userId),
-  }),
+    index("account_user_id_idx").on(account.userId),
+  ],
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -96,9 +96,7 @@ export const sessions = createTable(
       withTimezone: true,
     }).notNull(),
   },
-  (session) => ({
-    userIdIdx: index("session_user_id_idx").on(session.userId),
-  }),
+  (session) => [index("session_user_id_idx").on(session.userId)],
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -115,9 +113,7 @@ export const verificationTokens = createTable(
       withTimezone: true,
     }).notNull(),
   },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }),
+  (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })],
 );
 
 export const courses = createTable(
@@ -134,22 +130,22 @@ export const courses = createTable(
     unitLength: integer("units_length").default(0).notNull(),
     description: text("description").notNull(),
   },
-  (t) => ({
-    isPublicIdx: index("isPublicCourseIdx").on(t.isPublic),
+  (t) => [
+    index("isPublicCourseIdx").on(t.isPublic),
 
-    nameTrgmIndex: index("course_name_trgm_index")
+    index("course_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
     // GIN Index for Full-Text Search
-    nameSearchIndex: index("course_name_search_index").using(
+    index("course_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("course_description_search_index").using(
+    index("course_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const courseUsers = createTable(
@@ -168,11 +164,11 @@ export const courseUsers = createTable(
       .notNull()
       .default("user"),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.courseId, t.userId],
     }),
-  }),
+  ],
 );
 
 export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
@@ -207,20 +203,20 @@ export const units = createTable(
     isPublished: boolean("is_published").default(false).notNull(),
     order: integer("order").notNull(),
   },
-  (t) => ({
+  (t) => [
     // GIN Index for Full-Text Search
-    nameTrgmIndex: index("unit_name_trgm_index")
+    index("unit_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-    nameSearchIndex: index("units_name_search_index").using(
+    index("units_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("units_description_search_index").using(
+    index("units_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const unitsRelations = relations(units, ({ one, many }) => ({
@@ -257,33 +253,15 @@ export const lessons = createTable(
       .references(() => units.id),
     name: text("name").notNull(),
   },
-  (t) => ({
-    nameSearchIndex: index("units_title_search_index").using(
+  (t) => [
+    index("units_title_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    nameTrgmIndex: index("lesson_title_trgm_index")
+    index("lesson_title_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-  }),
-);
-
-export const lessonEmbed = createTable(
-  "lesson_embed",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    lessonId: text("lesson_id")
-      .notNull()
-      .references(() => lessons.id),
-    embedUrl: text("embed_url").notNull(),
-  },
-  (t) => ({
-    compoundKey: primaryKey({
-      columns: [t.lessonId, t.embedUrl],
-    }),
-  }),
+  ],
 );
 
 export const lessonsRelations = relations(lessons, ({ one }) => ({
