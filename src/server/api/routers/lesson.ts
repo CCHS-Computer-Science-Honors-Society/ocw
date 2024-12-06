@@ -65,7 +65,7 @@ export const lessonRouter = createTRPCRouter({
 
       // Get the highest order value for the given course
       const highestOrder = await ctx.db
-        .select({ maxOrder: max(units.order) })
+        .select({ maxOrder: max(lessons.order) })
         .from(lessons)
         .where(eq(lessons.unitId, unitId));
 
