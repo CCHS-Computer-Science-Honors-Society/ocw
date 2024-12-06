@@ -1,7 +1,31 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
 import type { Session } from "next-auth";
-import { TiptapLesson } from "./tiptap";
-import { Notion } from "./notion";
+import dynamic from "next/dynamic";
+
+const TiptapLesson = dynamic(
+  () => import("./tiptap").then((mod) => mod.TiptapLesson),
+  {
+    loading: () => <p>Loading...</p>,
+  },
+);
+
+const GoogleDocsLesson = dynamic(
+  () => import("./google-docs").then((mod) => mod.GoogleDocsEmbed),
+  {
+    loading: () => <p>Loading...</p>,
+  },
+);
+
+const QuizletEmbed = dynamic(
+  () => import("./quizlet").then((mod) => mod.QuizletEmbed),
+  {
+    loading: () => <p>Loading...</p>,
+  },
+);
+
+const Notion = dynamic(() => import("./notion").then((mod) => mod.Notion), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function RenderLesson({
   lesson,
@@ -31,12 +55,17 @@ export default function RenderLesson({
       return (
         <TiptapLesson
           content={lesson.content}
-          title={lesson.title}
+          title={lesson.name}
           isEdit={readOnly}
         />
       );
     case "quizlet":
-      return <div>Quizlet Dawg</div>;
+      return (
+        <QuizletEmbed
+          password={lesson.quizletPassword}
+          embedId={lesson.embedId}
+        />
+      );
     case "notion":
       return (
         <div>
@@ -44,7 +73,12 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return <div>Google Docs Dawg</div>;
+      return (
+        <GoogleDocsLesson
+          embedId={lesson.embedId}
+          password={lesson.quizletPassword}
+        />
+      );
   }
 }
 

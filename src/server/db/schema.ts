@@ -24,27 +24,6 @@ import { defaultEditorContent } from "@/lib/content";
  */
 export const createTable = pgTable;
 
-export const posts = createTable(
-  "post",
-  {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
-
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -91,12 +70,12 @@ export const accounts = createTable(
     id_token: text("id_token"),
     session_state: varchar("session_state", { length: 255 }),
   },
-  (account) => ({
-    compoundKey: primaryKey({
+  (account) => [
+    primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-    userIdIdx: index("account_user_id_idx").on(account.userId),
-  }),
+    index("account_user_id_idx").on(account.userId),
+  ],
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -117,9 +96,7 @@ export const sessions = createTable(
       withTimezone: true,
     }).notNull(),
   },
-  (session) => ({
-    userIdIdx: index("session_user_id_idx").on(session.userId),
-  }),
+  (session) => [index("session_user_id_idx").on(session.userId)],
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -136,9 +113,7 @@ export const verificationTokens = createTable(
       withTimezone: true,
     }).notNull(),
   },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }),
+  (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })],
 );
 
 export const courses = createTable(
@@ -155,22 +130,22 @@ export const courses = createTable(
     unitLength: integer("units_length").default(0).notNull(),
     description: text("description").notNull(),
   },
-  (t) => ({
-    isPublicIdx: index("isPublicCourseIdx").on(t.isPublic),
+  (t) => [
+    index("isPublicCourseIdx").on(t.isPublic),
 
-    nameTrgmIndex: index("course_name_trgm_index")
+    index("course_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
     // GIN Index for Full-Text Search
-    nameSearchIndex: index("course_name_search_index").using(
+    index("course_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("course_description_search_index").using(
+    index("course_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const courseUsers = createTable(
@@ -189,11 +164,11 @@ export const courseUsers = createTable(
       .notNull()
       .default("user"),
   },
-  (t) => ({
-    compoundKey: primaryKey({
+  (t) => [
+    primaryKey({
       columns: [t.courseId, t.userId],
     }),
-  }),
+  ],
 );
 
 export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
@@ -225,22 +200,23 @@ export const units = createTable(
       length: 30,
     }).notNull(),
     description: text("description").notNull(),
+    isPublished: boolean("is_published").default(false).notNull(),
     order: integer("order").notNull(),
   },
-  (t) => ({
+  (t) => [
     // GIN Index for Full-Text Search
-    nameTrgmIndex: index("unit_name_trgm_index")
+    index("unit_name_trgm_index")
       .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-    nameSearchIndex: index("units_name_search_index").using(
+    index("units_name_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
     ),
-    descriptionSearchIndex: index("units_description_search_index").using(
+    index("units_description_search_index").using(
       "gin",
       sql`to_tsvector('english', ${t.description})`,
     ),
-  }),
+  ],
 );
 
 export const unitsRelations = relations(units, ({ one, many }) => ({
@@ -264,31 +240,28 @@ export const lessons = createTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => createId()),
-    position: integer("position").notNull(),
+    order: integer("order").notNull(),
+    isPublished: boolean("isPublished").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
     embedId: text("embedId"),
-    description: text("description").notNull(),
+    quizletPassword: text("quizletPassword"),
     content: jsonb("content")
       .$type<JSONContent>()
       .default(defaultEditorContent),
     unitId: text("unitId")
       .notNull()
       .references(() => units.id),
-    title: text("title").notNull(),
+    name: text("name").notNull(),
   },
-  (t) => ({
-    nameSearchIndex: index("units_title_search_index").using(
+  (t) => [
+    index("units_title_search_index").using(
       "gin",
-      sql`to_tsvector('english', ${t.title})`,
+      sql`to_tsvector('english', ${t.name})`,
     ),
-    nameTrgmIndex: index("lesson_title_trgm_index")
-      .using("gin", sql`${t.title} gin_trgm_ops`)
+    index("lesson_title_trgm_index")
+      .using("gin", sql`${t.name} gin_trgm_ops`)
       .concurrently(),
-    descriptionSearchIndex: index("lessons_description_search_index").using(
-      "gin",
-      sql`to_tsvector('english', ${t.description})`,
-    ),
-  }),
+  ],
 );
 
 export const lessonsRelations = relations(lessons, ({ one }) => ({

@@ -2,7 +2,7 @@
 
 import { adminAction } from "@/server/api/actions";
 import { updateUserInput } from "@/validators/users";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { users } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { eq } from "drizzle-orm";

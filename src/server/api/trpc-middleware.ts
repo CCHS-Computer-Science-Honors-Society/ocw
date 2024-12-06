@@ -10,18 +10,10 @@ type CourseRole = "admin" | "editor" | "user";
 export function createAuthPlugin() {
   // Define the authorization middleware
   const authorize = t.middleware(async ({ ctx, next, input }) => {
-    // Extract input parameters. Ensure input is an object with courseId and required.
-    if (typeof input !== "object" || input === null) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid input",
-      });
-    }
-
-    const { courseId, required } = input as {
+    const { courseId } = input as {
       courseId: string;
-      required: CourseRole;
     };
+    const required = "editor" as CourseRole;
 
     if (!courseId || !required) {
       throw new TRPCError({
