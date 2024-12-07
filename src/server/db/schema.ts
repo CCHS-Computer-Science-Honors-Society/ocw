@@ -14,7 +14,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
-import { defaultEditorContent } from "@/lib/content";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -243,15 +242,11 @@ export const lessons = createTable(
     order: integer("order").notNull(),
     isPublished: boolean("isPublished").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
-    embedId: text("embedId"),
-    quizletPassword: text("quizletPassword"),
-    content: jsonb("content")
-      .$type<JSONContent>()
-      .default(defaultEditorContent),
     unitId: text("unitId")
       .notNull()
       .references(() => units.id),
     name: text("name").notNull(),
+    content: jsonb("content").$type<JSONContent>(),
   },
   (t) => [
     index("units_title_search_index").using(
@@ -264,9 +259,34 @@ export const lessons = createTable(
   ],
 );
 
-export const lessonsRelations = relations(lessons, ({ one }) => ({
+export const lessonEmbed = createTable(
+  "lesson_embed",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    password: text("password"),
+    lessonId: text("lessonId")
+      .notNull()
+      .references(() => lessons.id),
+    embedUrl: text("embed_url").notNull(),
+  },
+  (t) => [index("lesson_embed_lesson_id_idx").on(t.lessonId)],
+);
+export const lessonEmbedRelations = relations(lessonEmbed, ({ one }) => ({
+  lesson: one(lessons, {
+    fields: [lessonEmbed.lessonId],
+    references: [lessons.id],
+  }),
+}));
+
+export const lessonsRelations = relations(lessons, ({ one, many }) => ({
   unit: one(units, {
     fields: [lessons.unitId],
     references: [units.id],
+  }),
+  embeds: one(lessonEmbed, {
+    fields: [lessons.id],
+    references: [lessonEmbed.lessonId],
   }),
 }));

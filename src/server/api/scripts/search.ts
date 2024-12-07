@@ -46,7 +46,6 @@ const lessonsQuery = async (query: string) =>
     .where(
       or(
         sql`to_tsvector('english', ${lessons.name}) @@ to_tsquery('english', ${query})`,
-        sql`to_tsvector('english', ${lessons.description}) @@ to_tsquery('english', ${query})`,
       ),
     )
     .limit(10);

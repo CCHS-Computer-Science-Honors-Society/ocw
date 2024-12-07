@@ -109,7 +109,6 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
     // Prepare the final data to be sent to the API
     const lessonData = {
       ...data,
-      position: 1000,
       content,
     };
     createLesson(lessonData);

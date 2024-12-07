@@ -1,21 +1,26 @@
 import { hard_cache } from "@/lib/cache";
 import { db } from "@/server/db";
+import { lessonEmbed, lessons } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const getLesson = hard_cache(
-  (id: string) =>
-    db.query.lessons.findFirst({
-      where: (lessons, { eq, and }) =>
-        and(eq(lessons.id, id), eq(lessons.isPublished, true)),
-      columns: {
-        id: true,
-        name: true,
-        embedId: true,
-        contentType: true,
-        isPublished: true,
-        quizletPassword: true,
-        content: true,
-      },
-    }),
+  async (id: string) => {
+    const [lesson] = await db
+      .select({
+        id: lessons.id,
+        name: lessons.name,
+        embedId: lessonEmbed.embedUrl,
+        contentType: lessons.contentType,
+        isPublished: lessons.isPublished,
+        quizletPassword: lessonEmbed.password,
+        content: lessons.content,
+      })
+      .from(lessons)
+      .where(eq(lessons.id, id))
+      .leftJoin(lessonEmbed, eq(lessonEmbed.lessonId, lessons.id));
+
+    return lesson;
+  },
   ["lesson"],
   {
     revalidate: 60 * 60 * 24,
