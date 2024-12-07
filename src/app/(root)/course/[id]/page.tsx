@@ -10,6 +10,7 @@ import { type Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/navbar";
 import { UserMenu } from "@/components/user-menu";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   params,
@@ -53,7 +54,13 @@ export default async function CoursePage(props: {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
-      <Navbar userNav={<UserMenu />} />
+      <Navbar
+        userNav={
+          <Suspense fallback="loading">
+            <UserMenu />
+          </Suspense>
+        }
+      />
       <div className="flex flex-1">
         {/* Sidebar */}
         <div className="hidden border-r bg-white p-6 lg:block lg:w-96">

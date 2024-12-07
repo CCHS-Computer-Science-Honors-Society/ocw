@@ -78,7 +78,10 @@ export function UsersTable() {
       await navigator.clipboard.writeText(text);
       toast.success("Email Copied");
     } catch (err: unknown) {
-      toast.error(`Error Copying Email: ${err.message as string}`);
+      if (err.message) {
+        toast.error(`Error Copying Email: ${err.message as string}`);
+      }
+      toast("Error Copying Email");
     }
   };
 

@@ -1,12 +1,18 @@
 import Navbar from "@/components/navbar";
 import { UserMenu } from "@/components/user-menu";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default function Page({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <Navbar userNav={<UserMenu />} />
+      <Navbar
+        userNav={
+          <Suspense fallback="loading">
+            <UserMenu />
+          </Suspense>
+        }
+      />
       {children}
       {/* Footer */}
       <footer className="border-t bg-background py-12">
