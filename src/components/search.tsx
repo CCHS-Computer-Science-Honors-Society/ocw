@@ -14,12 +14,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-
-type SearchResult = {
-  courses: Array<{ id: string; name: string }>;
-  units: Array<{ id: string; name: string }>;
-  lessons: Array<{ id: string; name: string }>;
-};
+import type { Result as SearchResult } from "@/app/api/search/route";
 
 export function SearchDropdownComponent() {
   const [open, setOpen] = React.useState(false);
@@ -127,7 +122,8 @@ export function SearchDropdownComponent() {
                   key={item.id}
                   onSelect={() => handleSelect(item.id, "unit")}
                 >
-                  {item.name}
+                  {item.name} |{" "}
+                  <p className="text-xs text-gray-400">{item.courseName}</p>
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -139,7 +135,11 @@ export function SearchDropdownComponent() {
                   key={item.id}
                   onSelect={() => handleSelect(item.id, "lesson")}
                 >
-                  {item.name}
+                  {item.name} |{" "}
+                  <p className="text-xs text-gray-400">
+                    {" "}
+                    {item.unitName} | {item.courseName}
+                  </p>
                 </CommandItem>
               ))}
             </CommandGroup>

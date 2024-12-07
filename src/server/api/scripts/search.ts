@@ -1,7 +1,7 @@
 import { hard_cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { courses, units, lessons } from "@/server/db/schema";
-import { sql, or, arrayContains } from "drizzle-orm";
+import { sql, or, eq, arrayContains } from "drizzle-orm";
 
 const coursesQuery = async (query: string, ogQuery: string) => {
   const terms = ogQuery.split(" ").filter((term) => term.trim() !== ""); // Filter out empty terms
@@ -26,6 +26,7 @@ const unitsQuery = async (query: string) =>
     .select({
       id: units.id,
       name: units.name,
+      courseName: courses.name,
     })
     .from(units)
     .where(
@@ -34,6 +35,7 @@ const unitsQuery = async (query: string) =>
         sql`to_tsvector('english', ${units.description}) @@ to_tsquery('english', ${query})`,
       ),
     )
+    .innerJoin(courses, eq(units.courseId, courses.id))
     .limit(10);
 
 const lessonsQuery = async (query: string) =>
@@ -41,6 +43,8 @@ const lessonsQuery = async (query: string) =>
     .select({
       id: lessons.id,
       name: lessons.name,
+      unitName: units.name,
+      courseName: courses.name,
     })
     .from(lessons)
     .where(
@@ -48,6 +52,8 @@ const lessonsQuery = async (query: string) =>
         sql`to_tsvector('english', ${lessons.name}) @@ to_tsquery('english', ${query})`,
       ),
     )
+    .innerJoin(units, eq(lessons.unitId, units.id))
+    .innerJoin(courses, eq(units.courseId, courses.id))
     .limit(10);
 
 export const performSearch = hard_cache(
