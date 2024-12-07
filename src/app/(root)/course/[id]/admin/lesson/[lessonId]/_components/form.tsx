@@ -27,7 +27,7 @@ import { api } from "@/trpc/react";
 const formSchema = z.object({
   name: z.string(),
   isPublished: z.boolean(),
-  embedId: z.string().optional(),
+  embedUrl: z.string().optional(),
   contentType: z.enum(["tiptap", "quizlet", "notion", "google_docs"]),
 });
 type FormSchema = z.infer<typeof formSchema>;
@@ -42,7 +42,7 @@ export function UpdateLesson({
     defaultValues: {
       name: defaultValues.name,
       isPublished: defaultValues.isPublished,
-      embedId: defaultValues.embedId,
+      embedUrl: defaultValues.embedUrl,
       contentType: defaultValues.contentType,
     },
   });
@@ -64,7 +64,7 @@ export function UpdateLesson({
       id: defaultValues.id,
       title: values.name,
       isPublished: values.isPublished,
-      embedId: values.embedId,
+      embedUrl: values.embedUrl,
       contentType: values.contentType,
     });
   }
@@ -116,7 +116,7 @@ export function UpdateLesson({
 
         <FormField
           control={form.control}
-          name="embedId"
+          name="embedUrl"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Embed Url</FormLabel>

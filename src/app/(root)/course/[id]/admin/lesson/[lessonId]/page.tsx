@@ -27,7 +27,7 @@ export default async function Page({
               id: lesson.id,
               name: lesson.name,
               isPublished: lesson.isPublished,
-              embedId: lesson.embedId ?? undefined,
+              embedUrl: lesson.embedId ?? undefined,
               contentType: lesson.contentType,
             }}
           />

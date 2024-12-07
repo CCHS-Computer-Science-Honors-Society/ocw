@@ -74,15 +74,8 @@ export function UsersTable() {
   );
 
   const handleCopy = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Email Copied");
-    } catch (err: unknown) {
-      if (err.message) {
-        toast.error(`Error Copying Email: ${err.message as string}`);
-      }
-      toast("Error Copying Email");
-    }
+    await navigator.clipboard.writeText(text);
+    toast.success("Email Copied");
   };
 
   const handleUpdate = async (
