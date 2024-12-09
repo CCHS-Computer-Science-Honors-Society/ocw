@@ -69,6 +69,7 @@ export function SearchDropdownComponent() {
         .catch((e) => {
           console.error(e);
           toast.error("Something went wrong, please try again later.");
+          setIsLoading(false);
         });
     }
   }, [search]);
@@ -122,8 +123,8 @@ export function SearchDropdownComponent() {
                   key={item.id}
                   onSelect={() => handleSelect(item.id, "unit")}
                 >
-                  {item.name} |{" "}
-                  <p className="text-xs text-gray-400">{item.courseName}</p>
+                  {item.name}{" "}
+                  <p className="text-xs text-gray-400"> | {item.courseName}</p>
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -135,10 +136,9 @@ export function SearchDropdownComponent() {
                   key={item.id}
                   onSelect={() => handleSelect(item.id, "lesson")}
                 >
-                  {item.name} |{" "}
+                  {item.name}
                   <p className="text-xs text-gray-400">
-                    {" "}
-                    {item.unitName} | {item.courseName}
+                    | {item.unitName} | {item.courseName}
                   </p>
                 </CommandItem>
               ))}

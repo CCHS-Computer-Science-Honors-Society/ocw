@@ -11,7 +11,7 @@ import { VercelTabs } from "./ui/vercel-tabs";
 const navItems = [
   { label: "Courses", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Resources", href: "/resources" },
+  { label: "Contributors", href: "/contributors" },
 ];
 
 // can't nest server components inside cilent components unless you pass in as props'
