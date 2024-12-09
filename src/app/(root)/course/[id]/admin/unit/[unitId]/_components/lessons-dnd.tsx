@@ -12,6 +12,7 @@ import { Grip, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { RouterOutputs } from "@/trpc/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Lesson = RouterOutputs["lesson"]["getLessonsForDashboard"]["0"];
 interface LessonsListProps {

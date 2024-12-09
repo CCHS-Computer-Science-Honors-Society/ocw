@@ -10,12 +10,13 @@ import { LessonsList } from "./lessons-dnd";
 
 interface LessonsFormProps {
   unitId: string;
+  courseId: string;
 }
 
-export const LessonsForm = ({ unitId: courseId }: LessonsFormProps) => {
+export const LessonOrderForm = ({ unitId, courseId }: LessonsFormProps) => {
   const utils = api.useUtils();
   const [initialData] = api.lesson.getLessonsForDashboard.useSuspenseQuery({
-    unitId: courseId,
+    unitId,
   });
   const { mutate: update, isPending: isUpdating } =
     api.lesson.reorder.useMutation({

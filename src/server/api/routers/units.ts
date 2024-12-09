@@ -62,6 +62,19 @@ export const unitsRouter = createTRPCRouter({
         await Promise.all(updates);
       });
     }),
+  getMinimalUnit: publicProcedure
+    .input(z.object({ unitId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.query.units.findFirst({
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          isPublished: true,
+        },
+        where: eq(units.id, input.unitId),
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({

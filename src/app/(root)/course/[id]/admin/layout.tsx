@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { CourseSwitcher } from "./_components/switcher";
+import { Suspense } from "react";
 
 export default function AdminLayout({
   children,
@@ -22,14 +23,14 @@ export default function AdminLayout({
 }) {
   return (
     <div>
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "20rem",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar courseswitcher={<CourseSwitcher />} />
+      <SidebarProvider>
+        <AppSidebar
+          courseswitcher={
+            <Suspense fallback="loading">
+              <CourseSwitcher />
+            </Suspense>
+          }
+        />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />

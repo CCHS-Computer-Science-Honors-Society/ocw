@@ -1,46 +1,43 @@
 "use client";
-
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { api } from "@/trpc/react";
+import { LoadingButton } from "@/components/ui/loading-button";
 
-// Define the schema using Zod
 const schema = z.object({
-  name: z.string().min(1, "Name is required").max(255, "Name is too long"),
-  isPublished: z.boolean(),
-  description: z.string().max(1000, "Description is too long"),
+  name: z.string().min(1).max(60),
+  description: z.string().min(2).max(255),
+  isPublic: z.boolean(),
 });
 
 export type FormData = z.infer<typeof schema>;
 
 interface FormContextProps {
-  children: React.ReactNode;
-  data: FormData & { id: string };
   courseId: string;
+  unitId: string;
 }
 
-export const FormContext: React.FC<FormContextProps> = ({
-  children,
-  data,
-  courseId,
-}) => {
+export function LessonForm({ courseId, unitId }: FormContextProps) {
+  const [data] = api.units.getMinimalUnit.useSuspenseQuery({
+    unitId,
+  });
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      name: data.name,
-      description: data.description,
-      isPublished: data.isPublished,
-    },
-    mode: "onChange", // To track form state more effectively
   });
-
   const utils = api.useUtils();
 
   const { mutate: update, isPending: isLoading } = api.units.update.useMutation(
@@ -58,6 +55,7 @@ export const FormContext: React.FC<FormContextProps> = ({
     },
   );
 
+  if (!data) return null;
   const onSubmit = (formData: FormData) => {
     update({
       courseId,
@@ -69,82 +67,77 @@ export const FormContext: React.FC<FormContextProps> = ({
   };
 
   return (
-    <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-        <div className="flex w-full flex-col gap-10">
-          <div className="flex flex-row justify-between">
-            <h2 className="text-4xl font-semibold">Unit: {data.name}</h2>
-            <SubmitButton isLoading={isLoading} />
-          </div>
-          {children}
-        </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="mx-auto max-w-3xl space-y-8 py-10"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Introduction To Atoms"
+                  type="text"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>The name of the unit</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Placeholder"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                briefly describe what is the unit
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="isPublic"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel>Public</FormLabel>
+                <FormDescription>
+                  Is this unit available to the general public
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled
+                  aria-readonly
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <LoadingButton type="submit" loading={isLoading}>
+          Submit
+        </LoadingButton>
       </form>
-    </FormProvider>
+    </Form>
   );
-};
-
-// Input component for "name" field
-export const UpdateUnitName: React.FC = () => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<FormData>();
-  return (
-    <div>
-      <Input placeholder="Unit Name" {...register("name")} />
-      {errors.name && (
-        <p className="text-sm text-red-500">{errors.name.message}</p>
-      )}
-    </div>
-  );
-};
-
-// Textarea component for "description" field
-export const UpdateUnitDescription: React.FC = () => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<FormData>();
-  return (
-    <div>
-      <Textarea placeholder="Description" {...register("description")} />
-      {errors.description && (
-        <p className="text-sm text-red-500">{errors.description.message}</p>
-      )}
-    </div>
-  );
-};
-
-// Switch component for "isPublished" field
-export const UpdateUnitPublishStatus: React.FC = () => {
-  const { register, getValues } = useFormContext<FormData>();
-  const { isPublished } = getValues();
-  return (
-    <div className="flex items-center">
-      <label htmlFor="isPublished" className="mr-2">
-        Published:
-      </label>
-      <Switch
-        id="isPublished"
-        {...register("isPublished")}
-        defaultChecked={isPublished}
-      />
-    </div>
-  );
-};
-
-// Submit button component
-interface SubmitButtonProps {
-  isLoading: boolean;
 }
-
-export const SubmitButton: React.FC<SubmitButtonProps> = ({ isLoading }) => {
-  const { formState } = useFormContext<FormData>();
-  const { isDirty } = formState;
-
-  return (
-    <Button type="submit" disabled={!isDirty || isLoading}>
-      {isLoading ? "Submitting..." : "Submit"}
-    </Button>
-  );
-};
