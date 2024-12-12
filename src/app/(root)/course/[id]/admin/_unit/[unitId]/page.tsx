@@ -4,7 +4,7 @@ import { Form } from "./_components/form-wrapper";
 import { LessonFormSkeleton, LessonListSkeleton } from "./_skeleton";
 import { HydrateClient } from "@/trpc/server";
 
-export default async function Page({
+export default function Page({
   params,
 }: {
   params: Promise<{ id: string; unitId: string }>;

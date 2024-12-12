@@ -12,6 +12,7 @@ import {
   text,
   timestamp,
   varchar,
+  vector,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -290,3 +291,18 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
     references: [lessonEmbed.lessonId],
   }),
 }));
+
+export const easyNoteCard = createTable(
+  "easy_note_card",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    front: text("front").notNull(),
+    embedding: vector("embedding", { dimensions: 1536 }),
+    back: text("back").notNull(),
+  },
+  (t) => [
+    index("embeddingIndex").using("hnsw", t.embedding.op("vector_cosine_ops")),
+  ],
+);

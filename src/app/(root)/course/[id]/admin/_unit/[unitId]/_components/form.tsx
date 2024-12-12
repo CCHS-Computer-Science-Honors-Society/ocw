@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { api } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 import { LoadingButton } from "@/components/ui/loading-button";
 
 const schema = z.object({
@@ -28,15 +28,15 @@ export type FormData = z.infer<typeof schema>;
 
 interface FormContextProps {
   courseId: string;
-  unitId: string;
+  data: RouterOutputs["units"]["getMinimalUnit"];
 }
 
-export function LessonForm({ courseId, unitId }: FormContextProps) {
-  const [data] = api.units.getMinimalUnit.useSuspenseQuery({
-    unitId,
-  });
+export function LessonForm({ courseId, data }: FormContextProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      ...data,
+    },
   });
   const utils = api.useUtils();
 
@@ -127,8 +127,7 @@ export function LessonForm({ courseId, unitId }: FormContextProps) {
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled
-                  aria-readonly
+                  defaultChecked={field.value}
                 />
               </FormControl>
             </FormItem>
