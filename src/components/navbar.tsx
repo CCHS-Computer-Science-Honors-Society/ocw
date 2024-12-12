@@ -11,6 +11,7 @@ import { VercelTabs } from "./ui/vercel-tabs";
 const navItems = [
   { label: "Courses", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Flashcards", href: "/flashcards" },
   { label: "Contributors", href: "/contributors" },
 ];
 
