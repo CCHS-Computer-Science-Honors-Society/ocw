@@ -2,6 +2,8 @@
 
 Welcome to the **Cherry Creek High School Open CourseWare (OCW)** project! This repository hosts the codebase for [creekocw.com](https://creekocw.com), an initiative dedicated to providing free educational resources and course materials from Cherry Creek High School.
 
+Note on contrubution history: this website has been written in many different languages and different repos, this repo was created in late 2024 but the idea has been worked on from 2023.
+
 ## Table of Contents
 
 - [Introduction](#introduction)
