@@ -1,29 +1,230 @@
-# Create T3 App
+# Cherry Creek High School Open CourseWare
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Welcome to the **Cherry Creek High School Open CourseWare (OCW)** project! This repository hosts the codebase for [creekocw.com](https://creekocw.com), an initiative dedicated to providing free educational resources and course materials from Cherry Creek High School.
 
-## What's next? How do I make an app with this?
+## Table of Contents
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Technologies Used](#technologies-used)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Scripts](#scripts)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Introduction
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+The **Cherry Creek High School Open CourseWare** project aims to make high-quality educational content accessible to everyone. This platform offers resources, lecture notes, practice problems, and more, covering various subjects taught at Cherry Creek High School.
 
-## Learn More
+## Features
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- **Extensive Educational Resources**: Access a wide range of course materials across different subjects.
+- **Interactive Content**: Engage with interactive elements to enhance the learning experience.
+- **Search Functionality**: Easily find the content you need with a robust search feature.
+- **Responsive Design**: Enjoy a seamless experience on all devices.
+- **Open Source**: Community-driven development encourages collaboration and continuous improvement.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Project Structure
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```plaintext
+.
+├── .env.example
+├── .eslintrc.cjs
+├── .github/
+│   └── ci.yml
+├── .gitignore
+├── bun.lockb
+├── components.json
+├── drizzle.config.ts
+├── next-env.d.ts
+├── next.config.js
+├── package.json
+├── postcss.config.js
+├── prettier.config.js
+├── public/
+├── scrapping/
+│   └── README.md
+├── SETUP.md
+├── src/
+│   ├── app/
+│   │   └── layout.tsx
+│   ├── styles/
+│   │   └── globals.css
+│   └── ...
+├── start-database.sh
+├── tailwind.config.ts
+├── tsconfig.json
+└── ...
+```
 
-## How do I deploy this?
+```plaintext
+src/            Main application code.
+public/         Public assets like images and icons.
+scrapping/      Tools and scripts for data scraping.
+styles/         Global styles for the application.
+SETUP.md        Guide for setting up the development environment.
+package.json    Project dependencies and scripts.
+tailwind.config.ts  Tailwind CSS configuration.
+```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Technologies Used
+
+- [Next.js](https://nextjs.org/)
+- [NextAuth.js](https://next-auth.js.org/)
+- [Drizzle](https://orm.drizzle.team/)
+
+## This project is built using the **T3 Stack** and was bootstrapped with `create-t3-app`
+
+## Prerequisites
+
+Ensure you have the following installed before starting:
+
+- **Node.js** and **Bun**: [Download Node.js](https://nodejs.org/) and [Install Bun](https://bun.sh/)
+- **Git**: [Install Git](https://git-scm.com/)
+
+---
+
+## Setup
+
+Follow these steps to set up the project locally:
+
+### 1. Clone the Repository
+
+```bash
+git clone <repo-url> creekocw
+cd creekocw
+```
+
+### 2. Copy Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Fill in the `.env` file with the necessary configuration settings.
+
+### 3. Install Dependencies
+
+Using **Bun**:
+
+```bash
+bun install
+```
+
+### 4. Set Up the Database with Neon.tech
+
+1. **Create a PostgreSQL Database on Neon.tech**:
+
+   - Go to [Neon.tech](https://neon.tech/) and sign up or log in.
+   - Create a new PostgreSQL project and note the connection string.
+
+2. **Configure the Environment**:
+
+   Add your Neon connection string to the `.env` file:
+
+   ```plaintext
+   DATABASE_URL="your-neon-connection-string"
+
+   ```
+
+3. **Run Database Migrations**:
+
+   ```bash
+   bun run db:push
+   ```
+
+---
+
+## Usage
+
+### Start the Development Server
+
+Using **Bun**:
+
+```bash
+bun dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Scripts
+
+| Command      | Description                            |
+| ------------ | -------------------------------------- |
+| `dev`        | Starts the development server.         |
+| `build`      | Builds the application for production. |
+| `start`      | Runs the built application.            |
+| `db:push`    | Runs database migrations.              |
+| `lint:fix`   | Lints the codebase using ESLint.       |
+| `format:fix` | formats the codebase using prettier.   |
+| `test`       | Runs tests.                            |
+
+---
+
+## Contributing
+
+We welcome contributions! Follow these steps to contribute:
+
+1. **Fork the Repository**: Click the "Fork" button on the repository page.
+2. **Clone Your Fork**:
+
+   ```bash
+   git clone https://github.com/yourusername/creekocw.git
+   ```
+
+3. **Create a New Branch**:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+4. **Make Your Changes**: Implement your feature or fix the bug.
+5. **Commit Your Changes** using **Conventional Commits**:
+
+   ```bash
+   git commit -m "feat: add new feature description"
+   ```
+
+   Examples of Conventional Commit prefixes:
+
+   - `feat`: A new feature
+   - `fix`: A bug fix
+   - `docs`: Documentation changes
+   - `refactor`: Code changes that aren't new features or fixes
+   - `test`: Adding or updating tests
+
+6. **Push to Your Fork**:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+7. **Create a Pull Request**: Open a PR to the main repository with a detailed description of your changes.
+
+### Guidelines
+
+- **Code Quality**: Maintain clear and concise code. Follow the existing code style.
+- **Testing**: Ensure your changes are covered by tests.
+- **Documentation**: Update documentation and comments where necessary.
+- **Communication**: Be clear in your PR description and commit messages.
+
+---
+
+## License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contact
+
+- **Website**: [creekocw.com](https://creekocw.com)
+- **Email**: [cherrycreekcshs@gmail.com](mailto:cherrycreekcshs@gmail.com)
+
+---
