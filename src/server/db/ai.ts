@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { db } from ".";
 import { easyNoteCard } from "./schema";
 import { hard_cache } from "@/lib/cache";
+import { union } from "drizzle-orm/pg-core";
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
@@ -53,6 +54,44 @@ export const findSimilarFlashcards = hard_cache(
     };
   },
   ["similarFlashcards"],
+  {
+    revalidate: 60 * 60 * 24 * 7 * 4, // 4 weeks
+  },
+);
+export const findFlashcardStatic = hard_cache(
+  async (query: string) => {
+    return await db
+      .select()
+      .from(easyNoteCard)
+      .where(
+        sql`to_tsvector('english', ${easyNoteCard.front}) @@ plainto_tsquery('english', ${query})`,
+      );
+  },
+  ["findFlashcardStatic"],
+  {
+    revalidate: 60 * 60 * 24 * 7 * 4, // 4 weeks
+  },
+);
+
+// Combined function to find similar and text-matched flashcards without duplicates
+export const findCombinedFlashcards = hard_cache(
+  async (query: string) => {
+    // Define similarity score computation
+
+    // Execute full-text search query
+    return await db
+      .select({
+        front: easyNoteCard.front,
+        id: easyNoteCard.id,
+        back: easyNoteCard.back,
+      })
+      .from(easyNoteCard)
+      .where(
+        sql`to_tsvector('english', ${easyNoteCard.front}) @@ plainto_tsquery('english', ${query})`,
+      )
+      .limit(20);
+  },
+  ["findCombinedFlashcards"], // Cache key
   {
     revalidate: 60 * 60 * 24 * 7 * 4, // 4 weeks
   },

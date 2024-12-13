@@ -304,5 +304,11 @@ export const easyNoteCard = createTable(
   },
   (t) => [
     index("embeddingIndex").using("hnsw", t.embedding.op("vector_cosine_ops")),
+    index("search_index_flashcards").using(
+      "gin",
+      sql`
+to_tsvector('english', ${t.front})  
+`,
+    ),
   ],
 );

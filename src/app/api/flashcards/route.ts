@@ -1,4 +1,4 @@
-import { findSimilarFlashcards } from "@/server/db/ai";
+import { findCombinedFlashcards } from "@/server/db/ai";
 import type { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     return Response.json([]);
   }
 
-  const results = await findSimilarFlashcards(searchTerm);
+  const results = await findCombinedFlashcards(searchTerm);
   const response = Response.json(results ?? {});
 
   // cache for  1 month
@@ -15,4 +15,4 @@ export async function GET(request: NextRequest) {
   return response;
 }
 
-export type Result = Awaited<ReturnType<typeof findSimilarFlashcards>>;
+export type Result = Awaited<ReturnType<typeof findCombinedFlashcards>>;
