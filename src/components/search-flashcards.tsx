@@ -116,7 +116,7 @@ export default function SearchPage() {
   }, [params]);
 
   const handleSearch = () => {
-    if (search.length === 0) {
+    if (search && search.length === 0) {
       setSearchResults({ cards: [] });
     } else {
       setIsLoading(true);
@@ -152,9 +152,10 @@ export default function SearchPage() {
         </Button>
       </div>
       {isLoading && <p>Searching...</p>}
-      {!isLoading && searchResults.cards.length === 0 && search !== "" && (
-        <p>No results found.</p>
-      )}
+      {!isLoading &&
+        searchResults &&
+        searchResults.cards.length === 0 &&
+        search !== "" && <p>No results found.</p>}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {searchResults.cards.map((card) => (
           <Card key={card.id}>

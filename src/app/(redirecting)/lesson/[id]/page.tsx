@@ -43,7 +43,6 @@ export default async function Page({
   const id = (await params).id;
   const lesson = await getMinimalLesson(id);
   if (!lesson) {
-    console.log("Lesson not found");
     return notFound();
   }
   return redirect(

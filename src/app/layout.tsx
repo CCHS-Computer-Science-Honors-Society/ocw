@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "@/styles/prosemirror.css";
 
 import { GeistSans } from "geist/font/sans";
@@ -83,7 +84,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </TRPCReactProvider>
         <Toaster position="top-center" richColors />
       </body>
     </html>

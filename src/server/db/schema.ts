@@ -224,6 +224,7 @@ export const unitsRelations = relations(units, ({ one, many }) => ({
     fields: [units.courseId],
     references: [courses.id],
   }),
+  flashcards: many(easyNoteCard),
   lessons: many(lessons),
 }));
 
@@ -299,16 +300,27 @@ export const easyNoteCard = createTable(
       .primaryKey()
       .$defaultFn(() => createId()),
     front: text("front").notNull(),
-    embedding: vector("embedding", { dimensions: 1536 }),
+    options: text("options").array().notNull(),
+    images: text("images").array(),
+    unitId: text("unitId").notNull(),
+    // 1, etc
+    chapter: integer("chapter").notNull(),
     back: text("back").notNull(),
   },
   (t) => [
-    index("embeddingIndex").using("hnsw", t.embedding.op("vector_cosine_ops")),
-    index("search_index_flashcards").using(
+    index("search_index").using(
       "gin",
-      sql`
-to_tsvector('english', ${t.front})  
-`,
+      sql`(
+          setweight(to_tsvector('english', ${t.front}), 'A') ||
+          setweight(to_tsvector('english', ${t.back}), 'B')
+      )`,
     ),
   ],
 );
+
+export const easyNoteCardRelations = relations(easyNoteCard, ({ one }) => ({
+  unit: one(units, {
+    fields: [easyNoteCard.unitId],
+    references: [units.id],
+  }),
+}));
