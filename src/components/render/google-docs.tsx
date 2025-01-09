@@ -1,4 +1,3 @@
-"use client";
 
 export function GoogleDocsEmbed({
   embedId,
@@ -9,16 +8,13 @@ export function GoogleDocsEmbed({
 }) {
   if (!embedId) return <div>Invalid Quizlet Embed</div>;
 
-  const url = embedId;
-  console.log("url" + url);
-
   return (
     <div className="flex h-screen flex-col">
       <div className="flex flex-row items-center justify-between p-4">
         <h3 className="text-3xl font-bold">Google Docs</h3>
         <button className="mt-2 rounded border px-4 py-2 hover:bg-gray-100">
           <a
-            href={url}
+            href={embedId}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500"
@@ -31,9 +27,9 @@ export function GoogleDocsEmbed({
         ) : null}
       </div>
       <div className="flex-grow">
-        <iframe src={url} className="h-full w-full border-0"></iframe>
+        <iframe src={embedId} className="h-full w-full border-0"></iframe>
       </div>
     </div>
   );
 }
-//
+
