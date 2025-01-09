@@ -6,14 +6,9 @@ import { usePathname } from "next/navigation";
 import { SearchDropdownComponent } from "./search";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { VercelTabs } from "./ui/vercel-tabs";
-
-const navItems = [
-  { label: "Courses", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Flashcards", href: "/flashcards" },
-  { label: "Contributors", href: "/contributors" },
-];
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink } from "@/components/ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import Explore from "./explore-button";
 
 // can't nest server components inside cilent components unless you pass in as props'
 function Navbar({ userNav }: { userNav: React.ReactNode }) {
@@ -24,12 +19,30 @@ function Navbar({ userNav }: { userNav: React.ReactNode }) {
     <nav className="border bg-background">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center gap-1">
             <Link href="/" className="flex-shrink-0">
               <span className="text-2xl font-bold text-primary">OCW</span>
             </Link>
+            <Explore />
             <div className="hidden md:block">
-              <VercelTabs dataButtons={navItems} />
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <Link href="/contributors" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Contributors
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/docs" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Documentation
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
           </div>
           <div className="flex items-center">
@@ -64,11 +77,10 @@ function Navbar({ userNav }: { userNav: React.ReactNode }) {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`block rounded-md px-3 py-2 text-base font-medium ${
-                  pathname === item.href
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                }`}
+                className={`block rounded-md px-3 py-2 text-base font-medium ${pathname === item.href
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
