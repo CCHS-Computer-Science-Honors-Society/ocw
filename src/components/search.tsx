@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
 
@@ -15,8 +15,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import type { Result as SearchResult } from "@/app/api/search/route";
-
 export function SearchDropdownComponent() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
@@ -74,11 +74,20 @@ export function SearchDropdownComponent() {
     }
   }, [search]);
 
-  const handleSelect = (id: string, type: "course" | "unit" | "lesson") => {
+  const handleSelect = ({
+    id,
+    type,
+  }: { id: string, type: "course" | "unit" | "lesson" }) => {
     setOpen(false);
-    // Here you would typically navigate to the selected item
-    // For example: router.push(`/${type}s/${id}`)
-    console.log(`Selected ${type} item:`, id);
+    console.log(type);
+    if (type === "course") {
+      router.push(`/course/${id}`);
+    } else if (type === "unit") {
+      router.push(`/unit/${id}`);
+    } else if (type === "lesson") {
+      router.push(`/lesson/${id}`);
+    }
+
   };
 
   return (
@@ -109,7 +118,7 @@ export function SearchDropdownComponent() {
               {searchResults.courses.map((item) => (
                 <CommandItem
                   key={item.id}
-                  onSelect={() => handleSelect(item.id, "course")}
+                  onSelect={() => handleSelect({ id: item.id, type: "course" })}
                 >
                   {item.name}
                 </CommandItem>
@@ -121,7 +130,7 @@ export function SearchDropdownComponent() {
               {searchResults.units.map((item) => (
                 <CommandItem
                   key={item.id}
-                  onSelect={() => handleSelect(item.id, "unit")}
+                  onSelect={() => handleSelect({ id: item.id, type: "unit" })}
                 >
                   {item.name}{" "}
                   <p className="text-xs text-gray-400"> | {item.courseName}</p>
@@ -134,7 +143,7 @@ export function SearchDropdownComponent() {
               {searchResults.lessons.map((item) => (
                 <CommandItem
                   key={item.id}
-                  onSelect={() => handleSelect(item.id, "lesson")}
+                  onSelect={() => handleSelect({ id: item.id, type: "lesson" })}
                 >
                   {item.name}
                   <p className="text-xs text-gray-400">
