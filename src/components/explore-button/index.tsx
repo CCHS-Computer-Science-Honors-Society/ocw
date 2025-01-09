@@ -5,10 +5,11 @@ import { ChevronDown } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ScrollArea } from '../ui/scroll-area'
+import Link from 'next/link'
 
 interface Course {
   name: string
-  percentage?: number
+  link: string
   isNew?: boolean
 }
 
@@ -29,15 +30,27 @@ const navigationData: Section[] = [
       {
         name: "Calculus",
         courses: [
-          { name: "Precalculus Honors" },
-          { name: "AP Calculus" },
-          { name: "Calculus 3/Diff. Eq." },
+          {
+            name: "Precalculus Honors",
+            link: "/course/precalculus-honors"
+          },
+          {
+            name: "AP Calculus",
+            link: "/course/ap-calculus"
+          },
+          {
+            name: "Calculus 3/Diff. Eq.",
+            link: "/course/calculus-3-diff-eq"
+          },
         ]
       },
       {
         name: "Advanced Courses",
         courses: [
-          { name: "Abstract Math/Linear Algebra" },
+          {
+            name: "Abstract Math/Linear Algebra",
+            link: "/course/abstract-math-linear-algebra"
+          },
         ]
       },
       {
@@ -45,6 +58,7 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Statistics",
+            link: "/course/ap-statistics"
           }
         ]
       },
@@ -53,6 +67,7 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "Geometry",
+            link: "/course/geometry"
           }
         ]
       }
@@ -66,15 +81,19 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Art History",
+            link: "/course/ap-art-history"
           },
           {
             name: "AP US History",
+            link: "/course/ap-us-history"
           },
           {
             name: "AP World History",
+            link: "/course/ap-world-history"
           },
           {
-            name: "CP US History"
+            name: "CP US History",
+            link: "/course/cp-us-history"
           }
         ]
       },
@@ -83,9 +102,11 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Macroeconomics",
+            link: "/course/ap-macroeconomics"
           },
           {
             name: "AP Microeconomics",
+            link: "/course/ap-microeconomics"
           }
         ]
       },
@@ -94,9 +115,11 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP US Government and Politics",
+            link: "/course/sl9iwdcw88glelgc6haolffl"
           },
           {
             name: "AP Comparative Government",
+            link: "/course/hsiynw0o45xjkh405z2l405y"
           }
         ]
       }
@@ -109,10 +132,12 @@ const navigationData: Section[] = [
         name: "Physical Science",
         courses: [
           {
-            name: "Physical Science Honors"
+            name: "Physical Science Honors",
+            link: "/course/physical-science-honors"
           },
           {
-            name: "CP Physical Science"
+            name: "CP Physical Science",
+            link: "/course/cp-physical-science"
           }
         ]
       },
@@ -121,9 +146,11 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Biology",
+            link: "/course/apbio"
           },
           {
-            name: "Honors Biology"
+            name: "Honors Biology",
+            link: "/course/honors-biology"
           }
         ]
       },
@@ -132,6 +159,7 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Physics C",
+            link: "/course/ap-physics-c"
           }
         ]
       },
@@ -140,6 +168,7 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Chemistry",
+            link: "/course/ap-chemistry"
           },
         ]
       }
@@ -173,7 +202,7 @@ export default function Explore() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-md hover:bg-gray-100 flex flex-row items-center justify-center gap-2"
+        className="p-2  rounded-md hover:bg-gray-100 w-max items-center justify-center flex flex-row renter gap-2 text-sm font-medium"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -182,7 +211,10 @@ export default function Explore() {
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown
+
+            className="relative top-[1px] ml-2 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
+          />
         </motion.div>
       </motion.button>
 
@@ -213,8 +245,8 @@ export default function Explore() {
                                   key={course.name}
                                   whileHover={{ scale: 1.003 }}
                                 >
-                                  <a
-                                    href="#"
+                                  <Link
+                                    href={course.link}
                                     className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
                                   >
                                     <span className="flex-1">{course.name}</span>
@@ -223,7 +255,7 @@ export default function Explore() {
                                         <Badge variant="new">NEW</Badge>
                                       )}
                                     </div>
-                                  </a>
+                                  </Link>
                                 </motion.li>
                               ))}
                             </ul>
