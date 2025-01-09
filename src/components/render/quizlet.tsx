@@ -31,7 +31,7 @@ export function QuizletEmbed({
         ) : null}
       </div>
       <div className="flex-grow">
-        <iframe src={url} className="h-full w-full border-0"></iframe>
+        <iframe loading="eager" src={url} className="h-full w-full border-0"></iframe>
       </div>
     </div>
   );
