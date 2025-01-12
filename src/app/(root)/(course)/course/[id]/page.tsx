@@ -55,6 +55,7 @@ export default async function CoursePage(props: {
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
       <Navbar
+        isSearch
         userNav={
           <Suspense fallback="loading">
             <UserMenu />

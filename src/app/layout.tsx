@@ -3,9 +3,8 @@ import "@/styles/prosemirror.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { Providers } from "./providers";
 
-import { TRPCReactProvider } from "@/trpc/react";
-import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://creekocw.com"),
@@ -83,8 +82,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-        <Toaster position="top-center" richColors />
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

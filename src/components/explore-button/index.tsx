@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ScrollArea } from '../ui/scroll-area'
 import Link from 'next/link'
+import { useExplore } from './context'
 
 interface Course {
   name: string
@@ -178,31 +178,27 @@ const navigationData: Section[] = [
 
 const containerVariants = {
   open: {
-    height: 'auto',
     opacity: 1,
     transition: {
-      height: { duration: 0.3, ease: 'easeInOut' },
       opacity: { duration: 0.3, ease: 'easeInOut' }
     }
   },
   closed: {
-    height: 0,
     opacity: 0,
     transition: {
-      height: { duration: 0.3, ease: 'easeInOut' },
       opacity: { duration: 0.2, ease: 'easeInOut' }
     }
   }
 }
 
-export default function Explore() {
-  const [isOpen, setIsOpen] = useState(false)
+function ExploreContent() {
+  const { isOpen, setIsOpen, isMobile } = useExplore()
 
   return (
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2  rounded-md hover:bg-gray-100 w-max items-center justify-center flex flex-row renter gap-2 text-sm font-medium"
+        className="p-2 rounded-md hover:bg-gray-100 w-max items-center justify-center flex flex-row gap-2 text-sm font-medium"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -211,10 +207,7 @@ export default function Explore() {
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ChevronDown
-
-            className="relative top-[1px] ml-2 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
-          />
+          <ChevronDown className="relative top-[1px] ml-2 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180" />
         </motion.div>
       </motion.button>
 
@@ -225,11 +218,22 @@ export default function Explore() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className="fixed left-0 right-0 bg-white z-40 overflow-hidden top-[64px]"
+            className={`fixed inset-0 bg-white z-40 ${isMobile ? 'overflow-y-auto' : ''}`}
+            style={{ top: isMobile ? '0' : '64px' }}
           >
-            <ScrollArea>
+            {isMobile && (
+              <div className="sticky top-0 z-50 bg-white p-4 border-b">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium text-gray-600"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+            <ScrollArea className={isMobile ? 'h-full' : 'h-[calc(100vh-64px)]'}>
               <div className="relative min-h-screen h-full">
-                <div className="w-full h-full p-20">
+                <div className="w-full h-full p-6 md:p-20">
                   <div className="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {navigationData.map((section) => (
                       <div key={section.title} className="space-y-4">
@@ -248,6 +252,7 @@ export default function Explore() {
                                   <Link
                                     href={course.link}
                                     className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
+                                    onClick={() => setIsOpen(false)}
                                   >
                                     <span className="flex-1">{course.name}</span>
                                     <div className="flex items-center gap-2">
@@ -271,6 +276,12 @@ export default function Explore() {
         )}
       </AnimatePresence>
     </>
+  )
+}
+
+export default function Explore() {
+  return (
+    <ExploreContent />
   )
 }
 

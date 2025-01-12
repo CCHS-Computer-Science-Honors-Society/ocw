@@ -1,11 +1,9 @@
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import Link from "next/link";
-import { SearchDropdownComponent } from "./search";
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import Explore from "./explore-button";
+import { SearchDropdownComponent } from "./search";
 
-function Navbar({ userNav }: { userNav: React.ReactNode }) {
-
+function Navbar({ userNav, isSearch }: { userNav: React.ReactNode, isSearch?: boolean; }) {
   return (
     <nav className="border bg-background">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -15,6 +13,7 @@ function Navbar({ userNav }: { userNav: React.ReactNode }) {
               <span className="text-2xl font-bold text-primary">OCW</span>
             </Link>
             <Explore />
+
             <div className="hidden md:block">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -25,13 +24,22 @@ function Navbar({ userNav }: { userNav: React.ReactNode }) {
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/courses" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Courses
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
           <div className="flex items-center">
             <div className="hidden md:block">
-              <SearchDropdownComponent />
+              {
+                isSearch ? <SearchDropdownComponent /> : null
+              }
             </div>
             <div className="ml-4 flex items-center md:ml-6">{userNav}</div>
           </div>

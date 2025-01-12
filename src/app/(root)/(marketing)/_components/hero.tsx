@@ -35,8 +35,8 @@ export function HeroSection() {
         <div className="flex flex-row items-center justify-center gap-20">
           {[
             { value: "26", label: "Classes" },
-            { value: "160", label: "Resources" },
-            { value: "3,806", label: "Students" },
+            { value: "1000+", label: "Resources" },
+            { value: "3800+", label: "Students" },
           ].map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <span className="text-2xl font-bold text-primary sm:text-5xl">
@@ -50,7 +50,7 @@ export function HeroSection() {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
           <Button size="lg" className="rounded-full" asChild>
-            <Link href="/courses">Explore Courses</Link>
+            <Link href="/courses">See All Courses</Link>
           </Button>
           <Button size="lg" variant="outline" className="rounded-full" asChild>
             <Link href="/resources">Browse Resources</Link>
