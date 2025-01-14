@@ -12,7 +12,7 @@ export async function CoursesGrid({
   searchParams: SearchParams;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-7 auto-rows-fr">
       {!courses?.length ? (
         <p className="text-center text-muted-foreground col-span-full">
           No courses found.
@@ -21,8 +21,8 @@ export async function CoursesGrid({
         courses.map((course, index) => (
           <CourseLink
             key={course.id}
-            priority={index < 10}
             course={course}
+            priority={index < 10}
             searchParams={searchParams}
           />
         ))
@@ -39,30 +39,25 @@ function CourseLink({
   course: Courses;
   searchParams: SearchParams;
 }) {
-
-  let noFilters = Object.values(searchParams).every((v) => v === undefined);
+  const noFilters = Object.values(searchParams).every((v) => v === undefined);
 
   return (
     <Link
       href={`/course/${course.id}?${stringifySearchParams(searchParams)}`}
-
-      className="block transition ease-in-out md:hover:scale-105"
+      className="block transition ease-in-out md:hover:scale-105 h-full"
       prefetch={noFilters ? true : null}
     >
-      <div>
-        <Card className="overflow-hidden">
-          <div className="flex aspect-video items-center justify-center bg-muted">
-            <BookOpen className="h-10 w-10 text-muted-foreground" />
-          </div>
-          <CardContent className="p-6">
-            <h4 className="mb-2 text-lg font-semibold">{course.name}</h4>
-            <p className="mb-4 text-sm text-muted-foreground">
-              {course.description}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="overflow-hidden h-full flex flex-col">
+        <div className="flex aspect-video items-center justify-center bg-muted">
+          <BookOpen className="h-10 w-10 text-muted-foreground" />
+        </div>
+        <CardContent className="p-6 flex-grow">
+          <h4 className="mb-2 text-lg font-semibold">{course.name}</h4>
+          <p className="mb-4 text-sm text-muted-foreground line-clamp-3 overflow-hidden">
+            {course.description}
+          </p>
+        </CardContent>
+      </Card>
     </Link>
-
   );
 }
