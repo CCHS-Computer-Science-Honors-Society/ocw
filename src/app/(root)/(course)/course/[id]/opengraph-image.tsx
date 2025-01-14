@@ -2,6 +2,16 @@ import { getCourseById } from "@/server/api/scripts"
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 
+// Route segment config
+export const runtime = "edge";
+
+// Image metadata
+export const alt = "A Course on Creek OCW";
+export const size = {
+  width: 1200,
+  height: 630,
+};
+
 export default async function OpenGraphImage({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id
   const course = await getCourseById(id)
