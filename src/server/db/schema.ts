@@ -126,7 +126,7 @@ export const courses = createTable(
     name: text("name").notNull(),
     aliases: text("aliases").array().notNull().default([]),
     isPublic: boolean("is_public").default(false).notNull(),
-    imageUrl: text("image_url").default("/placeholder.png").notNull(),
+    imageUrl: text("image_url").default("/placeholder.svg").notNull(),
     unitLength: integer("units_length").default(0).notNull(),
     description: text("description").notNull(),
   },

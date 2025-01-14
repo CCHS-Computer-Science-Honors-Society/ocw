@@ -12,19 +12,15 @@ import Navbar from "@/components/navbar";
 import { UserMenu } from "@/components/user-menu";
 import { Suspense } from "react";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{
-    id: string;
-  }>;
-}): Promise<Metadata> {
-  const id = (await params).id;
+export async function generateMetadata(
+  { params }: { params: { id: string } },
+): Promise<Metadata> {
+  const id = params.id;
 
   const course = await getCourseById(id);
 
   if (!course) {
-    return notFound();
+    notFound();
   }
 
   return {
@@ -33,7 +29,11 @@ export async function generateMetadata({
     openGraph: {
       title: course.name,
       description: course.description,
-      images: [...course.imageUrl],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: course.name,
+      description: course.description,
     },
   };
 }
