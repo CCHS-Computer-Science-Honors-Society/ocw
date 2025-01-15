@@ -55,7 +55,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
         type="text"
         name="search"
         id="search"
-        placeholder="Search books..."
+        placeholder="Search classes..."
         value={inputValue}
         className="w-full  px-10 py-6 text-base md:text-sm overflow-hidden focus-visible:ring-0"
       />
