@@ -79,7 +79,6 @@ export const performSearch = hard_cache(
   },
   ["search"],
   {
-    // 10 mins
-    revalidate: 60 * 60 * 10,
+    tags: ["search"],
   },
 );

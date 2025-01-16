@@ -35,7 +35,7 @@ export const getSidebarData = hard_cache(
     }),
   ["getSidebarData"],
   {
-    revalidate: 60 * 60 * 10,
+    tags: ["getSidebarData"],
   },
 );
 
