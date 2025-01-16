@@ -1,9 +1,9 @@
-import { hard_cache } from "@/lib/cache";
+import { cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { units, lessons } from "@/server/db/schema";
 import { asc } from "drizzle-orm";
 
-export const getSidebarData = hard_cache(
+export const getSidebarData = cache(
   (courseId: string) =>
     db.query.units.findMany({
       where: (units, { eq, and }) =>

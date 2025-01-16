@@ -1,4 +1,4 @@
-import { hard_cache } from "@/lib/cache";
+import { cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { courses, units, lessons } from "@/server/db/schema";
 import { sql, or, eq, arrayContains } from "drizzle-orm";
@@ -56,7 +56,7 @@ const lessonsQuery = async (query: string) =>
     .innerJoin(courses, eq(units.courseId, courses.id))
     .limit(10);
 
-export const performSearch = hard_cache(
+export const performSearch = cache(
   async (q: string) => {
     const query = q
       .split(" ")

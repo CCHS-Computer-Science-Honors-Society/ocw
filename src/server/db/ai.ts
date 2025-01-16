@@ -3,14 +3,13 @@ import { sql, cosineDistance, gt, desc } from "drizzle-orm";
 import OpenAI from "openai";
 import { db } from ".";
 import { easyNoteCard } from "./schema";
-import { hard_cache } from "@/lib/cache";
-import { union } from "drizzle-orm/pg-core";
+import { cache } from "@/lib/cache";
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY,
 });
 
-export const generateEmbedding = hard_cache(
+export const generateEmbedding = cache(
   async (value: string): Promise<number[]> => {
     const input = value.replaceAll("\n", " ");
 
@@ -31,7 +30,7 @@ export const generateEmbedding = hard_cache(
   },
 );
 
-export const findSimilarFlashcards = hard_cache(
+export const findSimilarFlashcards = cache(
   async (description: string) => {
     const embedding = await generateEmbedding(description);
 
@@ -58,7 +57,7 @@ export const findSimilarFlashcards = hard_cache(
     revalidate: 60 * 60 * 24 * 7 * 4, // 4 weeks
   },
 );
-export const findFlashcardStatic = hard_cache(
+export const findFlashcardStatic = cache(
   async (query: string) => {
     return await db
       .select()
@@ -74,7 +73,7 @@ export const findFlashcardStatic = hard_cache(
 );
 
 // Combined function to find similar and text-matched flashcards without duplicates
-export const findCombinedFlashcards = hard_cache(
+export const findCombinedFlashcards = cache(
   async (query: string) => {
     // Define similarity score computation
 

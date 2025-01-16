@@ -1,9 +1,9 @@
-import { hard_cache } from "@/lib/cache";
+import { cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { lessonEmbed, lessons } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export const getLesson = hard_cache(
+export const getLesson = cache(
   async (id: string) => {
     const [lesson] = await db
       .select({

@@ -1,8 +1,8 @@
-import { hard_cache } from "@/lib/cache";
+import { cache } from "@/lib/cache";
 import { db } from "@/server/db";
 import { asc } from "drizzle-orm";
 
-export const getCourses = hard_cache(
+export const getCourses = cache(
   () => db.query.courses.findMany(),
   ["getCourses"],
   {
@@ -10,7 +10,7 @@ export const getCourses = hard_cache(
   },
 );
 
-export const getCourseById = hard_cache(
+export const getCourseById = cache(
   (id: string) =>
     db.query.courses.findFirst({
       where: (courses, { eq }) => eq(courses.id, id),

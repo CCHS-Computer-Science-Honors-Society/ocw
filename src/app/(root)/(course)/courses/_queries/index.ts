@@ -2,7 +2,7 @@ import { sql, and, or, ilike } from 'drizzle-orm';
 import { SearchParams } from '@/lib/url-state';
 import { courses } from '@/server/db/schema';
 import { db } from '@/server/db';
-import { hard_cache } from '@/lib/cache';
+import { cache } from '@/lib/cache';
 
 export const ITEMS_PER_PAGE = 28;
 export const EMPTY_IMAGE_URL =
@@ -26,7 +26,7 @@ const searchFilter = (q?: string) => {
   return undefined;
 };
 
-export const fetchCoursesWithPagination = hard_cache(
+export const fetchCoursesWithPagination = cache(
   async (searchParams: SearchParams) => {
     let requestedPage = Math.max(1, Number(searchParams?.page) || 1);
 
@@ -58,7 +58,7 @@ export const fetchCoursesWithPagination = hard_cache(
   }
 )
 
-export const estimateTotalCourses = hard_cache(
+export const estimateTotalCourses = cache(
   async (searchParams: SearchParams) => {
     const filters = [
       searchFilter(searchParams.search),
