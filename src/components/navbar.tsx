@@ -1,9 +1,21 @@
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";
 
-function Navbar({ userNav, isSearch }: { userNav: React.ReactNode, isSearch?: boolean; }) {
+function Navbar({
+  userNav,
+  isSearch,
+}: {
+  userNav: React.ReactNode;
+  isSearch?: boolean;
+}) {
   return (
     <nav className="border bg-background">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -19,14 +31,18 @@ function Navbar({ userNav, isSearch }: { userNav: React.ReactNode, isSearch?: bo
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <Link href="/contributors" legacyBehavior passHref>
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
                         Contributors
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
                     <Link href="/courses" legacyBehavior passHref>
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
                         Courses
                       </NavigationMenuLink>
                     </Link>
@@ -37,9 +53,7 @@ function Navbar({ userNav, isSearch }: { userNav: React.ReactNode, isSearch?: bo
           </div>
           <div className="flex items-center">
             <div className="hidden md:block">
-              {
-                isSearch ? <SearchDropdownComponent /> : null
-              }
+              {isSearch ? <SearchDropdownComponent /> : null}
             </div>
             <div className="ml-4 flex items-center md:ml-6">{userNav}</div>
           </div>

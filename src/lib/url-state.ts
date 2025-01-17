@@ -5,12 +5,12 @@ export interface SearchParams {
 }
 
 export function parseSearchParams(
-  params: Record<string, string | string[] | undefined>
+  params: Record<string, string | string[] | undefined>,
 ): SearchParams {
   return {
-    search: typeof params.search === 'string' ? params.search : undefined,
+    search: typeof params.search === "string" ? params.search : undefined,
     pgs: Array.isArray(params.pgs) ? params.pgs[0] : params.pgs,
-    page: typeof params.page === 'string' ? params.page : undefined,
+    page: typeof params.page === "string" ? params.page : undefined,
   };
 }
 

@@ -32,13 +32,13 @@ const UnitBreadcumb = ({
       </BreadcrumbList>
       <BreadcrumbSeparator className="hidden md:block" />
       <BreadcrumbItem>
-        <BreadcrumbLink href={`/course/${courseId}/admin/`}>
-        </BreadcrumbLink>
+        <BreadcrumbLink href={`/course/${courseId}/admin/`}></BreadcrumbLink>
       </BreadcrumbItem>
       <BreadcrumbSeparator className="hidden md:block" />
       <BreadcrumbItem>
-        <BreadcrumbLink href={`/course/${courseId}/admin/unit/${unitId}`}>
-        </BreadcrumbLink>
+        <BreadcrumbLink
+          href={`/course/${courseId}/admin/unit/${unitId}`}
+        ></BreadcrumbLink>
       </BreadcrumbItem>
     </Breadcrumb>
   );

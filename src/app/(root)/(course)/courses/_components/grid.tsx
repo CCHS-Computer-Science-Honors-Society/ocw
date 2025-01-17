@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { SearchParams, stringifySearchParams } from '@/lib/url-state';
-import { Courses } from '@/server/db/schema';
-import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen } from 'lucide-react';
+import Link from "next/link";
+import { SearchParams, stringifySearchParams } from "@/lib/url-state";
+import { Courses } from "@/server/db/schema";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen } from "lucide-react";
 
 export async function CoursesGrid({
   courses,
@@ -12,9 +12,9 @@ export async function CoursesGrid({
   searchParams: SearchParams;
 }) {
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 auto-rows-fr">
+    <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
       {!courses?.length ? (
-        <p className="text-center text-muted-foreground col-span-full">
+        <p className="col-span-full text-center text-muted-foreground">
           No courses found.
         </p>
       ) : (
@@ -44,16 +44,16 @@ function CourseLink({
   return (
     <Link
       href={`/course/${course.id}?${stringifySearchParams(searchParams)}`}
-      className="block transition ease-in-out md:hover:scale-105 h-full"
+      className="block h-full transition ease-in-out md:hover:scale-105"
       prefetch={noFilters ? true : null}
     >
-      <Card className="overflow-hidden h-full flex flex-col">
+      <Card className="flex h-full flex-col overflow-hidden">
         <div className="flex aspect-video items-center justify-center bg-muted">
           <BookOpen className="h-10 w-10 text-muted-foreground" />
         </div>
-        <CardContent className="p-6 flex-grow">
+        <CardContent className="flex-grow p-6">
           <h4 className="mb-2 text-lg font-semibold">{course.name}</h4>
-          <p className="mb-4 text-sm text-muted-foreground line-clamp-3 overflow-hidden">
+          <p className="mb-4 line-clamp-3 overflow-hidden text-sm text-muted-foreground">
             {course.description}
           </p>
         </CardContent>

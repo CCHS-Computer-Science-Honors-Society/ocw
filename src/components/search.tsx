@@ -77,7 +77,10 @@ export function SearchDropdownComponent() {
   const handleSelect = ({
     id,
     type,
-  }: { id: string, type: "course" | "unit" | "lesson" }) => {
+  }: {
+    id: string;
+    type: "course" | "unit" | "lesson";
+  }) => {
     setOpen(false);
     console.log(type);
     if (type === "course") {
@@ -87,7 +90,6 @@ export function SearchDropdownComponent() {
     } else if (type === "lesson") {
       router.push(`/lesson/${id}`);
     }
-
   };
 
   return (

@@ -149,7 +149,10 @@ export const courses = createTable(
 );
 
 export type SelectCourses = typeof courses.$inferSelect;
-export type Courses = Pick<SelectCourses, 'id' | 'name' | 'description' | 'imageUrl'>;
+export type Courses = Pick<
+  SelectCourses,
+  "id" | "name" | "description" | "imageUrl"
+>;
 
 export const courseUsers = createTable(
   "course_users",
@@ -321,7 +324,6 @@ export const easyNoteCard = createTable(
       )`,
     ),
   ],
-
 );
 
 export const easyNoteCardRelations = relations(easyNoteCard, ({ one }) => ({

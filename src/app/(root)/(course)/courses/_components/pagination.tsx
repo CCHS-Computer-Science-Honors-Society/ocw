@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import Form from 'next/form';
-import { useFormStatus } from 'react-dom';
-import { Button } from '@/components/ui/button';
+import Form from "next/form";
+import { useFormStatus } from "react-dom";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
-} from '@/components/ui/pagination';
-import { SearchParams } from '@/lib/url-state';
+} from "@/components/ui/pagination";
+import { SearchParams } from "@/lib/url-state";
 
 function FormValues({
   searchParams,
@@ -20,13 +20,13 @@ function FormValues({
   let { pending } = useFormStatus();
 
   return (
-    <div data-pending={pending ? '' : undefined}>
+    <div data-pending={pending ? "" : undefined}>
       {/* Keep the existing search params */}
       {Object.entries(searchParams).map(
         ([key, value]) =>
-          key !== 'page' && (
+          key !== "page" && (
             <input key={key} type="hidden" name={key} value={value as string} />
-          )
+          ),
       )}
       <input type="hidden" name="page" value={pageNumber.toString()} />
     </div>

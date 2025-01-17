@@ -1,19 +1,17 @@
-import { Suspense } from 'react';
-import { CoursesGrid } from './_components/grid';
-import { BookPagination } from './_components/pagination';
+import { Suspense } from "react";
+import { CoursesGrid } from "./_components/grid";
+import { BookPagination } from "./_components/pagination";
 import {
   estimateTotalCourses,
   fetchCoursesWithPagination,
   ITEMS_PER_PAGE,
-} from './_queries';
-import { parseSearchParams } from '@/lib/url-state';
-import { Search, SearchFallback } from './_components/search';
+} from "./_queries";
+import { parseSearchParams } from "@/lib/url-state";
+import { Search, SearchFallback } from "./_components/search";
 
-export default async function Page(
-  props: {
-    searchParams: Promise<Record<string, string | string[] | undefined>>;
-  }
-) {
+export default async function Page(props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const searchParams = await props.searchParams;
   const parsedSearchParams = parseSearchParams(searchParams);
 
@@ -26,20 +24,19 @@ export default async function Page(
   const currentPage = Math.max(1, Number(parsedSearchParams.page) || 1);
 
   return (
-    <main className="flex flex-col h-full p-10">
-      <div className="flex flex-row w-full gap-10">
+    <main className="flex h-full flex-col p-10">
+      <div className="flex w-full flex-row gap-10">
         <Suspense fallback={<SearchFallback />}>
           <Search />
         </Suspense>
-
       </div>
-      <div className="flex flex-col h-full">
-        <div className="flex-grow overflow-auto min-h-[200px]">
-          <div className="group-has-[[data-pending]]:animate-pulse p-4">
+      <div className="flex h-full flex-col">
+        <div className="min-h-[200px] flex-grow overflow-auto">
+          <div className="p-4 group-has-[[data-pending]]:animate-pulse">
             <CoursesGrid courses={courses} searchParams={parsedSearchParams} />
           </div>
         </div>
-        <div className="mt-auto p-4 border-t">
+        <div className="mt-auto border-t p-4">
           <Suspense fallback={null}>
             <BookPagination
               currentPage={currentPage}

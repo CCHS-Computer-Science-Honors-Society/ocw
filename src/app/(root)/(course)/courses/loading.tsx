@@ -1,11 +1,11 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { BookOpen } from 'lucide-react';
-import React from 'react'
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BookOpen } from "lucide-react";
+import React from "react";
 
 export default function CourseListSkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 h-full w-full">
+    <div className="grid h-full w-full grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
       {Array.from({ length: 6 }).map((_, i) => (
         <Skeleton key={i} className="col-span-1 flex flex-col gap-4">
           <Card className="overflow-hidden">
@@ -22,4 +22,3 @@ export default function CourseListSkeleton() {
     </div>
   );
 }
-

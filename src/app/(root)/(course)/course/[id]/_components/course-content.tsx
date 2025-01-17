@@ -4,18 +4,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getCourseById } from '@/server/api/scripts';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { getCourseById } from "@/server/api/scripts";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export const CourseContent = async (
-  props: {
-    params: Promise<{ id: string }>;
-  }
-) => {
-
+export const CourseContent = async (props: {
+  params: Promise<{ id: string }>;
+}) => {
   const id = (await props.params).id;
-
 
   const course = await getCourseById(id);
 
@@ -49,9 +45,7 @@ export const CourseContent = async (
 
       {/* Main Content Area */}
       <div className="flex-1 p-6 pt-8">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900">
-          {course.name}
-        </h1>
+        <h1 className="mb-6 text-3xl font-bold text-gray-900">{course.name}</h1>
         <div className="gap-10">
           {course.units.map((unit) => (
             <div key={unit.id} className="py-1">
@@ -88,5 +82,5 @@ export const CourseContent = async (
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

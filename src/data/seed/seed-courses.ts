@@ -10,7 +10,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Prepare for advanced calculus with rigorous precalculus concepts.",
+    description:
+      "Prepare for advanced calculus with rigorous precalculus concepts.",
   },
   {
     id: "ap-calculus",
@@ -30,7 +31,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Dive deep into multivariable calculus and differential equations.",
+    description:
+      "Dive deep into multivariable calculus and differential equations.",
   },
   {
     id: "abstract-math-linear-algebra",
@@ -40,7 +42,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Explore abstract mathematics and the power of linear algebra.",
+    description:
+      "Explore abstract mathematics and the power of linear algebra.",
   },
   {
     id: "ap-statistics",
@@ -50,7 +53,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Analyze and interpret data with advanced statistical methods.",
+    description:
+      "Analyze and interpret data with advanced statistical methods.",
   },
   {
     id: "geometry",
@@ -100,7 +104,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Learn about the foundational events of US history at a steady pace.",
+    description:
+      "Learn about the foundational events of US history at a steady pace.",
   },
   {
     id: "ap-macroeconomics",
@@ -110,7 +115,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Understand the principles driving national and global economies.",
+    description:
+      "Understand the principles driving national and global economies.",
   },
   {
     id: "ap-microeconomics",
@@ -140,7 +146,8 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Build a strong foundation in basic physical science concepts.",
+    description:
+      "Build a strong foundation in basic physical science concepts.",
   },
   {
     id: "honors-biology",
@@ -170,8 +177,9 @@ const courseInserts = [
     isPublic: false,
     imageUrl: "/placeholder.png",
     unitLength: 0,
-    description: "Uncover the complexities of chemical reactions and properties.",
-  }
+    description:
+      "Uncover the complexities of chemical reactions and properties.",
+  },
 ];
 
 async function seedCourses() {

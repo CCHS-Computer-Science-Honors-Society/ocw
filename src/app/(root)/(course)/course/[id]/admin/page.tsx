@@ -12,7 +12,6 @@ export default async function Page({
     id: string;
   }>;
 }) {
-
   const courseId = (await params).id;
   const [data] = await Promise.all([
     db.query.courses.findFirst({

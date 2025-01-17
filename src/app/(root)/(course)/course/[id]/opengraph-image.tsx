@@ -1,4 +1,4 @@
-import { getCourseById } from "@/server/api/scripts"
+import { getCourseById } from "@/server/api/scripts";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 
@@ -12,26 +12,30 @@ export const size = {
   height: 630,
 };
 
-export default async function OpenGraphImage({ params }: { params: Promise<{ id: string }> }) {
-  const id = (await params).id
-  const course = await getCourseById(id)
+export default async function OpenGraphImage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const id = (await params).id;
+  const course = await getCourseById(id);
 
   if (!course) {
-    notFound()
+    notFound();
   }
   return new ImageResponse(
     (
       <div
         style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-          position: 'relative',
-          overflow: 'hidden', // Added to prevent potential overflow issues
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "white",
+          position: "relative",
+          overflow: "hidden", // Added to prevent potential overflow issues
         }}
       >
         {/* Background Image */}
@@ -39,39 +43,39 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ id:
           src={course.imageUrl}
           alt={course.name}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%',
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
           }}
         />
         {/* Overlay for better text visibility */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.0)',
+            backgroundColor: "rgba(0, 0, 0, 0.0)",
           }}
         />
         {/* Course Name */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             left: 50,
             bottom: 50,
             fontSize: 60,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Darkened for better visibility
-            fontWeight: 'bold',
-            color: 'white',
-            maxWidth: '80%',
-            padding: '10px 20px', // Added padding
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Darkened for better visibility
+            fontWeight: "bold",
+            color: "white",
+            maxWidth: "80%",
+            padding: "10px 20px", // Added padding
             borderRadius: 10, // Added rounded corners
           }}
         >
@@ -80,14 +84,14 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ id:
         {/* Number of Units */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             right: 50,
             top: 50,
             fontSize: 40,
-            fontWeight: 'bold',
-            color: 'white',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            padding: '10px 20px',
+            fontWeight: "bold",
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            padding: "10px 20px",
             borderRadius: 10,
             zIndex: 10, // Ensure it's on top of other elements
           }}
@@ -99,7 +103,6 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ id:
     {
       width: 1200,
       height: 630,
-    }
-  )
+    },
+  );
 }
-

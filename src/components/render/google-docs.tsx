@@ -1,4 +1,3 @@
-
 export function GoogleDocsEmbed({
   embedId,
   password,
@@ -32,4 +31,3 @@ export function GoogleDocsEmbed({
     </div>
   );
 }
-

@@ -7,9 +7,11 @@ import { Suspense } from "react";
 import CourseOverviewSkeleton from "./_components/course-units.skeleton";
 import { CourseContent } from "./_components/course-content";
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ id: string }> },
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const id = (await params).id;
 
   const course = await getCourseById(id);
@@ -26,7 +28,7 @@ export async function generateMetadata(
       description: course.description,
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: course.name,
       description: course.description,
     },

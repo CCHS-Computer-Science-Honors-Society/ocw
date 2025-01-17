@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { ChevronDown } from 'lucide-react'
-import { Badge } from '../ui/badge'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ScrollArea } from '../ui/scroll-area'
-import Link from 'next/link'
-import { useExplore } from './context'
+import { ChevronDown } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { ScrollArea } from "../ui/scroll-area";
+import Link from "next/link";
+import { useExplore } from "./context";
 
 interface Course {
-  name: string
-  link: string
-  isNew?: boolean
+  name: string;
+  link: string;
+  isNew?: boolean;
 }
 
 interface Category {
-  name: string
-  courses: Course[]
+  name: string;
+  courses: Course[];
 }
 
 interface Section {
-  title: string
-  categories: Category[]
+  title: string;
+  categories: Category[];
 }
 
 const navigationData: Section[] = [
@@ -32,46 +32,46 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "Precalculus Honors",
-            link: "/course/precalculus-honors"
+            link: "/course/precalculus-honors",
           },
           {
             name: "AP Calculus",
-            link: "/course/ap-calculus"
+            link: "/course/ap-calculus",
           },
           {
             name: "Calculus 3/Diff. Eq.",
-            link: "/course/calculus-3-diff-eq"
+            link: "/course/calculus-3-diff-eq",
           },
-        ]
+        ],
       },
       {
         name: "Advanced Courses",
         courses: [
           {
             name: "Abstract Math/Linear Algebra",
-            link: "/course/abstract-math-linear-algebra"
+            link: "/course/abstract-math-linear-algebra",
           },
-        ]
+        ],
       },
       {
         name: "Statistics",
         courses: [
           {
             name: "AP Statistics",
-            link: "/course/ap-statistics"
-          }
-        ]
+            link: "/course/ap-statistics",
+          },
+        ],
       },
       {
         name: "Geometry",
         courses: [
           {
             name: "Geometry",
-            link: "/course/geometry"
-          }
-        ]
-      }
-    ]
+            link: "/course/geometry",
+          },
+        ],
+      },
+    ],
   },
   {
     title: "Social Studies",
@@ -81,49 +81,49 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "AP Art History",
-            link: "/course/ap-art-history"
+            link: "/course/ap-art-history",
           },
           {
             name: "AP US History",
-            link: "/course/ap-us-history"
+            link: "/course/ap-us-history",
           },
           {
             name: "AP World History",
-            link: "/course/ap-world-history"
+            link: "/course/ap-world-history",
           },
           {
             name: "CP US History",
-            link: "/course/cp-us-history"
-          }
-        ]
+            link: "/course/cp-us-history",
+          },
+        ],
       },
       {
         name: "Economics",
         courses: [
           {
             name: "AP Macroeconomics",
-            link: "/course/ap-macroeconomics"
+            link: "/course/ap-macroeconomics",
           },
           {
             name: "AP Microeconomics",
-            link: "/course/ap-microeconomics"
-          }
-        ]
+            link: "/course/ap-microeconomics",
+          },
+        ],
       },
       {
         name: "Government",
         courses: [
           {
             name: "AP US Government and Politics",
-            link: "/course/sl9iwdcw88glelgc6haolffl"
+            link: "/course/sl9iwdcw88glelgc6haolffl",
           },
           {
             name: "AP Comparative Government",
-            link: "/course/hsiynw0o45xjkh405z2l405y"
-          }
-        ]
-      }
-    ]
+            link: "/course/hsiynw0o45xjkh405z2l405y",
+          },
+        ],
+      },
+    ],
   },
   {
     title: "SCIENCE",
@@ -133,72 +133,72 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "Physical Science Honors",
-            link: "/course/physical-science-honors"
+            link: "/course/physical-science-honors",
           },
           {
             name: "CP Physical Science",
-            link: "/course/cp-physical-science"
-          }
-        ]
+            link: "/course/cp-physical-science",
+          },
+        ],
       },
       {
         name: "Biology",
         courses: [
           {
             name: "AP Biology",
-            link: "/course/apbio"
+            link: "/course/apbio",
           },
           {
             name: "Honors Biology",
-            link: "/course/honors-biology"
-          }
-        ]
+            link: "/course/honors-biology",
+          },
+        ],
       },
       {
         name: "Physics",
         courses: [
           {
             name: "AP Physics C",
-            link: "/course/ap-physics-c"
-          }
-        ]
+            link: "/course/ap-physics-c",
+          },
+        ],
       },
       {
         name: "Chemistry",
         courses: [
           {
             name: "AP Chemistry",
-            link: "/course/ap-chemistry"
+            link: "/course/ap-chemistry",
           },
-        ]
-      }
-    ]
-  }
-]
+        ],
+      },
+    ],
+  },
+];
 
 const containerVariants = {
   open: {
     opacity: 1,
     transition: {
-      opacity: { duration: 0.3, ease: 'easeInOut' }
-    }
+      opacity: { duration: 0.3, ease: "easeInOut" },
+    },
   },
   closed: {
     opacity: 0,
     transition: {
-      opacity: { duration: 0.2, ease: 'easeInOut' }
-    }
-  }
-}
+      opacity: { duration: 0.2, ease: "easeInOut" },
+    },
+  },
+};
 
 function ExploreContent() {
-  const { isOpen, setIsOpen, isMobile } = useExplore()
+  const { isOpen, setIsOpen, isMobile } = useExplore();
 
   return (
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-md hover:bg-gray-100 w-max items-center justify-center flex flex-row gap-2 text-sm font-medium"
+        className="flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium hover:bg-gray-100"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -218,11 +218,11 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className={`fixed inset-0 bg-white z-40 ${isMobile ? 'overflow-y-auto' : ''}`}
-            style={{ top: isMobile ? '0' : '64px' }}
+            className={`fixed inset-0 z-40 bg-white ${isMobile ? "overflow-y-auto" : ""}`}
+            style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
-              <div className="sticky top-0 z-50 bg-white p-4 border-b">
+              <div className="sticky top-0 z-50 border-b bg-white p-4">
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-medium text-gray-600"
@@ -231,17 +231,23 @@ function ExploreContent() {
                 </button>
               </div>
             )}
-            <ScrollArea className={isMobile ? 'h-full' : 'h-[calc(100vh-64px)]'}>
-              <div className="relative min-h-screen h-full">
-                <div className="w-full h-full p-6 md:p-20">
-                  <div className="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <ScrollArea
+              className={isMobile ? "h-full" : "h-[calc(100vh-64px)]"}
+            >
+              <div className="relative h-full min-h-screen">
+                <div className="h-full w-full p-6 md:p-20">
+                  <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {navigationData.map((section) => (
                       <div key={section.title} className="space-y-4">
-                        <h3 className="font-bold text-sm text-gray-500">{section.title}</h3>
+                        <h3 className="text-sm font-bold text-gray-500">
+                          {section.title}
+                        </h3>
                         {section.categories.map((category) => (
                           <div key={category.name} className="space-y-2">
                             {category.name !== section.title && (
-                              <h4 className="font-medium text-sm">{category.name}</h4>
+                              <h4 className="text-sm font-medium">
+                                {category.name}
+                              </h4>
                             )}
                             <ul className="space-y-2">
                               {category.courses.map((course) => (
@@ -254,7 +260,9 @@ function ExploreContent() {
                                     className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
                                     onClick={() => setIsOpen(false)}
                                   >
-                                    <span className="flex-1">{course.name}</span>
+                                    <span className="flex-1">
+                                      {course.name}
+                                    </span>
                                     <div className="flex items-center gap-2">
                                       {course.isNew && (
                                         <Badge variant="new">NEW</Badge>
@@ -276,12 +284,9 @@ function ExploreContent() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }
 
 export default function Explore() {
-  return (
-    <ExploreContent />
-  )
+  return <ExploreContent />;
 }
-

@@ -11,9 +11,14 @@ export interface IFrameProps {
 function IFrame({ url, className, fallback }: IFrameProps) {
   const [isLoading, setIsLoading] = useState(true);
   if (isLoading) {
-    <div className="h-full w-full flex justify-center items-center">{fallback ?? <h1 className="text-5xl font-bold">
-      Loading, if this takes too long, click the button named Open Original Document
-    </h1>}</div>
+    <div className="flex h-full w-full items-center justify-center">
+      {fallback ?? (
+        <h1 className="text-5xl font-bold">
+          Loading, if this takes too long, click the button named Open Original
+          Document
+        </h1>
+      )}
+    </div>;
   }
   return (
     <iframe
@@ -22,7 +27,7 @@ function IFrame({ url, className, fallback }: IFrameProps) {
       onLoad={() => setIsLoading(false)}
       className={className}
     />
-  )
+  );
 }
 
 export default IFrame;

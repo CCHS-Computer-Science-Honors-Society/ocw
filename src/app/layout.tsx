@@ -5,7 +5,6 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { Providers } from "./providers";
 
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://creekocw.com"),
   title: {
@@ -82,9 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

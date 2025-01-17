@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import Form from 'next/form';
-import { useFormStatus } from 'react-dom';
-import { useRef, use, useEffect, useState } from 'react';
-import { SearchIcon } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { useSearchParams } from 'next/navigation';
-import { useBackpressure } from '@/hooks/use-backpressure';
+import Form from "next/form";
+import { useFormStatus } from "react-dom";
+import { useRef, use, useEffect, useState } from "react";
+import { SearchIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useSearchParams } from "next/navigation";
+import { useBackpressure } from "@/hooks/use-backpressure";
 
 function SearchBase({ initialQuery }: { initialQuery: string }) {
   let [inputValue, setInputValue] = useState(initialQuery);
@@ -14,7 +14,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
   let { triggerUpdate, shouldSuspend, formRef } = useBackpressure();
 
   async function handleSubmit(formData: FormData) {
-    let query = formData.get('search') as string;
+    let query = formData.get("search") as string;
     let newUrl = `/courses?search=${encodeURIComponent(query)}`;
     await triggerUpdate(newUrl);
   }
@@ -30,7 +30,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
       inputRef.current.focus();
       inputRef.current.setSelectionRange(
         inputRef.current.value.length,
-        inputRef.current.value.length
+        inputRef.current.value.length,
       );
     }
   }, []);
@@ -43,7 +43,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
     <Form
       ref={formRef}
       action={handleSubmit}
-      className="relative flex flex-1 flex-shrink-0 w-full rounded shadow-sm"
+      className="relative flex w-full flex-1 flex-shrink-0 rounded shadow-sm"
     >
       <label htmlFor="search" className="sr-only">
         Search
@@ -57,7 +57,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
         id="search"
         placeholder="Search classes..."
         value={inputValue}
-        className="w-full  px-10 py-6 text-base md:text-sm overflow-hidden focus-visible:ring-0"
+        className="w-full overflow-hidden px-10 py-6 text-base focus-visible:ring-0 md:text-sm"
       />
       <LoadingSpinner />
     </Form>
@@ -69,7 +69,7 @@ function LoadingSpinner() {
 
   return (
     <div
-      data-pending={pending ? '' : undefined}
+      data-pending={pending ? "" : undefined}
       className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity duration-300"
     >
       <svg className="h-5 w-5" viewBox="0 0 100 100">
@@ -82,7 +82,7 @@ function LoadingSpinner() {
           strokeWidth="10"
           strokeDasharray="282.7"
           strokeDashoffset="282.7"
-          className={pending ? 'animate-fill-clock' : ''}
+          className={pending ? "animate-fill-clock" : ""}
           transform="rotate(-90 50 50)"
         />
       </svg>
@@ -95,6 +95,6 @@ export function SearchFallback() {
 }
 
 export function Search() {
-  let query = useSearchParams().get('search') ?? '';
+  let query = useSearchParams().get("search") ?? "";
   return <SearchBase initialQuery={query} />;
 }

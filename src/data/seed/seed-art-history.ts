@@ -6,7 +6,8 @@ const unitInserts = [
     id: "pacific-art",
     courseId: "ap-art-history",
     name: "1 Pacific Art",
-    description: "Introduction to the art of the Pacific, including key vocab and flashcards.",
+    description:
+      "Introduction to the art of the Pacific, including key vocab and flashcards.",
     isPublished: true,
     order: 1,
   },
@@ -14,7 +15,8 @@ const unitInserts = [
     id: "african-art",
     courseId: "ap-art-history",
     name: "2 African Art",
-    description: "Explore African art with vocabulary, artists, and location flashcards.",
+    description:
+      "Explore African art with vocabulary, artists, and location flashcards.",
     isPublished: true,
     order: 2,
   },
@@ -30,7 +32,8 @@ const unitInserts = [
     id: "egyptian-mesopotamian-art",
     courseId: "ap-art-history",
     name: "4 Egyptian & Mesopotamian Art",
-    description: "Discover Egyptian and Mesopotamian art, including vocabulary and identifiers.",
+    description:
+      "Discover Egyptian and Mesopotamian art, including vocabulary and identifiers.",
     isPublished: true,
     order: 4,
   },
@@ -38,7 +41,8 @@ const unitInserts = [
     id: "greek-roman-art",
     courseId: "ap-art-history",
     name: "4 Greek & Roman Art",
-    description: "Learn about Greek and Roman art through vocabulary and identifier resources.",
+    description:
+      "Learn about Greek and Roman art through vocabulary and identifier resources.",
     isPublished: true,
     order: 5,
   },
@@ -46,7 +50,8 @@ const unitInserts = [
     id: "european-art",
     courseId: "ap-art-history",
     name: "5 European Art",
-    description: "Examine early European art through vocab, identifiers, and historical dates.",
+    description:
+      "Examine early European art through vocab, identifiers, and historical dates.",
     isPublished: true,
     order: 6,
   },
@@ -54,7 +59,8 @@ const unitInserts = [
     id: "baroque-renaissance-art",
     courseId: "ap-art-history",
     name: "6 Baroque and Renaissance Art",
-    description: "Understand Baroque and Renaissance art through vocab and identifiers.",
+    description:
+      "Understand Baroque and Renaissance art through vocab and identifiers.",
     isPublished: true,
     order: 7,
   },
@@ -62,7 +68,8 @@ const unitInserts = [
     id: "romantic-islamic-art",
     courseId: "ap-art-history",
     name: "7 Romantic and Islamic Art",
-    description: "Explore Romantic and Islamic art through vocab and identifiers.",
+    description:
+      "Explore Romantic and Islamic art through vocab and identifiers.",
     isPublished: true,
     order: 8,
   },
@@ -78,7 +85,8 @@ const unitInserts = [
     id: "19th-20th-century-art",
     courseId: "ap-art-history",
     name: "8 19th and 20th Century Art",
-    description: "Study art from the 19th and 20th centuries with vocab and identifiers.",
+    description:
+      "Study art from the 19th and 20th centuries with vocab and identifiers.",
     isPublished: true,
     order: 10,
   },
@@ -86,7 +94,8 @@ const unitInserts = [
     id: "modern-art",
     courseId: "ap-art-history",
     name: "9 Modern Art",
-    description: "Dive into Modern art through vocab and identifier flashcards.",
+    description:
+      "Dive into Modern art through vocab and identifier flashcards.",
     isPublished: true,
     order: 11,
   },
@@ -94,10 +103,11 @@ const unitInserts = [
     id: "asian-art",
     courseId: "ap-art-history",
     name: "10 Asian Art",
-    description: "Explore Asian art through vocabulary and identifier flashcards.",
+    description:
+      "Explore Asian art through vocabulary and identifier flashcards.",
     isPublished: true,
     order: 12,
-  }
+  },
 ];
 
 const lessonsInserts = [
@@ -352,8 +362,7 @@ const lessonsInserts = [
     embedUrl: "https://quizlet.com/_bu4abt?x=1qqt&i=4ea3xp",
     order: 2,
     isPublished: true,
-  }
-
+  },
 ];
 
 const lessonEmbedInserts = lessonsInserts.map((lesson) => ({
@@ -369,12 +378,16 @@ async function seedArtHistory() {
     await db.insert(units).values(unitInserts).onConflictDoNothing();
     console.log("Finished Units");
     console.log("Seeding Lessons...");
-    await db.insert(lessons).values(
-      lessonsInserts.map(({ embedUrl, ...lesson }) => lesson)
-    ).onConflictDoNothing();
+    await db
+      .insert(lessons)
+      .values(lessonsInserts.map(({ embedUrl, ...lesson }) => lesson))
+      .onConflictDoNothing();
     console.log("Finished Lessons");
     console.log("Seeding Lesson Embeds...");
-    await db.insert(lessonEmbed).values(lessonEmbedInserts).onConflictDoNothing();
+    await db
+      .insert(lessonEmbed)
+      .values(lessonEmbedInserts)
+      .onConflictDoNothing();
     console.log("Finished Lesson Embeds");
   } catch (error) {
     console.log(error);

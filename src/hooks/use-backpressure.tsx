@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 /**
  * Manage backpressure for search input updates in the Next.js App Router.
@@ -27,7 +27,7 @@ export function useBackpressure(delay: number = 300) {
   let router = useRouter();
   let isUpdatingRef = useRef(false);
   let updateCountRef = useRef(0);
-  let latestUrlRef = useRef('');
+  let latestUrlRef = useRef("");
   let formRef = useRef<HTMLFormElement>(null);
 
   async function triggerUpdate(newUrl: string) {
