@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { SearchParams, stringifySearchParams } from "@/lib/url-state";
-import { Courses } from "@/server/db/schema";
+import { type SearchParams, stringifySearchParams } from "@/lib/url-state";
+import { type Courses } from "@/server/db/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen } from "lucide-react";
 

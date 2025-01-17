@@ -239,6 +239,7 @@ export const contentTypeEnum = pgEnum("content_type", [
   "notion",
   "quizlet",
   "tiptap",
+  "flashcard"
 ]);
 
 export const lessons = createTable(

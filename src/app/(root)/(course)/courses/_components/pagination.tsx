@@ -8,7 +8,7 @@ import {
   PaginationContent,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { SearchParams } from "@/lib/url-state";
+import { type SearchParams } from "@/lib/url-state";
 
 function FormValues({
   searchParams,
@@ -17,7 +17,7 @@ function FormValues({
   searchParams: SearchParams;
   pageNumber: number;
 }) {
-  let { pending } = useFormStatus();
+  const { pending } = useFormStatus();
 
   return (
     <div data-pending={pending ? "" : undefined}>

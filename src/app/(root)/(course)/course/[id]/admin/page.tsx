@@ -13,6 +13,7 @@ export default async function Page({
   }>;
 }) {
   const courseId = (await params).id;
+
   const [data] = await Promise.all([
     db.query.courses.findFirst({
       where: (courses, { eq }) => eq(courses.id, courseId),

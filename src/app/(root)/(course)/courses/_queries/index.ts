@@ -1,5 +1,5 @@
 import { sql, and, or, ilike } from "drizzle-orm";
-import { SearchParams } from "@/lib/url-state";
+import { type SearchParams } from "@/lib/url-state";
 import { courses } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { cache } from "@/lib/cache";
@@ -27,7 +27,7 @@ const searchFilter = (q?: string) => {
 
 export const fetchCoursesWithPagination = cache(
   async (searchParams: SearchParams) => {
-    let requestedPage = Math.max(1, Number(searchParams?.page) || 1);
+    const requestedPage = Math.max(1, Number(searchParams?.page) || 1);
 
     const filters = [searchFilter(searchParams.search)].filter(Boolean);
 
@@ -67,7 +67,7 @@ export const estimateTotalCourses = cache(
     ${whereClause ? sql`WHERE ${whereClause}` : sql``}
   `);
 
-    const planRows = (explainResult.rows[0] as any)["QUERY PLAN"][0]["Plan"][
+    const planRows = (explainResult.rows[0] as any)["QUERY PLAN"][0].Plan[
       "Plan Rows"
     ];
     return planRows;

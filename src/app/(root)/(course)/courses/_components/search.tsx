@@ -9,18 +9,18 @@ import { useSearchParams } from "next/navigation";
 import { useBackpressure } from "@/hooks/use-backpressure";
 
 function SearchBase({ initialQuery }: { initialQuery: string }) {
-  let [inputValue, setInputValue] = useState(initialQuery);
-  let inputRef = useRef<HTMLInputElement>(null);
-  let { triggerUpdate, shouldSuspend, formRef } = useBackpressure();
+  const [inputValue, setInputValue] = useState(initialQuery);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { triggerUpdate, shouldSuspend, formRef } = useBackpressure();
 
   async function handleSubmit(formData: FormData) {
-    let query = formData.get("search") as string;
-    let newUrl = `/courses?search=${encodeURIComponent(query)}`;
+    const query = formData.get("search") as string;
+    const newUrl = `/courses?search=${encodeURIComponent(query)}`;
     await triggerUpdate(newUrl);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    let newValue = e.target.value;
+    const newValue = e.target.value;
     setInputValue(newValue);
     formRef.current?.requestSubmit();
   }
@@ -65,7 +65,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
 }
 
 function LoadingSpinner() {
-  let { pending } = useFormStatus();
+  const { pending } = useFormStatus();
 
   return (
     <div
@@ -95,6 +95,6 @@ export function SearchFallback() {
 }
 
 export function Search() {
-  let query = useSearchParams().get("search") ?? "";
+  const query = useSearchParams().get("search") ?? "";
   return <SearchBase initialQuery={query} />;
 }

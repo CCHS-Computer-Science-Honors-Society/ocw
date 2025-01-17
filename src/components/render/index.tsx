@@ -73,11 +73,10 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return (
-        <GoogleDocsLesson
-          embedId={lesson.embedId}
-          password={lesson.quizletPassword}
-        />
+      return (<GoogleDocsLesson
+        embedId={lesson.embedId}
+        password={lesson.quizletPassword}
+      />
       );
   }
 }
