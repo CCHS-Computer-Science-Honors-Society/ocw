@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
-import { CreateUnitPopup } from "./_components/create-unit";
-import { UnitsForm } from "./_components/units-dnd-form";
-import { CreateLesson } from "./_components/create";
 import { db } from "@/server/db";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { CreateLesson } from "./_components/create";
+import { CreateUnitPopup } from "./_components/create-unit";
+import { UnitsForm } from "./_components/units-dnd-form";
 
 export default async function Page({
   params,
@@ -12,6 +12,7 @@ export default async function Page({
     id: string;
   }>;
 }) {
+
   const courseId = (await params).id;
   const [data] = await Promise.all([
     db.query.courses.findFirst({
@@ -28,6 +29,7 @@ export default async function Page({
   if (!data) {
     notFound();
   }
+
   return (
     <div className="container mx-auto flex flex-col gap-10 pt-10">
       <div className="flex flex-row justify-between">
