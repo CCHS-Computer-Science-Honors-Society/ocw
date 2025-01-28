@@ -13,6 +13,7 @@ export const getLesson = cache(
         contentType: lessons.contentType,
         isPublished: lessons.isPublished,
         quizletPassword: lessonEmbed.password,
+        unitId: lessons.unitId,
         content: lessons.content,
       })
       .from(lessons)
