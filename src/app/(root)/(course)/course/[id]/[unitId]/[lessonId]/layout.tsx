@@ -4,18 +4,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import { getSidebarData } from "./_queries";
-import { LessonSidebar } from "./_components/sidebar/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { UserMenu } from "@/components/user-menu";
+import { BreadcrumbCourse } from "./breadcrumb";
+import { LessonSidebar } from "./_components/sidebar";
 
 export default async function Layout({
   children,
@@ -27,39 +18,36 @@ export default async function Layout({
     lessonId: string;
   }>;
 }) {
-  const courseId = (await params).id;
-  const data = await getSidebarData(courseId);
   return (
     <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "30rem",
-        } as React.CSSProperties
-      }
+      style={{
+        "--sidebar-width": "30rem",
+        "--sidebar-width-mobile": "20rem",
+      }}
     >
-      <LessonSidebar data={data} courseId={courseId} />
+      <Suspense>
+        <LessonSidebar params={params} />
+      </Suspense>
       <SidebarInset>
-        <header className="flex h-16 shrink-0 flex-row items-center justify-between gap-2 px-4">
-          <div className="flex flex-row items-center text-3xl">
-            <SidebarTrigger className="-ml-1 text-3xl" />
+        <header className="flex h-16 shrink-0 items-center gap-2">
+          <div className="flex items-center gap-2 px-4">
+
+            <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="">
-                  <BreadcrumbLink href="/courses">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{data[0]?.course.name}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+
+            <Suspense>
+              <BreadcrumbCourse params={params} />
+            </Suspense>
           </div>
-          <Suspense fallback="loading">
-            <UserMenu />
-          </Suspense>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -19,6 +19,7 @@ export const getSidebarData = cache(
         course: {
           columns: {
             name: true,
+            subjectId: true,
           },
         },
         lessons: {
