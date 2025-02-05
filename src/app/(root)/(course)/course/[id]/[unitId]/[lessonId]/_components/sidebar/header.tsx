@@ -9,19 +9,19 @@ export const Header = ({
   data: SidebarData;
 }) => {
   return (
-    <SidebarHeader className='p-5'>
+    <SidebarHeader className='p-5 '>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton size="lg" asChild>
-            <a href="#" className=''>
-              <div className="flex rounded-xl size-16 items-center justify-center bg-sidebar-primary text-sidebar-primary-foreground">
-                <BookIcon className="size-8" />
+          <SidebarMenuButton size="lg" className='' asChild disabled>
+            <div>
+              <div className="flex aspect-square size-20 items-center justify-center rounded-xl ">
+                <BookIcon className="size-10" />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight p-5">
-                <span className="truncate font-semibold text-2xl">{data[0]?.name}</span>
-                <span className="truncate text-lg">{data[0]?.course.subjectId}</span>
+              <div className="flex flex-col gap-0.5 leading-none">
+                <span className="text-lg font-semibold">{data[0]?.course.name}</span>
+                <span className="">{data[0]?.course.subjectId}</span>
               </div>
-            </a>
+            </div>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

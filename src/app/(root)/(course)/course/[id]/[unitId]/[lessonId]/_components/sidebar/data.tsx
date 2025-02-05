@@ -2,8 +2,9 @@ import React from 'react'
 import { getSidebarData } from '../../_queries';
 import { LessonSidebar } from './sidebar';
 import { Header } from './header';
+import { Separator } from '@/components/ui/separator';
 
-export const Data = async ({
+export const LessonSidebarContent = async ({
 
   params
 }: {
@@ -16,9 +17,10 @@ export const Data = async ({
   const courseId = (await params).id;
   const data = await getSidebarData(courseId);
   return (
-    <div className=''>
+    <>
       <Header data={data} />
+      <Separator className='' orientation='horizontal' />
       <LessonSidebar data={data} courseId={courseId} />
-    </div>
+    </>
   )
 }

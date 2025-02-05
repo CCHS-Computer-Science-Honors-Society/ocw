@@ -7,6 +7,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { BreadcrumbCourse } from "./breadcrumb";
 import { LessonSidebar } from "./_components/sidebar";
+import Explore from "@/components/explore-button";
+import { SearchDropdownComponent } from "@/components/search";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function Layout({
   children,
@@ -19,36 +24,42 @@ export default async function Layout({
   }>;
 }) {
   return (
-    <SidebarProvider
-      style={{
-        "--sidebar-width": "30rem",
-        "--sidebar-width-mobile": "20rem",
-      }}
-    >
-      <Suspense>
-        <LessonSidebar params={params} />
-      </Suspense>
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
 
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+    <div className="flex flex-col h-screen">
+      <SidebarProvider
+        style={{
+          //@ts-expect-error should work according to docs
+          "--sidebar-width": "30rem",
+          "--sidebar-width-mobile": "20rem",
+        }}
+      >
+        <Suspense>
+          <LessonSidebar params={params} />
+        </Suspense>
+        <SidebarInset>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <header className="flex justify-between h-16 shrink-0 items-center gap-2">
+              <div className="flex items-center gap-2 px-4">
 
-            <Suspense>
-              <BreadcrumbCourse params={params} />
-            </Suspense>
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mr-2 h-4" />
+
+                <Suspense>
+                  <BreadcrumbCourse params={params} />
+                </Suspense>
+              </div>
+              <div className="flex gap-2 leading-none items-center">
+                <Link href={'/'} className={cn(buttonVariants({ variant: "ghost" }), "text-sm font-medium p-2")}>
+                  Home
+                </Link>
+                <Explore />
+                <SearchDropdownComponent />
+              </div>
+            </header>
+            {children}
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
   );
 }

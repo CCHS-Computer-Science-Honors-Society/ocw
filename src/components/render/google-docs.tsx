@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { buttonVariants } from "../ui/button";
+
 export function GoogleDocsEmbed({
   embedId,
   password,
@@ -9,24 +12,25 @@ export function GoogleDocsEmbed({
 
   return (
     <div className="flex h-screen flex-col">
+      {/* Make the iframe take up most of the screen */}
+      <iframe src={embedId} className="h-[87vh] w-full border-muted shadow-2xl rounded-xl" />
+
+      {/* Keep the header section */}
       <div className="flex flex-row items-center justify-between p-4">
         <h3 className="text-3xl font-bold">Google Docs</h3>
         <button className="mt-2 rounded border px-4 py-2 hover:bg-gray-100">
-          <a
+          <Link
             href={embedId}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500"
+            className={buttonVariants()}
           >
             Open Original Document
-          </a>
+          </Link>
         </button>
         {password ? (
           <p className="ml-4 text-gray-600">Password: {password}</p>
         ) : null}
-      </div>
-      <div className="flex-grow">
-        <iframe src={embedId} className="h-full w-full border-0"></iframe>
       </div>
     </div>
   );

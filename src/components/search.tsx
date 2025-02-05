@@ -15,6 +15,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import type { Result as SearchResult } from "@/app/api/search/route";
+
+const SEARCH_HISTORY_KEY = "searchHistoryOCWOverall";
+
 export function SearchDropdownComponent() {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -25,8 +28,26 @@ export function SearchDropdownComponent() {
     units: [],
     lessons: [],
   });
+  const [searchHistory, setSearchHistory] = React.useState<string[]>([]);
 
   const params = useParams();
+
+  // Load search history from localStorage on component mount
+  React.useEffect(() => {
+    const savedHistory = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (savedHistory) {
+      try {
+        setSearchHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error("Error loading search history:", error);
+      }
+    }
+  }, []);
+
+  // Save search history to localStorage whenever it changes
+  React.useEffect(() => {
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(searchHistory));
+  }, [searchHistory]);
 
   React.useEffect(() => {
     if (params.lesson) {
@@ -74,6 +95,18 @@ export function SearchDropdownComponent() {
     }
   }, [search]);
 
+  const handleAddToHistory = (item: string) => {
+    if (!item.trim()) return; // Don't add empty strings
+    console.log(item);
+
+    // Remove duplicates and keep only the last 5 searches
+    const newHistory = [item, ...searchHistory].filter((value, index) => {
+      return value === item ? index === 0 : true;
+    }).slice(0, 5);
+
+    setSearchHistory(newHistory);
+  };
+
   const handleSelect = ({
     id,
     type,
@@ -82,7 +115,10 @@ export function SearchDropdownComponent() {
     type: "course" | "unit" | "lesson";
   }) => {
     setOpen(false);
-    console.log(type);
+
+    // Add the search term to history when selecting from results
+    handleAddToHistory(search);
+
     if (type === "course") {
       router.push(`/course/${id}`);
     } else if (type === "unit") {
@@ -113,8 +149,28 @@ export function SearchDropdownComponent() {
           onValueChange={setSearch}
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>
+            No results found.
+          </CommandEmpty>
           {isLoading ? <CommandItem disabled>Searching...</CommandItem> : null}
+
+          {/* Show search history when search input is empty */}
+          {search === "" && searchHistory.length > 0 && (
+            <CommandGroup heading="Recent Searches">
+              {searchHistory.map((item) => (
+                <CommandItem
+                  key={item}
+                  onSelect={() => {
+                    setSearch(item);
+                    handleAddToHistory(item);
+                  }}
+                >
+                  {item}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
+
           {searchResults.courses.length > 0 && (
             <CommandGroup heading="Courses">
               {searchResults.courses.map((item) => (

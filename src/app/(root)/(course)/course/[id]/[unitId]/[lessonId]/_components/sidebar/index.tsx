@@ -1,7 +1,7 @@
-import { Sidebar, SidebarHeader, SidebarMenu, SidebarContent, SidebarFooter } from '@/components/ui/sidebar'
+import { Sidebar, SidebarFooter } from '@/components/ui/sidebar'
 import React, { Suspense } from 'react'
 import { UserNav } from './auth'
-import { Data } from './data'
+import { LessonSidebarContent } from './data'
 
 export const LessonSidebar = (props: {
   params: Promise<{
@@ -11,9 +11,9 @@ export const LessonSidebar = (props: {
 }) => {
   return (
     <div>
-      <Sidebar variant="floating" {...props}>
+      <Sidebar className='bg-white border-0 shadow-none' variant="floating" {...props}>
         <Suspense>
-          <Data params={props.params} />
+          <LessonSidebarContent params={props.params} />
         </Suspense>
         <SidebarFooter>
           <Suspense>

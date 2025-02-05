@@ -10,19 +10,28 @@ export const BreadcrumbCourse = async ({
     id: string;
   }>
 }) => {
-  const courseId = (await params).id;
+  const { id: courseId, lessonId } = await params;
   const data = await getSidebarData(courseId);
   return (
     <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="">
-            <BreadcrumbLink href="/courses">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/courses">Courses</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="" />
           <BreadcrumbItem>
-            <BreadcrumbPage>{data[0]?.course.name}</BreadcrumbPage>
+            <BreadcrumbLink href={`/course/${data[0]?.courseId}`}>{data[0]?.course.name}</BreadcrumbLink>
           </BreadcrumbItem>
+          <BreadcrumbSeparator className="" />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/course/${data[0]?.courseId}/${data[0]?.id}`}>{data[0]?.name}</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="" />
+          <BreadcrumbItem>
+            <BreadcrumbPage >{data[0]?.lessons.find((lesson) => lesson.id === lessonId)?.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+
         </BreadcrumbList>
       </Breadcrumb>
     </div>

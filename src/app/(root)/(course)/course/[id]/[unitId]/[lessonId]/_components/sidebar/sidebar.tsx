@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { type SidebarData } from "../../_queries";
 import { GetIcon } from "./icons";
+import { Separator } from "@/components/ui/separator";
 
 const pageVariants = {
   initial: { opacity: 0, x: "-100%" },
@@ -151,7 +152,7 @@ function LessonsSidebar({
           <Button
             variant="ghost"
             onClick={toggleOverlay}
-            className="font-semibold text-black"
+            className=""
             aria-haspopup="dialog"
             aria-expanded={isOverlayOpen}
           >
@@ -186,25 +187,29 @@ function LessonsSidebar({
                     unitId: lesson.unitId,
                   })
                 }
-                className={`flex items-center rounded-md p-2 hover:bg-accent ${lessonId === lesson.id ? "bg-muted" : ""
-                  }`}
+                className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
                 href={`/course/${courseId}/${lesson.unitId}/${lesson.id}`}
               >
-                <GetIcon type={lesson.contentType} />
-                <span className="ml-2">{lesson.name}</span>
+                <div className={`flex items-center text-md rounded-md p-2 `}>
+                  <GetIcon type={lesson.contentType} />
+                  <span className="ml-2">{lesson.name}</span>
+                </div>
+                <Separator className='' orientation='horizontal' />
               </Link>
             ))}
           </motion.div>
         </AnimatePresence>
       </ScrollArea>
-      {isOverlayOpen && (
-        <Overlay
-          data={data}
-          onSelectUnit={handleSelectUnit}
-          onClose={toggleOverlay}
-        />
-      )}
-    </SidebarGroup>
+      {
+        isOverlayOpen && (
+          <Overlay
+            data={data}
+            onSelectUnit={handleSelectUnit}
+            onClose={toggleOverlay}
+          />
+        )
+      }
+    </SidebarGroup >
   );
 }
 
