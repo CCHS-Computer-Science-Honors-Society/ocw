@@ -8,8 +8,14 @@ const getMinimalLesson = cache(
       where: (lessons, { eq }) => eq(lessons.id, id),
       columns: {
         id: true,
+        pureLink: true,
       },
       with: {
+        embeds: {
+          columns: {
+            embedUrl: true,
+          }
+        },
         unit: {
           columns: {
             id: true,
@@ -41,10 +47,17 @@ export default async function Page({
 }) {
   const id = (await params).id;
   const lesson = await getMinimalLesson(id);
+
   if (!lesson) {
     console.log("Lesson not found");
     return notFound();
   }
+  if (lesson.pureLink) {
+    if (lesson.embeds.embedUrl) {
+      return redirect(lesson.embeds.embedUrl);
+    }
+  }
+
   return redirect(
     `/course/${lesson.unit.course.id}/${lesson.unit.id}/${lesson.id}`,
   );

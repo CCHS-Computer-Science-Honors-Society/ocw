@@ -250,6 +250,7 @@ export const lessons = createTable(
       .$defaultFn(() => createId()),
     order: integer("order").notNull(),
     isPublished: boolean("isPublished").default(false).notNull(),
+    pureLink: boolean("pure_link").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull(),
     unitId: text("unitId")
       .notNull()
