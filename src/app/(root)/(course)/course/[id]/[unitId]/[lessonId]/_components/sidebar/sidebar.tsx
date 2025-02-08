@@ -188,12 +188,11 @@ function LessonsSidebar({
                   })
                 }
                 className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
-                href={
-                  lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/unit/${lesson.unitId}/lesson/${lesson.id}`
-                }
-                target={
-                  lesson.pureLink ? "_blank" : "_self"
-                }
+                href={{
+                  pathname: lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
+
+
+                }}
               >
                 <div className={`flex items-center text-md rounded-md p-2 `}>
                   <GetIcon type={lesson.contentType} />
