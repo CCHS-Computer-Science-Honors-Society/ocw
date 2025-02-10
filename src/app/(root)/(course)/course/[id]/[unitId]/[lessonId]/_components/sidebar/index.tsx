@@ -1,7 +1,7 @@
 import { Sidebar, SidebarFooter } from '@/components/ui/sidebar'
 import React, { Suspense } from 'react'
 import { UserNav } from './auth'
-import { LessonSidebarContent } from './data'
+import { LessonSidebarContent } from './content'
 
 export const LessonSidebar = (props: {
   params: Promise<{

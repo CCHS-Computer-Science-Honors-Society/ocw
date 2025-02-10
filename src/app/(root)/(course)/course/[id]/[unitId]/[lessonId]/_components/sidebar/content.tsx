@@ -1,6 +1,6 @@
 import React from 'react'
 import { getSidebarData } from '../../_queries';
-import { LessonSidebar } from './sidebar';
+import { LessonSidebar } from './client';
 import { Header } from './header';
 import { Separator } from '@/components/ui/separator';
 

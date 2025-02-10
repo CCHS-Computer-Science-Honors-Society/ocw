@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import {
   SidebarGroup,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { type SidebarData } from "../../_queries";
 import { GetIcon } from "./icons";
@@ -179,27 +180,29 @@ function LessonsSidebar({
             className="space-y-2"
           >
             {currentUnit.lessons.map((lesson) => (
-              <Link
+              <SidebarMenuItem
                 key={lesson.id}
-                onClick={() =>
-                  handleLessonClick({
-                    lessonId: lesson.id,
-                    unitId: lesson.unitId,
-                  })
-                }
-                className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
-                href={{
-                  pathname: lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
-
-
-                }}
               >
-                <div className={`flex items-center text-md rounded-md p-2 `}>
-                  <GetIcon type={lesson.contentType} />
-                  <span className="ml-2">{lesson.name}</span>
-                </div>
-                <Separator className='' orientation='horizontal' />
-              </Link>
+                <Link
+                  onClick={() =>
+                    handleLessonClick({
+                      lessonId: lesson.id,
+                      unitId: lesson.unitId,
+                    })
+                  }
+                  className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
+                  href={{
+                    pathname: lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
+                  }}
+                >
+                  <div className={`flex items-center text-md rounded-md p-2 `}>
+                    <GetIcon type={lesson.contentType} />
+                    <span className="ml-2">{lesson.name}</span>
+                  </div>
+                  <Separator className='' orientation='horizontal' />
+                </Link>
+
+              </SidebarMenuItem>
             ))}
           </motion.div>
         </AnimatePresence>
