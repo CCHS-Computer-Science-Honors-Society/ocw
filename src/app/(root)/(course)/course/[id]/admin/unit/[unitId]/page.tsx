@@ -1,4 +1,5 @@
 import React from 'react'
+import { Reorder } from './_components/reorder'
 
 export default function Page({
   params
@@ -9,8 +10,9 @@ export default function Page({
   }>
 }) {
   return (
-    <div>
-    </div>
+    <main className='w-full flex flex-col  container mx-auto'>
+      <Reorder params={params} />
+    </main>
   )
 }
 
