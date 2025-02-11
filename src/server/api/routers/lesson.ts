@@ -172,7 +172,7 @@ export const lessonRouter = createTRPCRouter({
   reorder: protectedProcedure
     .input(
       z.object({
-        courseId: z.string(),
+        unitId: z.string(),
         data: z.array(
           z.object({
             id: z.string(),

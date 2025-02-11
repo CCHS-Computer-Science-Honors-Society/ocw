@@ -1,0 +1,67 @@
+
+"use client";
+import React from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useRouter, useParams } from "next/navigation";
+import { api } from "@/trpc/react";
+
+
+
+export const ClientHeader = () => {
+  const router = useRouter();
+  const params = useParams();
+  const { id, unitId, lessonId } = params;
+
+  const handleClick = (index: number) => {
+    if (index === 0) router.push(`/course/${id}/admin/`);
+    else if (index === 1) router.push(`/course/${id}/admin/unit/${unitId}`);
+    else if (index === 2)
+      router.push(`/course/${id}/admin/lesson/${lessonId}`);
+  };
+
+  const [breadcrumbs] = api.courses.getBreadcrumbData.useSuspenseQuery({
+    courseId: id,
+    unitId: unitId,
+    lessonId: lessonId,
+  })
+
+  return (
+    <div>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumb>
+          <BreadcrumbList>
+            {breadcrumbs.map((breadcrumb, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              return (
+                <React.Fragment key={breadcrumb.id}>
+                  {index > 0 && <BreadcrumbSeparator />}
+                  <BreadcrumbItem
+                    onClick={!isLast ? () => handleClick(index) : undefined}
+                    style={{ cursor: !isLast ? "pointer" : "default" }}
+                  >
+                    {isLast ? (
+                      <BreadcrumbPage>{breadcrumb.name}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink>{breadcrumb.name}</BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </React.Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </header>
+    </div>
+  );
+}

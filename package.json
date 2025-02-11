@@ -120,6 +120,7 @@
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "tailwindcss": "^3.4.3",
+    "tailwindcss-highlights": "^1.0.0",
     "typescript": "^5.5.3"
   },
   "ct3aMetadata": {
