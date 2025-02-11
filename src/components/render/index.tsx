@@ -1,6 +1,7 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
 import type { Session } from "next-auth";
 import dynamic from "next/dynamic";
+import { FlashcardPage } from "./flashcard-page";
 
 const TiptapLesson = dynamic(
   () => import("./tiptap").then((mod) => mod.TiptapLesson),
@@ -77,6 +78,10 @@ export default function RenderLesson({
         embedId={lesson.embedId}
         password={lesson.quizletPassword}
       />
+      );
+    case "flashcard":
+      return (
+        <FlashcardPage unitId={lesson.unitId} />
       );
   }
 }

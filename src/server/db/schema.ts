@@ -124,7 +124,7 @@ export const courses = createTable(
       .$defaultFn(() => createId()),
     subjectId: text("subject_id").notNull(),
     name: text("name").notNull(),
-    aliases: text("aliases").array().notNull().default([]),
+    aliases: text("aliases").array().notNull(),
     isPublic: boolean("is_public").default(false).notNull(),
     imageUrl: text("image_url").default("/placeholder.svg").notNull(),
     unitLength: integer("units_length").default(0).notNull(),
@@ -203,7 +203,7 @@ export const units = createTable(
       .notNull()
       .references(() => courses.id),
     name: varchar("name", {
-      length: 30,
+      length: 225,
     }).notNull(),
     description: text("description").notNull(),
     isPublished: boolean("is_published").default(false).notNull(),
@@ -250,7 +250,8 @@ export const lessons = createTable(
       .$defaultFn(() => createId()),
     order: integer("order").notNull(),
     isPublished: boolean("isPublished").default(false).notNull(),
-    contentType: contentTypeEnum("content_type").notNull().default("tiptap"),
+    pureLink: boolean("pure_link").default(false).notNull(),
+    contentType: contentTypeEnum("content_type").notNull(),
     unitId: text("unitId")
       .notNull()
       .references(() => units.id),
@@ -313,18 +314,7 @@ export const easyNoteCard = createTable(
     unitId: text("unitId").notNull(),
     chapter: integer("chapter").notNull(),
     back: text("back").notNull(),
-  },
-  (t) => [
-    index("embeddingIndex").using("hnsw", t.embedding.op("vector_cosine_ops")),
-    index("search_index").using(
-      "gin",
-      sql`(
-          setweight(to_tsvector('english', ${t.front}), 'A') ||
-          setweight(to_tsvector('english', ${t.back}), 'B') ||
-          setweight(to_tsvector('english', ${t.options}), 'C')
-      )`,
-    ),
-  ],
+  }
 );
 
 export const easyNoteCardRelations = relations(easyNoteCard, ({ one }) => ({

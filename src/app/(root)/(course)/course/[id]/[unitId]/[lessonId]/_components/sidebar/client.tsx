@@ -2,18 +2,18 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { BookIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState, useMemo, useCallback, memo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import {
-  SidebarContent,
-  SidebarHeader,
-  Sidebar as SidebarParent,
+  SidebarGroup,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { type SidebarData } from "../../_queries";
 import { GetIcon } from "./icons";
+import { Separator } from "@/components/ui/separator";
 
 const pageVariants = {
   initial: { opacity: 0, x: "-100%" },
@@ -136,91 +136,87 @@ function LessonsSidebar({
   }
 
   return (
-    <SidebarParent
-      className="w-[450px] rounded-2xl bg-gray-100"
-      variant="floating"
-      collapsible="offcanvas"
+    <SidebarGroup
+      className="rounded-3xl "
     >
-      <div className="w-full overflow-hidden">
-        <SidebarHeader className="flex flex-row items-center justify-center bg-gray-800 p-4">
-          <BookIcon className="h-6 w-6 text-white" />
-          <h1 className="ml-2 text-lg text-white">
-            {data[0]?.course?.name ??
-              "Something is wrong here, please contact support"}
-          </h1>
-        </SidebarHeader>
-        <SidebarContent className="bg-white">
-          <ScrollArea className="h-[calc(100vh-64px)] p-4 text-sm">
-            <div className="mb-4 flex items-center justify-between text-gray-500">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handlePrevUnit}
-                disabled={!prevUnit}
-                aria-label="Previous Unit"
+      <ScrollArea className="h-[calc(100vh-64px)] p-4 text-sm">
+        <div className="mb-4 flex items-center justify-between text-gray-500">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handlePrevUnit}
+            disabled={!prevUnit}
+            aria-label="Previous Unit"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={toggleOverlay}
+            className=""
+            aria-haspopup="dialog"
+            aria-expanded={isOverlayOpen}
+          >
+            {currentUnit.name}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleNextUnit}
+            disabled={!nextUnit}
+            aria-label="Next Unit"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
+        </div>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={currentUnit.id}
+            variants={pageVariants}
+            initial="initial"
+            animate="in"
+            exit="out"
+            transition={pageTransition}
+            className="space-y-2"
+          >
+            {currentUnit.lessons.map((lesson) => (
+              <SidebarMenuItem
+                key={lesson.id}
               >
-                <ChevronLeftIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={toggleOverlay}
-                className="font-semibold text-black"
-                aria-haspopup="dialog"
-                aria-expanded={isOverlayOpen}
-              >
-                {currentUnit.name}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleNextUnit}
-                disabled={!nextUnit}
-                aria-label="Next Unit"
-              >
-                <ChevronRightIcon className="h-4 w-4" />
-              </Button>
-            </div>
-            <AnimatePresence initial={false} mode="wait">
-              <motion.div
-                key={currentUnit.id}
-                variants={pageVariants}
-                initial="initial"
-                animate="in"
-                exit="out"
-                transition={pageTransition}
-                className="space-y-2"
-              >
-                {currentUnit.lessons.map((lesson) => (
-                  <Link
-                    key={lesson.id}
-                    onClick={() =>
-                      handleLessonClick({
-                        lessonId: lesson.id,
-                        unitId: lesson.unitId,
-                      })
-                    }
-                    className={`flex items-center rounded-md p-2 hover:bg-accent ${
-                      lessonId === lesson.id ? "bg-muted" : ""
-                    }`}
-                    href={`/course/${courseId}/${lesson.unitId}/${lesson.id}`}
-                  >
+                <Link
+                  onClick={() =>
+                    handleLessonClick({
+                      lessonId: lesson.id,
+                      unitId: lesson.unitId,
+                    })
+                  }
+                  className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
+                  href={{
+                    pathname: lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
+                  }}
+                >
+                  <div className={`flex items-center text-md rounded-md p-2 `}>
                     <GetIcon type={lesson.contentType} />
                     <span className="ml-2">{lesson.name}</span>
-                  </Link>
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </ScrollArea>
-          {isOverlayOpen && (
-            <Overlay
-              data={data}
-              onSelectUnit={handleSelectUnit}
-              onClose={toggleOverlay}
-            />
-          )}
-        </SidebarContent>
-      </div>
-    </SidebarParent>
+                  </div>
+                  <Separator className='' orientation='horizontal' />
+                </Link>
+
+              </SidebarMenuItem>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </ScrollArea>
+      {
+        isOverlayOpen && (
+          <Overlay
+            data={data}
+            onSelectUnit={handleSelectUnit}
+            onClose={toggleOverlay}
+          />
+        )
+      }
+    </SidebarGroup >
   );
 }
 

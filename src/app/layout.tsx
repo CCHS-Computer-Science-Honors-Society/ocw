@@ -1,9 +1,13 @@
 import "@/styles/globals.css";
 import "@/styles/prosemirror.css";
 
-import { GeistSans } from "geist/font/sans";
+import { IBM_Plex_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { Providers } from "./providers";
+const ibm = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: "400",
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://creekocw.com"),
@@ -79,7 +83,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={`${ibm.className}`}>
       <body>
         <Providers>{children}</Providers>
       </body>

@@ -19,6 +19,7 @@ export const getSidebarData = cache(
         course: {
           columns: {
             name: true,
+            subjectId: true,
           },
         },
         lessons: {
@@ -26,10 +27,18 @@ export const getSidebarData = cache(
           where: (lessons, { eq }) => eq(lessons.isPublished, true),
           columns: {
             id: true,
+            pureLink: true,
             name: true,
             contentType: true,
             unitId: true,
           },
+          with: {
+            embeds: {
+              columns: {
+                embedUrl: true,
+              }
+            }
+          }
         },
       },
     }),

@@ -1,5 +1,5 @@
 import { getLesson } from "@/server/api/scripts/lessons";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const RenderLesson = dynamic(() => import("@/components/render"), {
@@ -21,6 +21,12 @@ export default async function Page({
 
   if (!lesson) {
     return notFound();
+  }
+
+  if (lesson.pureLink) {
+    if (lesson.embedId) {
+      redirect(lesson.embedId)
+    }
   }
 
   return (
