@@ -24,6 +24,7 @@ export const unitsRouter = createTRPCRouter({
         courseId: z.string(),
         data: z.object({
           id: z.string(),
+          courseId: z.string().optional(),
           name: z.string().optional(),
           description: z.string().optional(),
           position: z.number().optional(),
@@ -92,4 +93,18 @@ export const unitsRouter = createTRPCRouter({
         isPublished: input.isPublished ?? false,
       });
     }),
+  getTableData: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+      })
+    ).query(async ({ ctx, input }) => {
+      const data = await ctx.db.select({
+        id: units.id,
+        name: units.name,
+        courseId: units.courseId,
+        isPublished: units.isPublished,
+      }).from(units).where(eq(units.courseId, input.courseId));
+      return data;
+    })
 });
