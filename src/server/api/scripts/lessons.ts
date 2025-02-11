@@ -1,4 +1,4 @@
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE_WEEK } from "@/lib/cache";
 import { db } from "@/server/db";
 import { lessonEmbed, lessons } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -25,7 +25,7 @@ export const getLesson = cache(
   },
   ["lesson"],
   {
-    revalidate: 60 * 60 * 24,
+    revalidate: REVALIDATE_WEEK,
   },
 );
 

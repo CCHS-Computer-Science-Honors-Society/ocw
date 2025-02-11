@@ -1,4 +1,4 @@
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE } from "@/lib/cache";
 import { db } from "@/server/db";
 import { asc } from "drizzle-orm";
 
@@ -6,7 +6,7 @@ export const getCourses = cache(
   () => db.query.courses.findMany(),
   ["getCourses"],
   {
-    revalidate: 60 * 60 * 24,
+    revalidate: REVALIDATE,
   },
 );
 
@@ -37,6 +37,6 @@ export const getCourseById = cache(
     }),
   ["getCourseById"],
   {
-    revalidate: 60 * 60 * 24,
+    revalidate: REVALIDATE,
   },
 );

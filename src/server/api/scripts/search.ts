@@ -1,4 +1,4 @@
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE } from "@/lib/cache";
 import { db } from "@/server/db";
 import { courses, units, lessons } from "@/server/db/schema";
 import { sql, or, eq, arrayContains } from "drizzle-orm";
@@ -79,6 +79,6 @@ export const performSearch = cache(
   },
   ["search"],
   {
-    tags: ["search"],
+    revalidate: REVALIDATE
   },
 );

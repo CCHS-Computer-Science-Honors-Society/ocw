@@ -1,4 +1,4 @@
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE } from "@/lib/cache";
 import { db } from "@/server/db";
 import { units, lessons } from "@/server/db/schema";
 import { asc } from "drizzle-orm";
@@ -44,7 +44,7 @@ export const getSidebarData = cache(
     }),
   ["getSidebarData"],
   {
-    tags: ["getSidebarData"],
+    revalidate: REVALIDATE
   },
 );
 

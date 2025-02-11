@@ -1,5 +1,5 @@
 import { redirect, notFound } from "next/navigation";
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE_WEEK } from "@/lib/cache";
 import { db } from "@/server/db";
 
 const getMinimalLesson = cache(
@@ -34,7 +34,7 @@ const getMinimalLesson = cache(
   },
   ["lessonRedirect"],
   {
-    revalidate: 60 * 60 * 24,
+    revalidate: REVALIDATE_WEEK,
   },
 );
 

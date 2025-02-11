@@ -9,3 +9,7 @@ export const cache = <Inputs extends unknown[], Output>(
 ) => react_cache(next_unstable_cache(callback, key, options));
 
 export const unstable_cache = next_unstable_cache;
+
+export const REVALIDATE = 60 * 60 * 2;
+
+export const REVALIDATE_WEEK = 60 * 60 * 24 * 7;

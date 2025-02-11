@@ -2,7 +2,7 @@ import { sql, and, or, ilike } from "drizzle-orm";
 import { type SearchParams } from "@/lib/url-state";
 import { courses } from "@/server/db/schema";
 import { db } from "@/server/db";
-import { cache } from "@/lib/cache";
+import { cache, REVALIDATE } from "@/lib/cache";
 
 export const ITEMS_PER_PAGE = 28;
 export const EMPTY_IMAGE_URL =
@@ -51,7 +51,7 @@ export const fetchCoursesWithPagination = cache(
   },
   ["fetchCoursesWithPagination"],
   {
-    tags: ["fetchCoursesWithPagination"],
+    revalidate: REVALIDATE
   },
 );
 
@@ -74,6 +74,6 @@ export const estimateTotalCourses = cache(
   },
   ["fetchCoursesWithPagination"],
   {
-    tags: ["estimateTotalCourses"],
+    revalidate: REVALIDATE
   },
 );
