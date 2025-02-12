@@ -1,5 +1,6 @@
 import React from 'react'
 import { UnitTable } from './units.grid.client';
+import { api } from '@/trpc/server';
 
 export const Units = async ({
   params
@@ -9,6 +10,9 @@ export const Units = async ({
   }>
 }) => {
   const id = (await params).id
+  void api.units.getTableData.prefetch({
+    courseId: id
+  });
 
   return (
     <div>
