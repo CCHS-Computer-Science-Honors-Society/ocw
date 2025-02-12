@@ -4,8 +4,11 @@
 import { api } from "@/trpc/react";
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
@@ -15,6 +18,8 @@ import { ContentTypeEnum } from "@/server/db/schema";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSkipper } from "./hooks";
+import { Button } from "@/components/ui/button";
 
 export const getColumns = ({
   units
@@ -219,13 +224,27 @@ export const LessonTable = (props: {
     },
   });
 
+  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+
   const table = useReactTable({
     data,
+    autoResetPageIndex,
     columns: getColumns({ units }),
     getCoreRowModel: getCoreRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
     meta: {
       updateData: (rowIndex, columnId, value) => {
         const row = data[rowIndex];
+
+        skipAutoResetPageIndex()
         if (!row) return;
         if (
           columnId === "embedUrl" ||
@@ -249,6 +268,17 @@ export const LessonTable = (props: {
   return (
     <div className="p-2">
       <div className="h-2" />
+
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter name..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
       <Table>
         <TableHeader>
 
@@ -281,6 +311,25 @@ export const LessonTable = (props: {
           ))}
         </TableBody>
       </Table>
+
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };

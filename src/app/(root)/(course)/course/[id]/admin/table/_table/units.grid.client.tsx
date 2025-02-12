@@ -2,12 +2,14 @@
 "use client"
 
 import { api } from "@/trpc/react"
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table"
 import React from "react"
 import { Unit } from "./types";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSkipper } from "./hooks";
+import { Button } from "@/components/ui/button";
 
 export const getColumns = (): ColumnDef<Unit>[] => {
   return [
@@ -34,6 +36,7 @@ export const getColumns = (): ColumnDef<Unit>[] => {
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            className="border"
             onBlur={onBlur}
           />
         );
@@ -59,7 +62,7 @@ export const getColumns = (): ColumnDef<Unit>[] => {
 
         return (
           <Checkbox
-            className="w-8 h-8"
+            className="w-8 h-8 border"
             checked={value}
             onCheckedChange={onChange}
           />
@@ -107,10 +110,23 @@ export const UnitTable = (props: {
     },
   })
 
+  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+
   const table = useReactTable({
     data,
+    autoResetPageIndex,
     columns: getColumns(),
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
     meta: {
       updateData: (
         rowIndex: number,
@@ -119,6 +135,8 @@ export const UnitTable = (props: {
       ) => {
         const row = data[rowIndex];
         if (!row) return;
+
+        skipAutoResetPageIndex()
         mutate({
           courseId: row.courseId,
           data: { id: row.id, [columnId]: value },
@@ -131,6 +149,16 @@ export const UnitTable = (props: {
   return <div>
     <div className="p-2">
       <div className="h-2" />
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter emails..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div>
 
       <Table>
         <TableHeader>
@@ -164,6 +192,24 @@ export const UnitTable = (props: {
           ))}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
 
   </div>

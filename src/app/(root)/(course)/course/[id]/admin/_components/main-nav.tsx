@@ -44,7 +44,7 @@ export function MainNav() {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>Course</SidebarGroupLabel>
       <SidebarMenu>
         {data.navMain.map((item) => (
           <SidebarMenuItem key={item.title}>

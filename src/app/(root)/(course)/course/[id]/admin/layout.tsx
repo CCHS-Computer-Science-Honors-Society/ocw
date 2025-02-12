@@ -12,20 +12,18 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <SidebarProvider>
-        <AppSidebar
-          courseswitcher={
-            <Suspense fallback="loading">
-              <CourseSwitcher />
-            </Suspense>
-          }
-        />
-        <SidebarInset>
+    <SidebarProvider>
+      <AppSidebar
+        courseswitcher={
+          <Suspense fallback="loading">
+            <CourseSwitcher />
+          </Suspense>
+        }
+      />
+      <SidebarInset>
 
-          {children}
-        </SidebarInset>
-      </SidebarProvider>
-    </div>
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
