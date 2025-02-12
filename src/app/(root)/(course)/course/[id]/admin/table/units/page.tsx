@@ -1,5 +1,5 @@
 import React from 'react'
-import { Units } from '../_table/units'
+import { Units } from '../_table/units.grid'
 
 export default function Page({
   params }: {

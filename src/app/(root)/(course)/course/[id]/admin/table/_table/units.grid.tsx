@@ -1,5 +1,5 @@
 import React from 'react'
-import { UnitTable } from './column';
+import { UnitTable } from './units.grid.client';
 
 export const Units = async ({
   params

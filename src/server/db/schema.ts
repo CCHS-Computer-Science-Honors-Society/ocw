@@ -242,6 +242,9 @@ export const contentTypeEnum = pgEnum("content_type", [
   "flashcard"
 ]);
 
+export const ContentTypeEnum = contentTypeEnum.enumValues
+export type ContentTypeEnum = typeof ContentTypeEnum[number]
+
 export const lessons = createTable(
   "lessons",
   {
@@ -252,6 +255,7 @@ export const lessons = createTable(
     isPublished: boolean("isPublished").default(false).notNull(),
     pureLink: boolean("pure_link").default(false).notNull(),
     contentType: contentTypeEnum("content_type").notNull(),
+    courseId: text("courseId").notNull(),
     unitId: text("unitId")
       .notNull()
       .references(() => units.id),
