@@ -18,26 +18,36 @@ export const getColumns = (): ColumnDef<Unit>[] => {
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ getValue, row: { index }, column: { id }, table }) => {
-        const initialValue = getValue<string>();
-        const [value, setValue] = React.useState(initialValue);
-
-        const onBlur = () => {
-          table.options.meta?.updateData(index, id as keyof Unit, value);
-        };
-
+      function NameCell(props: {
+        initialValue: string;
+        rowIndex: number;
+        columnId: keyof Unit;
+        table: any;
+      }) {
+        const [value, setValue] = React.useState(props.initialValue);
         React.useEffect(() => {
-          setValue(initialValue);
-        }, [initialValue]);
-
+          setValue(props.initialValue);
+        }, [props.initialValue]);
+        const handleBlur = () => {
+          props.table.options.meta?.updateData(props.rowIndex, props.columnId, value);
+        };
         return (
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            onBlur={onBlur}
+            onBlur={handleBlur}
           />
         );
-      },
+      }
+      
+      cell: ({ getValue, row: { index }, column: { id }, table }) => (
+        <NameCell
+          initialValue={getValue<string>()}
+          rowIndex={index}
+          columnId={id as keyof Unit}
+          table={table}
+        />
+      ),
     },
 
     {
