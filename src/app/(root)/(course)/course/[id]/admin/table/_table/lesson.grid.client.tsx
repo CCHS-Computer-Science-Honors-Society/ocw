@@ -187,6 +187,12 @@ export const LessonTable = (props: {
   const [data] = api.lesson.getTableData.useSuspenseQuery({ courseId: courseId });
   const utils = api.useUtils();
   const { mutate } = api.lesson.update.useMutation({
+    onError(error, variables, context) {
+      if (context?.prevData) {
+        utils.lesson.getTableData.setData({ courseId }, context.prevData);
+      }
+      // Show error notification
+    },
     async onMutate(newData) {
       await utils.lesson.getTableData.cancel();
       const prevData = utils.lesson.getTableData.getData();
