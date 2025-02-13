@@ -53,28 +53,34 @@ export const getColumns = (): ColumnDef<Unit>[] => {
     {
       accessorKey: "isPublished",
       header: "Published",
-      cell: ({ getValue, row: { index }, column: { id }, table }) => {
-        const initialValue = getValue<boolean>();
-        const [value, setValue] = React.useState(initialValue);
+function PublishedCell(props: {
+  initialValue: boolean;
+  rowIndex: number;
+  columnId: keyof Unit;
+  table: any;
+}) {
+  const [checked, setChecked] = React.useState(props.initialValue);
+  React.useEffect(() => {
+    setChecked(props.initialValue);
+  }, [props.initialValue]);
+  const handleChange = () => {
+    const newValue = !checked;
+    setChecked(newValue);
+    props.table.options.meta?.updateData(props.rowIndex, props.columnId, newValue);
+  };
+  return <Checkbox checked={checked} onCheckedChange={handleChange} />;
+}
 
-        const onChange = () => {
-          const newValue = !value;
-          setValue(newValue);
-          table.options.meta?.updateData(index, id as keyof Unit, newValue);
-        };
+// ... Other parts of the file remain unchanged ...
 
-        React.useEffect(() => {
-          setValue(initialValue);
-        }, [initialValue]);
-
-        return (
-          <Checkbox
-            className="w-8 h-8"
-            checked={value}
-            onCheckedChange={onChange}
-          />
-        );
-      },
+cell: ({ getValue, row: { index }, column: { id }, table }) => (
+  <PublishedCell
+    initialValue={getValue<boolean>()}
+    rowIndex={index}
+    columnId={id as keyof Unit}
+    table={table}
+  />
+),
     },
   ];
 }
