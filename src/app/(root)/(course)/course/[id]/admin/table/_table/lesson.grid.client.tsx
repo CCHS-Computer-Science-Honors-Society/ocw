@@ -243,7 +243,7 @@ export const LessonTable = (props: {
         }
       },
     },
-    debugTable: true,
+    debugTable: process.env.NODE_ENV === 'development',
   });
 
   return (
