@@ -31,20 +31,22 @@ export const getColumns = ({
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ getValue, row: { index }, column: { id }, table }) => {
-        const initialValue = getValue<string>();
-        const [value, setValue] = React.useState(initialValue);
-        const onBlur = () =>
-          table.options.meta?.updateData(index, id as keyof Lesson, value);
-        React.useEffect(() => setValue(initialValue), [initialValue]);
-        return (
-          <Input
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={onBlur}
-          />
-        );
-      },
+const NameCell = ({ getValue, row: { index }, column: { id }, table }) => {
+  const initialValue = getValue<string>();
+  const [value, setValue] = React.useState(initialValue);
+  const onBlur = () =>
+    table.options.meta?.updateData(index, id as keyof Lesson, value);
+  React.useEffect(() => setValue(initialValue), [initialValue]);
+  return (
+    <Input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={onBlur}
+    />
+  );
+};
+
+cell: NameCell,
     },
     {
       accessorKey: "unitId",
