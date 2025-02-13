@@ -6,63 +6,11 @@ import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
 
 export const lessonRouter = createTRPCRouter({
-  update: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        title: z.string().optional(),
-        embedUrl: z.string().optional(),
-        content: z.any().optional(),
-        isPublished: z.boolean().optional(),
-        contentType: z
-          .enum(["tiptap", "quizlet", "notion", "google_docs"])
-          .optional(),
-        password: z.string().optional(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { id } = input;
-      try {
-        await ctx.db.transaction(async (tx) => {
-          await tx
-            .update(lessons)
-            .set({
-              name: input.title,
-              content: input.content as JSONContent,
-              isPublished: input.isPublished,
-              contentType: input.contentType,
-            })
-            .where(eq(lessons.id, id));
-
-          if (input.contentType !== "tiptap" && input.embedUrl) {
-            await tx
-              .insert(lessonEmbed)
-              .values({
-                lessonId: id,
-                embedUrl: input.embedUrl,
-                password: input.password,
-              })
-              .onConflictDoUpdate({
-                target: lessonEmbed.lessonId,
-                set: {
-                  embedUrl: input.embedUrl,
-                  password: input.password,
-                },
-              });
-          }
-        });
-      } catch (e) {
-        console.log(e);
-      }
-
-      revalidateTag("lesson");
-      revalidateTag("getCourseById");
-    }),
-
   create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1, "Title is required"),
+        courseId: z.string(),
         embedUrl: z.string().optional(),
         content: z.any().optional(),
         description: z.string(),
@@ -80,6 +28,7 @@ export const lessonRouter = createTRPCRouter({
         content,
         unitId,
         embedUrl,
+        courseId,
         contentType,
         password,
       } = input;
@@ -99,6 +48,7 @@ export const lessonRouter = createTRPCRouter({
           .values({
             contentType,
             unitId,
+            courseId,
             isPublished: false,
             order: newOrder,
             content: c,
@@ -192,5 +142,70 @@ export const lessonRouter = createTRPCRouter({
 
         await Promise.all(updates);
       });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        unitId: z.string().optional(),
+        name: z.string().optional(),
+        isPublished: z.boolean().optional(),
+        pureLink: z.boolean().optional(),
+        embed: z
+          .object({
+            password: z.string().optional(),
+            embedUrl: z.string().optional(),
+          })
+          .optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const data = input;
+      const { id, embed } = data;
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(lessons)
+          .set({
+            name: data.name,
+            isPublished: data.isPublished,
+            pureLink: data.pureLink,
+            unitId: data.unitId,
+          })
+          .where(eq(lessons.id, id));
+        if (embed) {
+          await tx
+            .update(lessonEmbed)
+            .set({
+              password: embed.password,
+              embedUrl: embed.embedUrl,
+            })
+            .where(eq(lessonEmbed.lessonId, id));
+        }
+      });
+    }),
+
+  getTableData: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db
+        .select({
+          id: lessons.id,
+          name: lessons.name,
+          unitId: lessons.unitId,
+          contentType: lessons.contentType,
+          isPublished: lessons.isPublished,
+          pureLink: lessons.pureLink,
+          embedPassword: lessonEmbed.password,
+          embedUrl: lessonEmbed.embedUrl,
+          embedId: lessonEmbed.id,
+        })
+        .from(lessons)
+        .leftJoin(lessonEmbed, eq(lessons.id, lessonEmbed.lessonId))
+        .where(eq(lessons.courseId, input.courseId));
+      return data;
     }),
 });

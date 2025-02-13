@@ -4,6 +4,7 @@ import "@/styles/prosemirror.css";
 import { IBM_Plex_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { Providers } from "./providers";
+
 const ibm = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: "400",
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
