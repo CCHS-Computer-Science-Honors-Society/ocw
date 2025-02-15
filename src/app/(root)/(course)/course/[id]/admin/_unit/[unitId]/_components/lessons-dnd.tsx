@@ -12,9 +12,9 @@ import { Grip, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import type { RouterOutputs } from "@/trpc/react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type Lesson = RouterOutputs["lesson"]["getLessonsForDashboard"]["0"];
+
 interface LessonsListProps {
   items: Lesson[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
@@ -71,7 +71,7 @@ export const LessonsList = ({ items, onReorder, onEdit }: LessonsListProps) => {
                     className={cn(
                       "mb-4 flex items-center gap-x-2 rounded-md border border-slate-200 bg-slate-200 text-sm text-slate-700",
                       lesson.isPublished &&
-                        "border-sky-200 bg-sky-100 text-sky-700",
+                      "border-sky-200 bg-sky-100 text-sky-700",
                     )}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -80,7 +80,7 @@ export const LessonsList = ({ items, onReorder, onEdit }: LessonsListProps) => {
                       className={cn(
                         "rounded-l-md border-r border-r-slate-200 px-2 py-3 transition hover:bg-slate-300",
                         lesson.isPublished &&
-                          "border-r-sky-200 hover:bg-sky-200",
+                        "border-r-sky-200 hover:bg-sky-200",
                       )}
                       {...provided.dragHandleProps}
                     >

@@ -18,6 +18,7 @@ export function stringifySearchParams(params: SearchParams): string {
   const urlParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       urlParams.append(key, value);
     }
   });

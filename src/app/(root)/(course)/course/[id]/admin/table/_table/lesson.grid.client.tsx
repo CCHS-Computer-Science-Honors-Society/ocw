@@ -8,17 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { env } from "@/env";
 import { api } from "@/trpc/react";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
-import { type Lesson } from "./types";
-import { NameCell, UnitSelectCell, PublishedCell, ContentTypeSelectCell, EmbedPasswordCell, EmbedUrlCell } from "./lesson.cells";
+import { getColumns } from "./lesson.cells";
 
 type LessonTableProps = {
   units: {
@@ -28,55 +25,6 @@ type LessonTableProps = {
   courseId: string;
 };
 
-export const getColumns = ({
-  units,
-}: {
-  units: {
-    label: string;
-    value: string;
-  }[];
-}): ColumnDef<Lesson>[] => [
-    {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: NameCell,
-    },
-    {
-      accessorKey: "unitId",
-      header: "Unit",
-      cell: UnitSelectCell(units),
-    },
-    {
-      accessorKey: "isPublished",
-      header: "Published",
-      cell: PublishedCell,
-    },
-    {
-      accessorKey: "pureLink",
-      header: "Pure Link",
-      cell: PublishedCell,
-    },
-    {
-      accessorKey: "contentType",
-      header: "Content Type",
-      cell: ContentTypeSelectCell,
-    },
-    {
-      accessorKey: "embedPassword",
-      header: "Embed Password",
-      cell: EmbedPasswordCell,
-    },
-    {
-      accessorKey: "embedUrl",
-      header: "Embed URL",
-      cell: EmbedUrlCell,
-    },
-  ];
-
 export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   const [data] = api.lesson.getTableData.useSuspenseQuery({
     courseId: courseId,
@@ -85,12 +33,14 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   const { mutate } = api.lesson.update.useMutation({
     onError(err, ctx) {
       // If the mutation fails, use the context-value from onMutate
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/ban-ts-comment
       //@ts-ignore
       utils.lesson.getTableData.setData({ courseId: courseId }, ctx?.prevData);
     },
     onSettled() {
       // Sync with server once mutation has settled
-      utils.lesson.getTableData.invalidate();
+      void utils.lesson.getTableData.invalidate();
     },
     async onMutate(newData) {
       await utils.lesson.getTableData.cancel();

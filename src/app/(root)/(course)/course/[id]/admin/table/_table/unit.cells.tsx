@@ -1,8 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { CellContext } from "@tanstack/react-table";
+import { type CellContext } from "@tanstack/react-table";
 import React from "react";
-import { Unit } from "./types";
+import { type Unit } from "./types";
 
 const NameCell = ({
   getValue,

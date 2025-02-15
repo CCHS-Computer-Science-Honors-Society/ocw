@@ -1,7 +1,6 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { LessonForm } from "./form";
 import { api } from "@/trpc/server";
-import { LessonFormSkeleton } from "../_skeleton";
 import { auth } from "@/server/auth";
 import { notFound } from "next/navigation";
 

@@ -67,9 +67,11 @@ export const estimateTotalCourses = cache(
     ${whereClause ? sql`WHERE ${whereClause}` : sql``}
   `);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
     const planRows = (explainResult.rows[0] as any)["QUERY PLAN"][0].Plan[
       "Plan Rows"
     ];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return planRows;
   },
   ["fetchCoursesWithPagination"],

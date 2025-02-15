@@ -47,26 +47,19 @@ export function UpdateLesson({
     },
   });
 
-  const { mutate: updateLesson, isPending: isLoading } =
-    api.lesson.update.useMutation({
-      onSuccess: () => {
-        toast.success("Lesson updated successfully!");
-      },
-      onError: (error) => {
-        toast.error(
-          error.message ?? "An error occurred while updating the lesson.",
-        );
-      },
-    });
+  const { isPending: isLoading } = api.lesson.update.useMutation({
+    onSuccess: () => {
+      toast.success("Lesson updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(
+        error.message ?? "An error occurred while updating the lesson.",
+      );
+    },
+  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    updateLesson({
-      id: defaultValues.id,
-      title: values.name,
-      isPublished: values.isPublished,
-      embedUrl: values.embedUrl,
-      contentType: values.contentType,
-    });
+  function onSubmit() {
+    return "depricated use table";
   }
 
   return (

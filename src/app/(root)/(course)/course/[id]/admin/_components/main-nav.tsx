@@ -15,9 +15,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Cog } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { z } from "zod";
 
 function getData(id: string) {
   return {
@@ -38,9 +39,14 @@ function getData(id: string) {
   };
 }
 
+const paramsSchema = z.object({
+  id: z.string(),
+});
+
 export function MainNav() {
   const { id } = useParams();
-  const data = getData(id as string);
+  const { id: idParsed } = paramsSchema.parse({ id });
+  const data = getData(idParsed);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -67,14 +73,14 @@ export function MainNav() {
               <SidebarMenuSub>
                 <SidebarMenuSubItem key={"Units"}>
                   <SidebarMenuSubButton asChild>
-                    <Link href={`/course/${id}/admin/table/units`}>
+                    <Link href={`/course/${idParsed}/admin/table/units`}>
                       <span>Units</span>
                     </Link>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
                 <SidebarMenuSubItem key={"Lessons"}>
                   <SidebarMenuSubButton asChild>
-                    <Link href={`/course/${id}/admin/table/lesson`}>
+                    <Link href={`/course/${idParsed}/admin/table/lesson`}>
                       <span>Lesson</span>
                     </Link>
                   </SidebarMenuSubButton>
