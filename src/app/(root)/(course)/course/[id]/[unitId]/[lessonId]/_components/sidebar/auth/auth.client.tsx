@@ -13,7 +13,6 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuGroup,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ChevronsUpDown, LogOut } from "lucide-react";

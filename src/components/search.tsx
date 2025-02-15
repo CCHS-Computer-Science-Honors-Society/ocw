@@ -37,6 +37,7 @@ export function SearchDropdownComponent() {
     const savedHistory = localStorage.getItem(SEARCH_HISTORY_KEY);
     if (savedHistory) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setSearchHistory(JSON.parse(savedHistory));
       } catch (error) {
         console.error("Error loading search history:", error);

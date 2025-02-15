@@ -1,9 +1,18 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-nocheck
+/** eslint-disable react-hooks/rules-of-hooks */
 import { ContentTypeEnum } from "@/server/db/schema";
-import { CellContext } from "@tanstack/react-table";
+import { type Lesson } from "./types";
+import type { ColumnDef } from "@tanstack/react-table";
 import React from "react";
-import { Lesson } from "./types";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
 

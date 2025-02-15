@@ -404,27 +404,27 @@ export async function insertLessons() {
       }
 
       // Insert the lesson and get its ID
-      const [newLesson] = await tx
-        .insert(lessons)
-        .values({
-          order: item.order, // example ordering by index
-          isPublished: false,
-          contentType: mapContentType(item.type),
-          unitId: item.unitId,
-          name: item.name,
-          content: { link: item.link },
-        })
-        .returning({ id: lessons.id });
+      // const [newLesson] = await tx
+      //   .insert(lessons)
+      //   .values({
+      //     order: item.order, // example ordering by index
+      //     isPublished: false,
+      //     contentType: mapContentType(item.type),
+      //     unitId: item.unitId,
+      //     name: item.name,
+      //     content: { link: item.link },
+      //   })
+      //   .returning({ id: lessons.id });
 
-      if (!newLesson) {
-        return;
-      }
-      // Create a corresponding embed row
-      await tx.insert(lessonEmbed).values({
-        lessonId: newLesson?.id,
-        embedUrl: item.link,
-        password: null, // or some logic if needed
-      });
+      // if (!newLesson) {
+      //   return;
+      // }
+      // // Create a corresponding embed row
+      // await tx.insert(lessonEmbed).values({
+      //   lessonId: newLesson?.id,
+      //   embedUrl: item.link,
+      //   password: null, // or some logic if needed
+      // });
     }
   });
 }
