@@ -1,13 +1,44 @@
-
 "use client"
 
-import { api } from "@/trpc/react"
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
-import React from "react"
-import { Unit } from "./types";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { api } from "@/trpc/react";
+import { CellContext, ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import React from "react";
+import { Unit } from "./types";
+
+const NameCell = ({ getValue, row: { index }, column: { id }, table
+}: CellContext<Unit, string>): JSX.Element => {
+  const initialValue = getValue<string>();
+  const [value, setValue] = React.useState(initialValue);
+  const onBlur = () =>
+    table.options.meta?.updateData(index, id as keyof Unit, value);
+  React.useEffect(() => setValue(initialValue), [initialValue]);
+  return (
+    <Input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={onBlur}
+    />
+  );
+};
+
+
+const PublishedCell = ({
+  getValue,
+  row: { index }, column: { id }, table
+}: CellContext<Unit, string>): JSX.Element => {
+  const initialValue = getValue<boolean>();
+  const [value, setValue] = React.useState(initialValue);
+  const onChange = () => {
+    const newValue = !value;
+    setValue(newValue);
+    table.options.meta?.updateData(index, id as keyof Unit, newValue);
+  };
+  React.useEffect(() => setValue(initialValue), [initialValue]);
+  return <Checkbox className="w-8 h-8" checked={value} onCheckedChange={onChange} />;
+};
 
 export const getColumns = (): ColumnDef<Unit>[] => {
   return [
@@ -18,72 +49,17 @@ export const getColumns = (): ColumnDef<Unit>[] => {
     {
       accessorKey: "name",
       header: "Name",
-      function NameCell(props: {
-        initialValue: string;
-        rowIndex: number;
-        columnId: keyof Unit;
-        table: any;
-      }) {
-        const [value, setValue] = React.useState(props.initialValue);
-        React.useEffect(() => {
-          setValue(props.initialValue);
-        }, [props.initialValue]);
-        const handleBlur = () => {
-          props.table.options.meta?.updateData(props.rowIndex, props.columnId, value);
-        };
-        return (
-          <Input
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={handleBlur}
-          />
-        );
-      }
-      
-      cell: ({ getValue, row: { index }, column: { id }, table }) => (
-        <NameCell
-          initialValue={getValue<string>()}
-          rowIndex={index}
-          columnId={id as keyof Unit}
-          table={table}
-        />
-      ),
+      cell: NameCell,
     },
 
     {
       accessorKey: "isPublished",
       header: "Published",
-function PublishedCell(props: {
-  initialValue: boolean;
-  rowIndex: number;
-  columnId: keyof Unit;
-  table: any;
-}) {
-  const [checked, setChecked] = React.useState(props.initialValue);
-  React.useEffect(() => {
-    setChecked(props.initialValue);
-  }, [props.initialValue]);
-  const handleChange = () => {
-    const newValue = !checked;
-    setChecked(newValue);
-    props.table.options.meta?.updateData(props.rowIndex, props.columnId, newValue);
-  };
-  return <Checkbox checked={checked} onCheckedChange={handleChange} />;
-}
-
-// ... Other parts of the file remain unchanged ...
-
-cell: ({ getValue, row: { index }, column: { id }, table }) => (
-  <PublishedCell
-    initialValue={getValue<boolean>()}
-    rowIndex={index}
-    columnId={id as keyof Unit}
-    table={table}
-  />
-),
+      cell: PublishedCell,
     },
   ];
 }
+
 export const UnitTable = (props: {
   id: string
 }) => {
