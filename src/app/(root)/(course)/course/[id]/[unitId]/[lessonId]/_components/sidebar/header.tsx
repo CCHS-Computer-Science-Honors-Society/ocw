@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BookIcon } from "lucide-react";
 import React from "react";
-import { SidebarData } from "../../_queries";
+import { type SidebarData } from "../../_queries";
 
 export const Header = ({ data }: { data: SidebarData }) => {
   return (

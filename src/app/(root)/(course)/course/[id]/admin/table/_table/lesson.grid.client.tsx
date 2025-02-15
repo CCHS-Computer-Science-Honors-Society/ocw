@@ -1,14 +1,5 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -18,17 +9,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { env } from "@/env";
-import { ContentTypeEnum } from "@/server/db/schema";
 import { api } from "@/trpc/react";
 import {
-  CellContext,
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
-import { Lesson } from "./types";
+import { type Lesson } from "./types";
+import { NameCell, UnitSelectCell, PublishedCell, ContentTypeSelectCell, EmbedPasswordCell, EmbedUrlCell } from "./lesson.cells";
 
 type LessonTableProps = {
   units: {
@@ -36,163 +26,6 @@ type LessonTableProps = {
     value: string;
   }[];
   courseId: string;
-};
-
-const NameCell = ({
-  getValue,
-  row: { index },
-  column: { id },
-  table,
-}: CellContext<Lesson, string>): JSX.Element => {
-  const initialValue = getValue<string>();
-  const [value, setValue] = React.useState(initialValue);
-  const onBlur = () =>
-    table.options.meta?.updateData(index, id as keyof Lesson, value);
-  React.useEffect(() => setValue(initialValue), [initialValue]);
-  return (
-    <Input
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onBlur={onBlur}
-    />
-  );
-};
-
-const PublishedCell = ({
-  getValue,
-  row: { index },
-  column: { id },
-  table,
-}: CellContext<Lesson, string>): JSX.Element => {
-  const initialValue = getValue<boolean>();
-  const [value, setValue] = React.useState(initialValue);
-  const onChange = () => {
-    const newValue = !value;
-    setValue(newValue);
-    table.options.meta?.updateData(index, id as keyof Lesson, newValue);
-  };
-  React.useEffect(() => setValue(initialValue), [initialValue]);
-  return (
-    <Checkbox className="h-8 w-8" checked={value} onCheckedChange={onChange} />
-  );
-};
-
-export const UnitSelectCell = (units: { label: string; value: string }[]) => {
-  return ({
-    getValue,
-    row: { index },
-    column: { id },
-    table,
-  }: CellContext<Lesson, string>): JSX.Element => {
-    const initialValue = getValue<string>();
-    const [value, setValue] = React.useState(initialValue);
-    const [open, setOpen] = React.useState(false);
-    function toggleOpen() {
-      if (open) {
-        table.options.meta?.updateData(index, id as keyof Lesson, value);
-      }
-      setOpen(!open);
-    }
-    React.useEffect(() => setValue(initialValue), [initialValue]);
-    return (
-      <Select
-        onValueChange={setValue}
-        value={value}
-        defaultValue={value}
-        open={open}
-        onOpenChange={toggleOpen}
-      >
-        <SelectTrigger className="w-[280px]">
-          <SelectValue placeholder={"Select a value"} />
-        </SelectTrigger>
-        <SelectContent>
-          {units.map((unit) => (
-            <SelectItem value={unit.value} key={unit.value}>
-              {unit.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    );
-  };
-};
-
-const ContentTypeSelectCell = ({
-  getValue,
-  row: { index },
-  column: { id },
-  table,
-}: CellContext<Lesson, boolean>): JSX.Element => {
-  const initialValue = getValue<string>();
-  const [value, setValue] = React.useState(initialValue);
-  const [open, setOpen] = React.useState(false);
-  function openAndSave() {
-    if (open) {
-      table.options.meta?.updateData(index, id as keyof Lesson, value);
-    }
-    setOpen(!open);
-  }
-  React.useEffect(() => setValue(initialValue), [initialValue]);
-  return (
-    <Select
-      onValueChange={setValue}
-      value={value}
-      defaultValue={value}
-      open={open}
-      onOpenChange={openAndSave}
-    >
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder={"Select a value"} />
-      </SelectTrigger>
-      <SelectContent>
-        {ContentTypeEnum.map((type) => (
-          <SelectItem value={type} key={type}>
-            {type}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-};
-
-const EmbedPasswordCell = ({
-  getValue,
-  row: { index },
-  column: { id },
-  table,
-}: CellContext<Lesson, boolean>): JSX.Element => {
-  const initialValue = getValue<string>() || "";
-  const [value, setValue] = React.useState(initialValue);
-  const onBlur = () =>
-    table.options.meta?.updateData(index, id as keyof Lesson, value);
-  React.useEffect(() => setValue(initialValue), [initialValue]);
-  return (
-    <Input
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onBlur={onBlur}
-    />
-  );
-};
-
-const EmbedUrlCell = ({
-  getValue,
-  row: { index },
-  column: { id },
-  table,
-}: CellContext<Lesson, string>): JSX.Element => {
-  const initialValue = getValue<string>() || "";
-  const [value, setValue] = React.useState(initialValue);
-  const onBlur = () =>
-    table.options.meta?.updateData(index, id as keyof Lesson, value);
-  React.useEffect(() => setValue(initialValue), [initialValue]);
-  return (
-    <Input
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onBlur={onBlur}
-    />
-  );
 };
 
 export const getColumns = ({
@@ -203,46 +36,46 @@ export const getColumns = ({
     value: string;
   }[];
 }): ColumnDef<Lesson>[] => [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: NameCell,
-  },
-  {
-    accessorKey: "unitId",
-    header: "Unit",
-    cell: UnitSelectCell(units),
-  },
-  {
-    accessorKey: "isPublished",
-    header: "Published",
-    cell: PublishedCell,
-  },
-  {
-    accessorKey: "pureLink",
-    header: "Pure Link",
-    cell: PublishedCell,
-  },
-  {
-    accessorKey: "contentType",
-    header: "Content Type",
-    cell: ContentTypeSelectCell,
-  },
-  {
-    accessorKey: "embedPassword",
-    header: "Embed Password",
-    cell: EmbedPasswordCell,
-  },
-  {
-    accessorKey: "embedUrl",
-    header: "Embed URL",
-    cell: EmbedUrlCell,
-  },
-];
+    {
+      accessorKey: "id",
+      header: "ID",
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: NameCell,
+    },
+    {
+      accessorKey: "unitId",
+      header: "Unit",
+      cell: UnitSelectCell(units),
+    },
+    {
+      accessorKey: "isPublished",
+      header: "Published",
+      cell: PublishedCell,
+    },
+    {
+      accessorKey: "pureLink",
+      header: "Pure Link",
+      cell: PublishedCell,
+    },
+    {
+      accessorKey: "contentType",
+      header: "Content Type",
+      cell: ContentTypeSelectCell,
+    },
+    {
+      accessorKey: "embedPassword",
+      header: "Embed Password",
+      cell: EmbedPasswordCell,
+    },
+    {
+      accessorKey: "embedUrl",
+      header: "Embed URL",
+      cell: EmbedUrlCell,
+    },
+  ];
 
 export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   const [data] = api.lesson.getTableData.useSuspenseQuery({
