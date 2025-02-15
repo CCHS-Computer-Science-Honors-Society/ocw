@@ -12,11 +12,23 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter, useParams } from "next/navigation";
 import { api } from "@/trpc/react";
+import { z } from "zod";
+
+
+const safeString = z.preprocess((val) => {
+  return Array.isArray(val) ? val[0] : val;
+}, z.string());
+
+const paramsSchema = z.object({
+  id: safeString,
+  unitId: safeString.optional(),
+  lessonId: safeString.optional(),
+});
 
 export const ClientHeader = () => {
   const router = useRouter();
-  const params = useParams();
-  const { id, unitId, lessonId } = params;
+  const rawParams = useParams();
+  const { id, unitId, lessonId } = paramsSchema.parse(rawParams);
 
   const handleClick = (index: number) => {
     if (index === 0) router.push(`/course/${id}/admin/`);
