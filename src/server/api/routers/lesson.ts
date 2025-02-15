@@ -143,6 +143,7 @@ export const lessonRouter = createTRPCRouter({
         await Promise.all(updates);
       });
     }),
+
   update: protectedProcedure
     .input(
       z.object({
@@ -160,26 +161,42 @@ export const lessonRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const data = input;
-      const { id, embed } = data;
       await ctx.db.transaction(async (tx) => {
-        await tx
+        // build update object for lesson
+        const updateData: Record<string, unknown> = {};
+        if (input.name !== undefined) updateData.name = input.name;
+        if (input.isPublished !== undefined)
+          updateData.isPublished = input.isPublished;
+        if (input.pureLink !== undefined) updateData.pureLink = input.pureLink;
+        if (input.unitId !== undefined) updateData.unitId = input.unitId;
+
+        // update & verify lesson exists in one query
+        const lessonResult = await tx
           .update(lessons)
-          .set({
-            name: data.name,
-            isPublished: data.isPublished,
-            pureLink: data.pureLink,
-            unitId: data.unitId,
-          })
-          .where(eq(lessons.id, id));
-        if (embed) {
-          await tx
+          .set(updateData)
+          .where(eq(lessons.id, input.id))
+          .returning({ id: lessons.id });
+
+        if (!lessonResult.length) {
+          throw new Error(`lesson with id ${input.id} not found`);
+        }
+
+        // if embed update provided, perform it at once inside tx
+        if (input.embed) {
+          const embedData: Record<string, unknown> = {};
+          if (input.embed.password !== undefined)
+            embedData.password = input.embed.password;
+          if (input.embed.embedUrl !== undefined)
+            embedData.embedUrl = input.embed.embedUrl;
+
+          const embedResult = await tx
             .update(lessonEmbed)
-            .set({
-              password: embed.password,
-              embedUrl: embed.embedUrl,
-            })
-            .where(eq(lessonEmbed.lessonId, id));
+            .set(embedData)
+            .where(eq(lessonEmbed.lessonId, input.id))
+            .returning({ id: lessonEmbed.id });
+          if (!embedResult.length) {
+            throw new Error(`embed for lesson ${input.id} not found`);
+          }
         }
       });
     }),
