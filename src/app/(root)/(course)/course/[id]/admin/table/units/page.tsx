@@ -18,3 +18,5 @@ export default function Page({
     </HydrateClient>
   );
 }
+
+export const dynamic = 'force-dynamic';

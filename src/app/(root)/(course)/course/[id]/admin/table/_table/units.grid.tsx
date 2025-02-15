@@ -10,13 +10,14 @@ export const Units = async ({
   }>;
 }) => {
   const id = (await params).id;
+
   void api.units.getTableData.prefetch({
     courseId: id,
   });
-
   return (
     <div>
       <UnitTable id={id} />
     </div>
   );
 };
+export const dynamic = 'force-dynamic';

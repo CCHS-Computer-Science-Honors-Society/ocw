@@ -142,7 +142,6 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
         }
       },
     },
-    debugTable: env.NODE_ENV === "development",
   });
 
   return (

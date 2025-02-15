@@ -1,6 +1,5 @@
 import React from "react";
 import { Reorder } from "./_components/reorder";
-import { LessonGrid } from "../../table/_table/lessons.grid";
 
 export default function Page({
   params,
@@ -16,3 +15,5 @@ export default function Page({
     </main>
   );
 }
+
+export const dynamic = 'force-dynamic';
