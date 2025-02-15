@@ -2,8 +2,21 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { env } from "@/env";
 import { ContentTypeEnum } from "@/server/db/schema";
 import { api } from "@/trpc/react";
@@ -25,7 +38,11 @@ type LessonTableProps = {
   courseId: string;
 };
 
-const NameCell = ({ getValue, row: { index }, column: { id }, table
+const NameCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Lesson, string>): JSX.Element => {
   const initialValue = getValue<string>();
   const [value, setValue] = React.useState(initialValue);
@@ -43,7 +60,9 @@ const NameCell = ({ getValue, row: { index }, column: { id }, table
 
 const PublishedCell = ({
   getValue,
-  row: { index }, column: { id }, table
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Lesson, string>): JSX.Element => {
   const initialValue = getValue<boolean>();
   const [value, setValue] = React.useState(initialValue);
@@ -53,12 +72,12 @@ const PublishedCell = ({
     table.options.meta?.updateData(index, id as keyof Lesson, newValue);
   };
   React.useEffect(() => setValue(initialValue), [initialValue]);
-  return <Checkbox className="w-8 h-8" checked={value} onCheckedChange={onChange} />;
+  return (
+    <Checkbox className="h-8 w-8" checked={value} onCheckedChange={onChange} />
+  );
 };
 
-export const UnitSelectCell = (
-  units: { label: string; value: string }[]
-) => {
+export const UnitSelectCell = (units: { label: string; value: string }[]) => {
   return ({
     getValue,
     row: { index },
@@ -76,21 +95,33 @@ export const UnitSelectCell = (
     }
     React.useEffect(() => setValue(initialValue), [initialValue]);
     return (
-      <Select onValueChange={setValue} value={value} defaultValue={value} open={open} onOpenChange={toggleOpen}>
+      <Select
+        onValueChange={setValue}
+        value={value}
+        defaultValue={value}
+        open={open}
+        onOpenChange={toggleOpen}
+      >
         <SelectTrigger className="w-[280px]">
           <SelectValue placeholder={"Select a value"} />
         </SelectTrigger>
         <SelectContent>
           {units.map((unit) => (
-            <SelectItem value={unit.value} key={unit.value}>{unit.label}</SelectItem>
+            <SelectItem value={unit.value} key={unit.value}>
+              {unit.label}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>
     );
   };
-}
+};
 
-const ContentTypeSelectCell = ({ getValue, row: { index }, column: { id }, table
+const ContentTypeSelectCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Lesson, boolean>): JSX.Element => {
   const initialValue = getValue<string>();
   const [value, setValue] = React.useState(initialValue);
@@ -103,20 +134,32 @@ const ContentTypeSelectCell = ({ getValue, row: { index }, column: { id }, table
   }
   React.useEffect(() => setValue(initialValue), [initialValue]);
   return (
-    <Select onValueChange={setValue} value={value} defaultValue={value} open={open} onOpenChange={openAndSave}>
+    <Select
+      onValueChange={setValue}
+      value={value}
+      defaultValue={value}
+      open={open}
+      onOpenChange={openAndSave}
+    >
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder={"Select a value"} />
       </SelectTrigger>
       <SelectContent>
         {ContentTypeEnum.map((type) => (
-          <SelectItem value={type} key={type}>{type}</SelectItem>
+          <SelectItem value={type} key={type}>
+            {type}
+          </SelectItem>
         ))}
       </SelectContent>
     </Select>
   );
 };
 
-const EmbedPasswordCell = ({ getValue, row: { index }, column: { id }, table
+const EmbedPasswordCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Lesson, boolean>): JSX.Element => {
   const initialValue = getValue<string>() || "";
   const [value, setValue] = React.useState(initialValue);
@@ -132,7 +175,11 @@ const EmbedPasswordCell = ({ getValue, row: { index }, column: { id }, table
   );
 };
 
-const EmbedUrlCell = ({ getValue, row: { index }, column: { id }, table
+const EmbedUrlCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Lesson, string>): JSX.Element => {
   const initialValue = getValue<string>() || "";
   const [value, setValue] = React.useState(initialValue);
@@ -149,56 +196,58 @@ const EmbedUrlCell = ({ getValue, row: { index }, column: { id }, table
 };
 
 export const getColumns = ({
-  units
+  units,
 }: {
   units: {
-    label: string
-    value: string
+    label: string;
+    value: string;
   }[];
 }): ColumnDef<Lesson>[] => [
-    {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: NameCell,
-    },
-    {
-      accessorKey: "unitId",
-      header: "Unit",
-      cell: UnitSelectCell(units),
-    },
-    {
-      accessorKey: "isPublished",
-      header: "Published",
-      cell: PublishedCell,
-    },
-    {
-      accessorKey: "pureLink",
-      header: "Pure Link",
-      cell: PublishedCell,
-    },
-    {
-      accessorKey: "contentType",
-      header: "Content Type",
-      cell: ContentTypeSelectCell,
-    },
-    {
-      accessorKey: "embedPassword",
-      header: "Embed Password",
-      cell: EmbedPasswordCell,
-    },
-    {
-      accessorKey: "embedUrl",
-      header: "Embed URL",
-      cell: EmbedUrlCell,
-    },
-  ];
+  {
+    accessorKey: "id",
+    header: "ID",
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: NameCell,
+  },
+  {
+    accessorKey: "unitId",
+    header: "Unit",
+    cell: UnitSelectCell(units),
+  },
+  {
+    accessorKey: "isPublished",
+    header: "Published",
+    cell: PublishedCell,
+  },
+  {
+    accessorKey: "pureLink",
+    header: "Pure Link",
+    cell: PublishedCell,
+  },
+  {
+    accessorKey: "contentType",
+    header: "Content Type",
+    cell: ContentTypeSelectCell,
+  },
+  {
+    accessorKey: "embedPassword",
+    header: "Embed Password",
+    cell: EmbedPasswordCell,
+  },
+  {
+    accessorKey: "embedUrl",
+    header: "Embed URL",
+    cell: EmbedUrlCell,
+  },
+];
 
 export const LessonTable = ({ units, courseId }: LessonTableProps) => {
-  const [data] = api.lesson.getTableData.useSuspenseQuery({ courseId: courseId });
+  const [data] = api.lesson.getTableData.useSuspenseQuery({
+    courseId: courseId,
+  });
   const utils = api.useUtils();
   const { mutate } = api.lesson.update.useMutation({
     onError(err, ctx) {
@@ -215,9 +264,7 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
       const prevData = utils.lesson.getTableData.getData();
       utils.lesson.getTableData.setData({ courseId: courseId }, (oldData) => {
         if (!oldData) return oldData;
-        const index = oldData.findIndex(
-          (item) => item.id === newData.id
-        );
+        const index = oldData.findIndex((item) => item.id === newData.id);
         if (index === -1) return oldData;
         const currentItem = oldData[index];
         if (!currentItem) return oldData;
@@ -249,13 +296,10 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
       updateData: (rowIndex, columnId, value) => {
         const row = data[rowIndex];
         if (!row) return;
-        if (
-          columnId === "embedUrl" ||
-          columnId === "embedPassword"
-        ) {
+        if (columnId === "embedUrl" || columnId === "embedPassword") {
           mutate({
             id: row.id,
-            embed: { [columnId]: value }
+            embed: { [columnId]: value },
           });
         } else {
           mutate({
@@ -265,7 +309,7 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
         }
       },
     },
-    debugTable: env.NODE_ENV === 'development',
+    debugTable: env.NODE_ENV === "development",
   });
 
   return (
@@ -280,7 +324,7 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
                   {!header.isPlaceholder &&
                     flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                 </TableHead>
               ))}
@@ -292,10 +336,7 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
             </TableRow>

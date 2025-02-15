@@ -157,7 +157,7 @@ export const lessonRouter = createTRPCRouter({
             embedUrl: z.string().optional(),
           })
           .optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const data = input;
@@ -188,7 +188,7 @@ export const lessonRouter = createTRPCRouter({
     .input(
       z.object({
         courseId: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const data = await ctx.db

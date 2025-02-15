@@ -8,7 +8,7 @@ import { Providers } from "./providers";
 const ibm = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: "400",
-})
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://creekocw.com"),

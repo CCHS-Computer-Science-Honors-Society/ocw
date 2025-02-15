@@ -97,14 +97,18 @@ export const unitsRouter = createTRPCRouter({
     .input(
       z.object({
         courseId: z.string(),
-      })
-    ).query(async ({ ctx, input }) => {
-      const data = await ctx.db.select({
-        id: units.id,
-        name: units.name,
-        courseId: units.courseId,
-        isPublished: units.isPublished,
-      }).from(units).where(eq(units.courseId, input.courseId));
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db
+        .select({
+          id: units.id,
+          name: units.name,
+          courseId: units.courseId,
+          isPublished: units.isPublished,
+        })
+        .from(units)
+        .where(eq(units.courseId, input.courseId));
       return data;
-    })
+    }),
 });

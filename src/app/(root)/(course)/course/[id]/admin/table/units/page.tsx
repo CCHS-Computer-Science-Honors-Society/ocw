@@ -1,14 +1,14 @@
-import React, { Suspense } from 'react'
-import { Units } from '../_table/units.grid'
-import { UnitTableSkeleton } from '../_table/units.grid.skeleton';
-import { HydrateClient } from '@/trpc/server';
+import React, { Suspense } from "react";
+import { Units } from "../_table/units.grid";
+import { UnitTableSkeleton } from "../_table/units.grid.skeleton";
+import { HydrateClient } from "@/trpc/server";
 
 export default function Page({
-  params
+  params,
 }: {
   params: Promise<{
     id: string;
-  }>
+  }>;
 }) {
   return (
     <HydrateClient>
@@ -16,6 +16,5 @@ export default function Page({
         <Units params={params} />
       </Suspense>
     </HydrateClient>
-  )
+  );
 }
-

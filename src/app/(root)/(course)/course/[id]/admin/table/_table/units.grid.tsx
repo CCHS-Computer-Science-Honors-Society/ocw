@@ -1,22 +1,22 @@
-import React from 'react'
-import { UnitTable } from './units.grid.client';
-import { api } from '@/trpc/server';
+import React from "react";
+import { UnitTable } from "./units.grid.client";
+import { api } from "@/trpc/server";
 
 export const Units = async ({
-  params
+  params,
 }: {
   params: Promise<{
     id: string;
-  }>
+  }>;
 }) => {
-  const id = (await params).id
+  const id = (await params).id;
   void api.units.getTableData.prefetch({
-    courseId: id
+    courseId: id,
   });
 
   return (
     <div>
       <UnitTable id={id} />
     </div>
-  )
-}
+  );
+};

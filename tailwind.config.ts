@@ -93,6 +93,6 @@ export default {
   plugins: [
     require("tailwindcss-animate"),
     require("@tailwindcss/typography"),
-    require('tailwindcss-highlights')
+    require("tailwindcss-highlights"),
   ],
 } satisfies Config;

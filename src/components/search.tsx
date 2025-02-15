@@ -100,9 +100,11 @@ export function SearchDropdownComponent() {
     console.log(item);
 
     // Remove duplicates and keep only the last 5 searches
-    const newHistory = [item, ...searchHistory].filter((value, index) => {
-      return value === item ? index === 0 : true;
-    }).slice(0, 5);
+    const newHistory = [item, ...searchHistory]
+      .filter((value, index) => {
+        return value === item ? index === 0 : true;
+      })
+      .slice(0, 5);
 
     setSearchHistory(newHistory);
   };
@@ -149,9 +151,7 @@ export function SearchDropdownComponent() {
           onValueChange={setSearch}
         />
         <CommandList>
-          <CommandEmpty>
-            No results found.
-          </CommandEmpty>
+          <CommandEmpty>No results found.</CommandEmpty>
           {isLoading ? <CommandItem disabled>Searching...</CommandItem> : null}
 
           {/* Show search history when search input is empty */}

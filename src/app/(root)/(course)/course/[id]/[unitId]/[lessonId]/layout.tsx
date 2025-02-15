@@ -24,8 +24,7 @@ export default async function Layout({
   }>;
 }) {
   return (
-
-    <div className="flex flex-col h-screen">
+    <div className="flex h-screen flex-col">
       <SidebarProvider
         style={{
           //@ts-expect-error should work according to docs
@@ -38,9 +37,8 @@ export default async function Layout({
         </Suspense>
         <SidebarInset>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <header className="flex justify-between h-16 shrink-0 items-center gap-2">
+            <header className="flex h-16 shrink-0 items-center justify-between gap-2">
               <div className="flex items-center gap-2 px-4">
-
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" />
 
@@ -48,8 +46,14 @@ export default async function Layout({
                   <BreadcrumbCourse params={params} />
                 </Suspense>
               </div>
-              <div className="flex gap-2 leading-none items-center">
-                <Link href={'/'} className={cn(buttonVariants({ variant: "ghost" }), "text-sm font-medium p-2")}>
+              <div className="flex items-center gap-2 leading-none">
+                <Link
+                  href={"/"}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "p-2 text-sm font-medium",
+                  )}
+                >
                   Home
                 </Link>
                 <Explore />

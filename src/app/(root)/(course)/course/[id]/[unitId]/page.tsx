@@ -1,10 +1,9 @@
 export default function Page({
-  params
+  params,
 }: {
   params: Promise<{
     unitId: string;
-  }>
+  }>;
 }) {
-  return <div>
-  </div>;
+  return <div></div>;
 }

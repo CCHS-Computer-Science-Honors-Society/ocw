@@ -1,14 +1,31 @@
-"use client"
+"use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { api } from "@/trpc/react";
-import { CellContext, ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  CellContext,
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import React from "react";
 import { Unit } from "./types";
 
-const NameCell = ({ getValue, row: { index }, column: { id }, table
+const NameCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Unit, string>): JSX.Element => {
   const initialValue = getValue<string>();
   const [value, setValue] = React.useState(initialValue);
@@ -24,10 +41,11 @@ const NameCell = ({ getValue, row: { index }, column: { id }, table
   );
 };
 
-
 const PublishedCell = ({
   getValue,
-  row: { index }, column: { id }, table
+  row: { index },
+  column: { id },
+  table,
 }: CellContext<Unit, string>): JSX.Element => {
   const initialValue = getValue<boolean>();
   const [value, setValue] = React.useState(initialValue);
@@ -37,7 +55,9 @@ const PublishedCell = ({
     table.options.meta?.updateData(index, id as keyof Unit, newValue);
   };
   React.useEffect(() => setValue(initialValue), [initialValue]);
-  return <Checkbox className="w-8 h-8" checked={value} onCheckedChange={onChange} />;
+  return (
+    <Checkbox className="h-8 w-8" checked={value} onCheckedChange={onChange} />
+  );
 };
 
 export const getColumns = (): ColumnDef<Unit>[] => {
@@ -58,16 +78,14 @@ export const getColumns = (): ColumnDef<Unit>[] => {
       cell: PublishedCell,
     },
   ];
-}
+};
 
-export const UnitTable = (props: {
-  id: string
-}) => {
-  const { id } = props
+export const UnitTable = (props: { id: string }) => {
+  const { id } = props;
   const [data] = api.units.getTableData.useSuspenseQuery({
-    courseId: id
-  })
-  const utils = api.useUtils()
+    courseId: id,
+  });
+  const utils = api.useUtils();
   const { mutate } = api.units.update.useMutation({
     async onMutate(newData) {
       await utils.units.getTableData.cancel();
@@ -76,9 +94,7 @@ export const UnitTable = (props: {
       utils.units.getTableData.setData({ courseId: id }, (oldData) => {
         if (!oldData) return oldData;
 
-        const index = oldData.findIndex(
-          (item) => item.id === newData.data.id
-        );
+        const index = oldData.findIndex((item) => item.id === newData.data.id);
         if (index === -1) return oldData;
 
         const updated = [...oldData];
@@ -97,18 +113,14 @@ export const UnitTable = (props: {
       });
       return { prevData };
     },
-  })
+  });
 
   const table = useReactTable({
     data,
     columns: getColumns(),
     getCoreRowModel: getCoreRowModel(),
     meta: {
-      updateData: (
-        rowIndex: number,
-        columnId: keyof Unit,
-        value: unknown
-      ) => {
+      updateData: (rowIndex: number, columnId: keyof Unit, value: unknown) => {
         const row = data[rowIndex];
         if (!row) return;
         mutate({
@@ -118,46 +130,42 @@ export const UnitTable = (props: {
       },
     },
     debugTable: true,
-  })
+  });
 
-  return <div>
-    <div className="p-2">
-      <div className="h-2" />
+  return (
+    <div>
+      <div className="p-2">
+        <div className="h-2" />
 
-      <Table>
-        <TableHeader>
-
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} colSpan={header.colSpan}>
-                  {!header.isPlaceholder &&
-                    flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
-
-  </div>
-}
-
+  );
+};

@@ -3,7 +3,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 
 import {
   SidebarGroup,
@@ -55,10 +55,7 @@ export function MainNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-        <Collapsible
-          asChild
-          className="group/collapsible"
-        >
+        <Collapsible asChild className="group/collapsible">
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton tooltip={"Tables"}>

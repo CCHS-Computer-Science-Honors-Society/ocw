@@ -25,7 +25,7 @@ export default async function Page({
 
   if (lesson.pureLink) {
     if (lesson.embedId) {
-      redirect(lesson.embedId)
+      redirect(lesson.embedId);
     }
   }
 

@@ -74,15 +74,14 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return (<GoogleDocsLesson
-        embedId={lesson.embedId}
-        password={lesson.quizletPassword}
-      />
+      return (
+        <GoogleDocsLesson
+          embedId={lesson.embedId}
+          password={lesson.quizletPassword}
+        />
       );
     case "flashcard":
-      return (
-        <FlashcardPage unitId={lesson.unitId} />
-      );
+      return <FlashcardPage unitId={lesson.unitId} />;
   }
 }
 

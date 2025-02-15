@@ -239,11 +239,11 @@ export const contentTypeEnum = pgEnum("content_type", [
   "notion",
   "quizlet",
   "tiptap",
-  "flashcard"
+  "flashcard",
 ]);
 
-export const ContentTypeEnum = contentTypeEnum.enumValues
-export type ContentTypeEnum = typeof ContentTypeEnum[number]
+export const ContentTypeEnum = contentTypeEnum.enumValues;
+export type ContentTypeEnum = (typeof ContentTypeEnum)[number];
 
 export const lessons = createTable(
   "lessons",
@@ -305,21 +305,18 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
   }),
 }));
 
-export const easyNoteCard = createTable(
-  "easy_note_card",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => createId()),
-    front: text("front").notNull(),
-    embedding: vector("embedding", { dimensions: 1536 }),
-    options: text("options").array().notNull(),
-    images: text("images").array(),
-    unitId: text("unitId").notNull(),
-    chapter: integer("chapter").notNull(),
-    back: text("back").notNull(),
-  }
-);
+export const easyNoteCard = createTable("easy_note_card", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  front: text("front").notNull(),
+  embedding: vector("embedding", { dimensions: 1536 }),
+  options: text("options").array().notNull(),
+  images: text("images").array(),
+  unitId: text("unitId").notNull(),
+  chapter: integer("chapter").notNull(),
+  back: text("back").notNull(),
+});
 
 export const easyNoteCardRelations = relations(easyNoteCard, ({ one }) => ({
   unit: one(units, {

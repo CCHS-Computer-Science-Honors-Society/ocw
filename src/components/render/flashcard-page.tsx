@@ -1,27 +1,24 @@
-import { cache } from '@/lib/cache'
-import { db } from '@/server/db'
-import { easyNoteCard } from '@/server/db/schema'
-import { eq } from 'drizzle-orm'
-import React from 'react'
+import { cache } from "@/lib/cache";
+import { db } from "@/server/db";
+import { easyNoteCard } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import React from "react";
 
-export const FlashcardPage = (props: {
-  unitId: string
-}) => {
-  const { unitId } = props
+export const FlashcardPage = (props: { unitId: string }) => {
+  const { unitId } = props;
 
   const getData = cache(
     async (unitId: string) => {
-      return await db.select().from(easyNoteCard).where(eq(easyNoteCard.unitId, unitId))
+      return await db
+        .select()
+        .from(easyNoteCard)
+        .where(eq(easyNoteCard.unitId, unitId));
     },
-    ['getUnitFlashcard', unitId],
+    ["getUnitFlashcard", unitId],
     {
-      tags: ['getUnitFlashcard'],
-    }
-  )
+      tags: ["getUnitFlashcard"],
+    },
+  );
 
-  return (
-    <div>
-
-    </div>
-  )
-}
+  return <div></div>;
+};

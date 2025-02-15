@@ -36,15 +36,15 @@ export const getSidebarData = cache(
             embeds: {
               columns: {
                 embedUrl: true,
-              }
-            }
-          }
+              },
+            },
+          },
         },
       },
     }),
   ["getSidebarData"],
   {
-    revalidate: REVALIDATE
+    revalidate: REVALIDATE,
   },
 );
 

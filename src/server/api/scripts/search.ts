@@ -79,6 +79,6 @@ export const performSearch = cache(
   },
   ["search"],
   {
-    revalidate: REVALIDATE
+    revalidate: REVALIDATE,
   },
 );

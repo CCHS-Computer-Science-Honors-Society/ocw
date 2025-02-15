@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import {
@@ -14,8 +13,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter, useParams } from "next/navigation";
 import { api } from "@/trpc/react";
 
-
-
 export const ClientHeader = () => {
   const router = useRouter();
   const params = useParams();
@@ -24,15 +21,14 @@ export const ClientHeader = () => {
   const handleClick = (index: number) => {
     if (index === 0) router.push(`/course/${id}/admin/`);
     else if (index === 1) router.push(`/course/${id}/admin/unit/${unitId}`);
-    else if (index === 2)
-      router.push(`/course/${id}/admin/lesson/${lessonId}`);
+    else if (index === 2) router.push(`/course/${id}/admin/lesson/${lessonId}`);
   };
 
   const [breadcrumbs] = api.courses.getBreadcrumbData.useSuspenseQuery({
     courseId: id,
     unitId: unitId,
     lessonId: lessonId,
-  })
+  });
 
   return (
     <div>
@@ -64,4 +60,4 @@ export const ClientHeader = () => {
       </header>
     </div>
   );
-}
+};

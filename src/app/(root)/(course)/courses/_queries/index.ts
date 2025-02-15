@@ -51,7 +51,7 @@ export const fetchCoursesWithPagination = cache(
   },
   ["fetchCoursesWithPagination"],
   {
-    revalidate: REVALIDATE
+    revalidate: REVALIDATE,
   },
 );
 
@@ -74,6 +74,6 @@ export const estimateTotalCourses = cache(
   },
   ["fetchCoursesWithPagination"],
   {
-    revalidate: REVALIDATE
+    revalidate: REVALIDATE,
   },
 );

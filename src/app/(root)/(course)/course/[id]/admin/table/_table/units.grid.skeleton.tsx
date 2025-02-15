@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -13,12 +12,7 @@ import {
 } from "@/components/ui/table";
 
 const rows = 50;
-const columns = [
-  "ID",
-  "Name",
-  "Published",
-];
-
+const columns = ["ID", "Name", "Published"];
 
 export const UnitTableSkeleton = () => {
   return (

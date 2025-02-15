@@ -1,7 +1,4 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Suspense } from "react";
 import { AppSidebar } from "./_components/sidebar";
 import { CourseSwitcher } from "./_components/switcher";
@@ -21,10 +18,7 @@ export default function AdminLayout({
             </Suspense>
           }
         />
-        <SidebarInset>
-
-          {children}
-        </SidebarInset>
+        <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </div>
   );

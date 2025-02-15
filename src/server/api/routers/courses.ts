@@ -46,7 +46,7 @@ export const courseRouter = createTRPCRouter({
         courseId: z.string(),
         unitId: z.string().optional(),
         lessonId: z.string().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { courseId, unitId, lessonId } = input;
@@ -58,15 +58,15 @@ export const courseRouter = createTRPCRouter({
         }),
         unitId
           ? ctx.db.query.units.findFirst({
-            where: eq(units.id, unitId),
-            columns: { id: true, name: true },
-          })
+              where: eq(units.id, unitId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
         lessonId
           ? ctx.db.query.lessons.findFirst({
-            where: eq(lessons.id, lessonId),
-            columns: { id: true, name: true },
-          })
+              where: eq(lessons.id, lessonId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
       ]);
 
@@ -76,7 +76,5 @@ export const courseRouter = createTRPCRouter({
       if (lesson) breadcrumbs.push({ id: lesson.id, name: lesson.name });
 
       return breadcrumbs;
-    })
+    }),
 });
-
-

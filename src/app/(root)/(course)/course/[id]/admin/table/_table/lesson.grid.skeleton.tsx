@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -23,7 +22,6 @@ const columns = [
   "Embed Password",
   "Embed URL",
 ];
-
 
 export const LessonTableSkeleton = () => {
   return (
