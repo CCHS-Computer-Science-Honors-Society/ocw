@@ -29,7 +29,7 @@ const PublishedCell = ({
   row: { index },
   column: { id },
   table,
-}: CellContext<Unit, string>): JSX.Element => {
+}: CellContext<Unit, boolean>): JSX.Element => {
   const initialValue = getValue<boolean>();
   const [value, setValue] = React.useState(initialValue);
   const onChange = () => {
