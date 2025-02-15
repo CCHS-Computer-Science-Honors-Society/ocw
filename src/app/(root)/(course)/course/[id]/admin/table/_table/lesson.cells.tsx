@@ -46,44 +46,50 @@ const PublishedCell = ({
   );
 };
 
-const UnitSelectCell = (units: { label: string; value: string }[]) => {
-  return ({
-    getValue,
-    row: { index },
-    column: { id },
-    table,
-  }: CellContext<Lesson, string>): JSX.Element => {
-    const initialValue = getValue<string>();
-    const [value, setValue] = React.useState(initialValue);
-    const [open, setOpen] = React.useState(false);
-    function toggleOpen() {
-      if (open) {
-        table.options.meta?.updateData(index, id as keyof Lesson, value);
-      }
-      setOpen(!open);
+interface UnitSelectCellProps extends CellContext<Lesson, string> {
+  units: { label: string; value: string }[];
+}
+
+const UnitSelectCell = ({
+  getValue,
+  row: { index },
+  column: { id },
+  table,
+  units,
+}: UnitSelectCellProps): JSX.Element => {
+  const initialValue = getValue<string>();
+  const [value, setValue] = React.useState(initialValue);
+  const [open, setOpen] = React.useState(false);
+
+  function toggleOpen() {
+    if (open) {
+      table.options.meta?.updateData(index, id as keyof Lesson, value);
     }
-    React.useEffect(() => setValue(initialValue), [initialValue]);
-    return (
-      <Select
-        onValueChange={setValue}
-        value={value}
-        defaultValue={value}
-        open={open}
-        onOpenChange={toggleOpen}
-      >
-        <SelectTrigger className="w-[280px]">
-          <SelectValue placeholder={"Select a value"} />
-        </SelectTrigger>
-        <SelectContent>
-          {units.map((unit) => (
-            <SelectItem value={unit.value} key={unit.value}>
-              {unit.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    );
-  };
+    setOpen(!open);
+  }
+
+  React.useEffect(() => setValue(initialValue), [initialValue]);
+
+  return (
+    <Select
+      onValueChange={setValue}
+      value={value}
+      defaultValue={value}
+      open={open}
+      onOpenChange={toggleOpen}
+    >
+      <SelectTrigger className="w-[280px]">
+        <SelectValue placeholder={"Select a value"} />
+      </SelectTrigger>
+      <SelectContent>
+        {units.map((unit) => (
+          <SelectItem value={unit.value} key={unit.value}>
+            {unit.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 };
 
 const ContentTypeSelectCell = ({
