@@ -3,10 +3,8 @@ import { buttonVariants } from "../ui/button";
 
 export function GoogleDocsEmbed({
   embedId,
-  password,
 }: {
   embedId: string | null;
-  password: string | null;
 }) {
   if (!embedId) return <div>Invalid Quizlet Embed</div>;
 
@@ -31,9 +29,6 @@ export function GoogleDocsEmbed({
         >
           Open in new tab
         </Link>
-        {password ? (
-          <p className="ml-4 text-gray-600">Password: {password}</p>
-        ) : null}
       </div>
     </div>
   );

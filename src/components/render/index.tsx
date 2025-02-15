@@ -77,7 +77,6 @@ export default function RenderLesson({
       return (
         <GoogleDocsLesson
           embedId={lesson.embedId}
-          password={lesson.quizletPassword}
         />
       );
     case "flashcard":
