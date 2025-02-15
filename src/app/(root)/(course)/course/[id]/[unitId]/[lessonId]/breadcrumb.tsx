@@ -29,7 +29,7 @@ export const BreadcrumbCourse = async ({
           <BreadcrumbSeparator className="" />
           <BreadcrumbItem>
             <BreadcrumbLink href={`/course/${data[0]?.courseId}`}>
-              {data[0]?.course.name}
+              {data[0]?.course.name ?? "Unknown Course"}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="" />
@@ -37,13 +37,13 @@ export const BreadcrumbCourse = async ({
             <BreadcrumbLink
               href={`/course/${data[0]?.courseId}/${data[0]?.id}`}
             >
-              {data[0]?.name}
+              {data[0]?.name ?? "Unknown Unit"}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="" />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {data[0]?.lessons.find((lesson) => lesson.id === lessonId)?.name}
+              {data[0]?.lessons.find((lesson) => lesson.id === lessonId)?.name ?? "Unknown Lesson"}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
