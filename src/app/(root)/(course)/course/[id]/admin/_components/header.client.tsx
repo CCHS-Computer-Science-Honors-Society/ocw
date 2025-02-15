@@ -14,7 +14,6 @@ import { useRouter, useParams } from "next/navigation";
 import { api } from "@/trpc/react";
 import { z } from "zod";
 
-
 const safeString = z.preprocess((val) => {
   return Array.isArray(val) ? val[0] : val;
 }, z.string());
