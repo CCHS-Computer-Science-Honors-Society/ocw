@@ -74,11 +74,7 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return (
-        <GoogleDocsLesson
-          embedId={lesson.embedId}
-        />
-      );
+      return <GoogleDocsLesson embedId={lesson.embedId} />;
     case "flashcard":
       return <FlashcardPage unitId={lesson.unitId} />;
   }

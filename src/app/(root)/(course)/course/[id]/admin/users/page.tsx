@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
 export default function Page() {
-  return (
-    <div>Page</div>
-  )
+  return <div>Page</div>;
 }
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

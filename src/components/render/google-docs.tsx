@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
 
-export function GoogleDocsEmbed({
-  embedId,
-}: {
-  embedId: string | null;
-}) {
+export function GoogleDocsEmbed({ embedId }: { embedId: string | null }) {
   if (!embedId) return <div>Invalid Quizlet Embed</div>;
 
   return (

@@ -1,12 +1,12 @@
 import { asc, eq, max, sql } from "drizzle-orm";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { courseProcedure, createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { courses, lessons, units, lessonEmbed } from "@/server/db/schema";
 import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
 
 export const lessonRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: courseProcedure
     .input(
       z.object({
         title: z.string().min(1, "Title is required"),
@@ -68,7 +68,7 @@ export const lessonRouter = createTRPCRouter({
       revalidateTag("getCourseById");
     }),
 
-  createUnit: protectedProcedure
+  createUnit: courseProcedure
     .input(
       z.object({
         name: z.string().min(1, "Name is required"),
@@ -119,10 +119,11 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  reorder: protectedProcedure
+  reorder: courseProcedure
     .input(
       z.object({
         unitId: z.string(),
+        courseId: z.string(),
         data: z.array(
           z.object({
             id: z.string(),
@@ -144,10 +145,11 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  update: protectedProcedure
+  update: courseProcedure
     .input(
       z.object({
         id: z.string(),
+        courseId: z.string(),
         unitId: z.string().optional(),
         name: z.string().optional(),
         isPublished: z.boolean().optional(),
@@ -201,7 +203,7 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  getTableData: protectedProcedure
+  getTableData: courseProcedure
     .input(
       z.object({
         courseId: z.string(),

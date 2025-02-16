@@ -71,7 +71,7 @@ export const LessonsList = ({ items, onReorder, onEdit }: LessonsListProps) => {
                     className={cn(
                       "mb-4 flex items-center gap-x-2 rounded-md border border-slate-200 bg-slate-200 text-sm text-slate-700",
                       lesson.isPublished &&
-                      "border-sky-200 bg-sky-100 text-sky-700",
+                        "border-sky-200 bg-sky-100 text-sky-700",
                     )}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -80,7 +80,7 @@ export const LessonsList = ({ items, onReorder, onEdit }: LessonsListProps) => {
                       className={cn(
                         "rounded-l-md border-r border-r-slate-200 px-2 py-3 transition hover:bg-slate-300",
                         lesson.isPublished &&
-                        "border-r-sky-200 hover:bg-sky-200",
+                          "border-r-sky-200 hover:bg-sky-200",
                       )}
                       {...provided.dragHandleProps}
                     >

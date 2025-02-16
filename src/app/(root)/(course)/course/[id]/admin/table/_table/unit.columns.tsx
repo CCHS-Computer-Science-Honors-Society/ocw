@@ -11,14 +11,16 @@ export const getColumns = (): ColumnDef<Unit>[] => {
     {
       accessorKey: "name",
       header: "name",
-      cell: (props) =>
-        <EditableTextCell {...(props as CellContext<Unit, string>)} />,
+      cell: (props) => (
+        <EditableTextCell {...(props as CellContext<Unit, string>)} />
+      ),
     },
     {
       accessorKey: "isPublished",
       header: "published",
-      cell: (props) =>
-        <EditableCheckboxCell {...(props as CellContext<Unit, boolean>)} />,
+      cell: (props) => (
+        <EditableCheckboxCell {...(props as CellContext<Unit, boolean>)} />
+      ),
     },
   ];
 };

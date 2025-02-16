@@ -36,7 +36,10 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
     onError(error, __, ctx) {
       const typedCtx = ctx as { prevData?: Lesson[] };
       if (!typedCtx.prevData) return;
-      utils.lesson.getTableData.setData({ courseId: courseId }, typedCtx.prevData);
+      utils.lesson.getTableData.setData(
+        { courseId: courseId },
+        typedCtx.prevData,
+      );
       //make sure to set that prevData is lesson[]
       toast.error(
         error.message ?? "An error occurred while updating the lesson.",
@@ -86,11 +89,13 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
         if (columnId === "embedUrl" || columnId === "embedPassword") {
           mutate({
             id: row.id,
+            courseId,
             embed: { [columnId]: value },
           });
         } else {
           mutate({
             id: row.id,
+            courseId,
             [columnId]: value,
           });
         }

@@ -43,7 +43,8 @@ export const BreadcrumbCourse = async ({
           <BreadcrumbSeparator className="" />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {data[0]?.lessons.find((lesson) => lesson.id === lessonId)?.name ?? "Unknown Lesson"}
+              {data[0]?.lessons.find((lesson) => lesson.id === lessonId)
+                ?.name ?? "Unknown Lesson"}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import { protectedProcedure, createTRPCRouter, publicProcedure, courseProcedure } from "../trpc";
 import { asc, eq } from "drizzle-orm";
 import { units } from "@/server/db/schema";
 
@@ -18,7 +18,7 @@ export const unitsRouter = createTRPCRouter({
         orderBy: asc(units.order),
       });
     }),
-  update: protectedProcedure
+  update: courseProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -39,7 +39,7 @@ export const unitsRouter = createTRPCRouter({
 
       await ctx.db.update(units).set(data).where(eq(units.id, id));
     }),
-  reorder: protectedProcedure
+  reorder: courseProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -76,7 +76,7 @@ export const unitsRouter = createTRPCRouter({
         where: eq(units.id, input.unitId),
       });
     }),
-  create: protectedProcedure
+  create: courseProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -93,7 +93,7 @@ export const unitsRouter = createTRPCRouter({
         isPublished: input.isPublished ?? false,
       });
     }),
-  getTableData: protectedProcedure
+  getTableData: courseProcedure
     .input(
       z.object({
         courseId: z.string(),
