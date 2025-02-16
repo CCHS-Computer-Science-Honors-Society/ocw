@@ -15,7 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
-import { getColumns } from "./lesson.cells";
+import { getColumns } from "./lesson.columns";
 
 type LessonTableProps = {
   units: {

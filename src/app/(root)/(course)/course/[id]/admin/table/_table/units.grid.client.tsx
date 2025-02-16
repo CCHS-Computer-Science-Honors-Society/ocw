@@ -10,35 +10,13 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
 import { type Unit } from "./types";
-import { NameCell, PublishedCell } from "./unit.cells";
-
-
-export const getColumns = (): ColumnDef<Unit>[] => {
-  return [
-    {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
-      accessorKey: "name",
-      header: "Name",
-      cell: NameCell,
-    },
-
-    {
-      accessorKey: "isPublished",
-      header: "Published",
-      cell: PublishedCell,
-    },
-  ];
-};
+import { getColumns } from "./unit.columns";
 
 export const UnitTable = (props: { id: string }) => {
   const { id } = props;
