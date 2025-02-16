@@ -28,11 +28,36 @@ export const getColumns = ({
       accessorKey: "pureLink",
       header: "Pure Link",
       cell: (props) =>
-        <EditableTextCell {...(props as CellContext<Lesson, string>)} />,
+        <EditableCheckboxCell {...(props as CellContext<Lesson, boolean>)} />,
     },
     {
       accessorKey: "contentType",
       header: "Content Type",
+      cell: (props) =>
+        <EditableSelectCell {...(props as CellContext<Lesson, string>)} options={[{
+          label: "Google Docs",
+          value: "google_docs",
+        },
+        {
+          label: "Notion",
+          value: "notion",
+
+        },
+        {
+          label: "Quizlet",
+          value: "quizlet",
+
+        },
+        {
+          label: "TipTap",
+          value: "tiptap",
+
+        },
+        ]} />,
+    },
+    {
+      accessorKey: "unitId",
+      header: "Unit",
       cell: (props) =>
         <EditableSelectCell {...(props as CellContext<Lesson, string>)} options={units} />,
     },

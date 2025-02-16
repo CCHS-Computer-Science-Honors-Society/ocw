@@ -77,22 +77,21 @@ export const EditableSelectCell = <T extends object>({
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(false);
 
-  const toggleOpen = () => {
-    if (open) {
-      table.options.meta?.updateData(row.index, column.id as keyof T, value);
-    }
-    setOpen(!open);
-  };
+  function handleChange(value: string) {
+    setValue(value);
+    console.log(row.index, column.id as keyof T, value);
+    table.options.meta?.updateData(row.index, column.id as keyof T, value);
+  }
 
   useEffect(() => setValue(initialValue), [initialValue]);
 
   return (
     <Select
-      onValueChange={setValue}
+      onValueChange={handleChange}
       value={value}
       defaultValue={value}
       open={open}
-      onOpenChange={toggleOpen}
+      onOpenChange={setOpen}
     >
       <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="select a value" />
