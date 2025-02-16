@@ -16,6 +16,7 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { getColumns } from "./lesson.columns";
+import { Lesson } from "./types";
 
 type LessonTableProps = {
   units: {
@@ -31,12 +32,11 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   });
   const utils = api.useUtils();
   const { mutate } = api.lesson.update.useMutation({
-    onError(err, ctx) {
-      // If the mutation fails, use the context-value from onMutate
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      utils.lesson.getTableData.setData({ courseId: courseId }, ctx?.prevData);
+    onError(_, __, ctx) {
+      const typedCtx = ctx as { prevData?: Lesson[] };
+      if (!typedCtx.prevData) return;
+      utils.lesson.getTableData.setData({ courseId: courseId }, typedCtx.prevData);
+      //make sure to set that prevData is lesson[]
     },
     onSettled() {
       // Sync with server once mutation has settled

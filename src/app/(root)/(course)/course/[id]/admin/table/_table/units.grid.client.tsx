@@ -25,6 +25,12 @@ export const UnitTable = (props: { id: string }) => {
   });
   const utils = api.useUtils();
   const { mutate } = api.units.update.useMutation({
+    onError(_, __, ctx) {
+      const typedCtx = ctx as { prevData?: Unit[] };
+      if (!typedCtx.prevData) return;
+      utils.units.getTableData.setData({ courseId: id }, typedCtx.prevData);
+    },
+
     async onMutate(newData) {
       await utils.units.getTableData.cancel();
       const prevData = utils.units.getTableData.getData();
@@ -50,6 +56,10 @@ export const UnitTable = (props: { id: string }) => {
         return updated;
       });
       return { prevData };
+    },
+    onSettled() {
+      // Sync with server once mutation has settled
+      void utils.units.getTableData.invalidate();
     },
   });
 
