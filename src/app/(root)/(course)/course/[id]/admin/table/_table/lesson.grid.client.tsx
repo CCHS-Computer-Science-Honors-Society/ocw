@@ -17,6 +17,7 @@ import {
 import React from "react";
 import { getColumns } from "./lesson.columns";
 import { Lesson } from "./types";
+import { toast } from "sonner";
 
 type LessonTableProps = {
   units: {
@@ -32,11 +33,14 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   });
   const utils = api.useUtils();
   const { mutate } = api.lesson.update.useMutation({
-    onError(_, __, ctx) {
+    onError(error, __, ctx) {
       const typedCtx = ctx as { prevData?: Lesson[] };
       if (!typedCtx.prevData) return;
       utils.lesson.getTableData.setData({ courseId: courseId }, typedCtx.prevData);
       //make sure to set that prevData is lesson[]
+      toast.error(
+        error.message ?? "An error occurred while updating the lesson.",
+      );
     },
     onSettled() {
       // Sync with server once mutation has settled

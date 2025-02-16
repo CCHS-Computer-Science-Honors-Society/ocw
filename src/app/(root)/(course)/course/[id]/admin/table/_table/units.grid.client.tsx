@@ -17,6 +17,7 @@ import {
 import React from "react";
 import { type Unit } from "./types";
 import { getColumns } from "./unit.columns";
+import { toast } from "sonner";
 
 export const UnitTable = (props: { id: string }) => {
   const { id } = props;
@@ -25,10 +26,13 @@ export const UnitTable = (props: { id: string }) => {
   });
   const utils = api.useUtils();
   const { mutate } = api.units.update.useMutation({
-    onError(_, __, ctx) {
+    onError(error, __, ctx) {
       const typedCtx = ctx as { prevData?: Unit[] };
       if (!typedCtx.prevData) return;
       utils.units.getTableData.setData({ courseId: id }, typedCtx.prevData);
+      toast.error(
+        error.message ?? "An error occurred while updating the unit.",
+      );
     },
 
     async onMutate(newData) {
