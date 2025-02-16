@@ -6,7 +6,7 @@ import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
 
 export const lessonRouter = createTRPCRouter({
-  create: courseProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1, "Title is required"),
@@ -21,6 +21,7 @@ export const lessonRouter = createTRPCRouter({
         password: z.string().optional(),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       const {
         title,
@@ -68,7 +69,7 @@ export const lessonRouter = createTRPCRouter({
       revalidateTag("getCourseById");
     }),
 
-  createUnit: courseProcedure
+  createUnit: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1, "Name is required"),
@@ -77,6 +78,7 @@ export const lessonRouter = createTRPCRouter({
         position: z.number().optional(),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       const { name, description, courseId } = input;
 
@@ -119,7 +121,7 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  reorder: courseProcedure
+  reorder: protectedProcedure
     .input(
       z.object({
         unitId: z.string(),
@@ -132,6 +134,7 @@ export const lessonRouter = createTRPCRouter({
         ),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         const updates = input.data.map((item) =>
@@ -145,7 +148,7 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  update: courseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -162,6 +165,7 @@ export const lessonRouter = createTRPCRouter({
           .optional(),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         // build update object for lesson
@@ -203,7 +207,7 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
 
-  getTableData: courseProcedure
+  getTableData: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),

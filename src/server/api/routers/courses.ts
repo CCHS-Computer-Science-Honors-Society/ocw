@@ -1,6 +1,6 @@
 import { courses, lessons, units } from "@/server/db/schema";
 import { z } from "zod";
-import { adminProcedure, courseProcedure, createTRPCRouter } from "../trpc";
+import { adminProcedure, courseProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 import { eq } from "drizzle-orm";
 
 export const courseRouter = createTRPCRouter({
@@ -17,7 +17,7 @@ export const courseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(courses).values(input);
     }),
-  update: courseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -34,13 +34,14 @@ export const courseRouter = createTRPCRouter({
         }),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       await ctx.db
         .update(courses)
         .set(input.content)
         .where(eq(courses.id, input.courseId));
     }),
-  getBreadcrumbData: courseProcedure
+  getBreadcrumbData: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -58,15 +59,15 @@ export const courseRouter = createTRPCRouter({
         }),
         unitId
           ? ctx.db.query.units.findFirst({
-              where: eq(units.id, unitId),
-              columns: { id: true, name: true },
-            })
+            where: eq(units.id, unitId),
+            columns: { id: true, name: true },
+          })
           : Promise.resolve(undefined),
         lessonId
           ? ctx.db.query.lessons.findFirst({
-              where: eq(lessons.id, lessonId),
-              columns: { id: true, name: true },
-            })
+            where: eq(lessons.id, lessonId),
+            columns: { id: true, name: true },
+          })
           : Promise.resolve(undefined),
       ]);
 

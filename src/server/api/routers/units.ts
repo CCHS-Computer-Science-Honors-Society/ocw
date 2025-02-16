@@ -18,7 +18,7 @@ export const unitsRouter = createTRPCRouter({
         orderBy: asc(units.order),
       });
     }),
-  update: courseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -32,6 +32,7 @@ export const unitsRouter = createTRPCRouter({
         }),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       const { data } = input;
 
@@ -39,7 +40,7 @@ export const unitsRouter = createTRPCRouter({
 
       await ctx.db.update(units).set(data).where(eq(units.id, id));
     }),
-  reorder: courseProcedure
+  reorder: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -51,6 +52,7 @@ export const unitsRouter = createTRPCRouter({
         ),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         const updates = input.data.map((item) =>
@@ -76,7 +78,7 @@ export const unitsRouter = createTRPCRouter({
         where: eq(units.id, input.unitId),
       });
     }),
-  create: courseProcedure
+  create: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -86,6 +88,7 @@ export const unitsRouter = createTRPCRouter({
         isPublished: z.boolean().optional(),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ input, ctx }) => {
       await ctx.db.insert(units).values({
         ...input,
@@ -93,7 +96,7 @@ export const unitsRouter = createTRPCRouter({
         isPublished: input.isPublished ?? false,
       });
     }),
-  getTableData: courseProcedure
+  getTableData: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
