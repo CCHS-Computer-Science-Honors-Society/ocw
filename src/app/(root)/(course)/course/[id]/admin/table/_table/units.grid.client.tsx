@@ -67,7 +67,7 @@ export const UnitTable = (props: { id: string }) => {
         });
       },
     },
-    debugTable: true,
+    debugTable: false,
   });
 
   return (
