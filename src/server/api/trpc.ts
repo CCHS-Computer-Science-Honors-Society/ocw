@@ -14,7 +14,6 @@ import { z, ZodError } from "zod";
 
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
-import { createAuthPlugin } from "./trpc-middleware";
 
 /**
  * 1. CONTEXT
@@ -147,16 +146,12 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 
-
 const courseInputSchema = z.object({
   courseId: z.string(),
 });
 
 export const courseProcedure = t.middleware(async ({ ctx, input, next }) => {
-  console.log("LOGGING:", input);
-  // note: input is unknown here, so we cast to a record to safely access its properties
   const parsed = courseInputSchema.safeParse(input);
-  console.log("PARSED:", parsed);
   if (!parsed.success) {
     throw new TRPCError({
       code: "BAD_REQUEST",
