@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { getColumns } from "./lesson.columns";
-import { Lesson } from "./types";
+import type { Lesson } from "./types";
 import { toast } from "sonner";
 
 type LessonTableProps = {

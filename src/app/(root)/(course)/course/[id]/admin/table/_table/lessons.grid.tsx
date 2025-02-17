@@ -5,6 +5,7 @@ import { units } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { cache } from "@/lib/cache";
 import { api } from "@/trpc/server";
+import { auth } from "@/server/auth";
 
 const getData = cache(
   async (courseId: string) => {
@@ -29,11 +30,14 @@ export const LessonGrid = async ({
   }>;
 }) => {
   const courseId = (await params).id;
-  const units = await getData(courseId);
+  const [units, session] = await Promise.all([getData(courseId), auth()]);
 
-  void api.lesson.getTableData.prefetch({
-    courseId,
-  });
+  if (session?.user) {
+    void api.lesson.getTableData.prefetch({
+      courseId,
+    });
+  }
+
   return (
     <div>
       <LessonTable units={units} courseId={courseId} />

@@ -191,6 +191,7 @@ export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
 export const courseRelations = relations(courses, ({ many }) => ({
   units: many(units),
   users: many(courseUsers),
+  logs: many(log),
 }));
 
 export const units = createTable(
@@ -232,6 +233,7 @@ export const unitsRelations = relations(units, ({ one, many }) => ({
   }),
   lessons: many(lessons),
   flashcards: many(easyNoteCard),
+  logs: many(log),
 }));
 
 export const contentTypeEnum = pgEnum("content_type", [
@@ -305,6 +307,7 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
     fields: [lessons.id],
     references: [lessonEmbed.lessonId],
   }),
+  logs: many(log),
 }));
 
 export const easyNoteCard = createTable("easy_note_card", {
@@ -324,5 +327,58 @@ export const easyNoteCardRelations = relations(easyNoteCard, ({ one }) => ({
   unit: one(units, {
     fields: [easyNoteCard.unitId],
     references: [units.id],
+  }),
+}));
+
+export const LogAction = [
+  "CREATE_LESSON",
+  "UPDATE_LESSON",
+  "DELETE_LESSON",
+  "CREATE_COURSE",
+  "UPDATE_COURSE",
+  "DELETE_COURSE",
+  "CREATE_UNIT",
+  "UPDATE_UNIT",
+  "DELETE_UNIT",
+  "REORDER_UNIT",
+  "REORDER_LESSON",
+  "DELETE_USER",
+  "UPDATE_USER",
+] as const;
+
+export type LogActionType = (typeof LogAction)[number];
+
+export const log = createTable("log", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  lessonId: text("lesson_id").references(() => lessons.id),
+  unitId: text("unit_id").references(() => units.id),
+  courseId: text("course_id").references(() => courses.id),
+  action: varchar("action", { length: 50, enum: LogAction }).notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export type InsertLog = typeof log.$inferInsert;
+
+export const logRelations = relations(log, ({ one }) => ({
+  user: one(users, {
+    fields: [log.userId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [log.courseId],
+    references: [courses.id],
+  }),
+  unit: one(units, {
+    fields: [log.unitId],
+    references: [units.id],
+  }),
+  lesson: one(lessons, {
+    fields: [log.lessonId],
+    references: [lessons.id],
   }),
 }));

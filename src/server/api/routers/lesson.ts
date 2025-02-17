@@ -1,9 +1,16 @@
 import { asc, eq, max, sql } from "drizzle-orm";
-import { courseProcedure, createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import {
+  courseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "../trpc";
 import { z } from "zod";
 import { courses, lessons, units, lessonEmbed } from "@/server/db/schema";
 import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
+import { insertLog } from "../actions/logs";
+import { TRPCError } from "@trpc/server";
 
 export const lessonRouter = createTRPCRouter({
   create: protectedProcedure
@@ -43,7 +50,7 @@ export const lessonRouter = createTRPCRouter({
 
       const c = content as JSONContent;
 
-      await ctx.db.transaction(async (tx) => {
+      const lessonId = await ctx.db.transaction(async (tx) => {
         const [insertedLesson] = await tx
           .insert(lessons)
           .values({
@@ -64,6 +71,20 @@ export const lessonRouter = createTRPCRouter({
             password,
           });
         }
+        return insertedLesson!.id;
+      });
+      if (!lessonId) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create lesson",
+        });
+      }
+
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "CREATE_LESSON",
+        courseId: courseId,
+        lessonId,
       });
 
       revalidateTag("getCourseById");
@@ -89,12 +110,15 @@ export const lessonRouter = createTRPCRouter({
 
       const newOrder = (highestOrder[0]?.maxOrder ?? 0) + 1;
 
-      await ctx.db.insert(units).values({
-        name,
-        description,
-        courseId,
-        order: input.position ?? newOrder,
-      });
+      const unit = await ctx.db
+        .insert(units)
+        .values({
+          name,
+          description,
+          courseId,
+          order: input.position ?? newOrder,
+        })
+        .returning();
 
       await ctx.db
         .update(courses)
@@ -102,6 +126,20 @@ export const lessonRouter = createTRPCRouter({
           unitLength: sql`${courses.unitLength} + 1`,
         })
         .where(eq(courses.id, courseId));
+
+      if (!unit[0]?.id) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create unit",
+        });
+      }
+
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "CREATE_UNIT",
+        id: unit[0]?.id,
+        courseId,
+      });
 
       revalidateTag("getCourseById");
     }),
@@ -143,7 +181,6 @@ export const lessonRouter = createTRPCRouter({
             .set({ order: item.position })
             .where(eq(lessons.id, item.id)),
         );
-
         await Promise.all(updates);
       });
     }),
@@ -167,7 +204,7 @@ export const lessonRouter = createTRPCRouter({
     )
     .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.transaction(async (tx) => {
+      const lesson = await ctx.db.transaction(async (tx) => {
         // build update object for lesson
         const updateData: Record<string, unknown> = {};
         if (input.name !== undefined) updateData.name = input.name;
@@ -181,7 +218,7 @@ export const lessonRouter = createTRPCRouter({
           .update(lessons)
           .set(updateData)
           .where(eq(lessons.id, input.id))
-          .returning({ id: lessons.id });
+          .returning({ id: lessons.id, courseId: lessons.courseId });
 
         if (!lessonResult.length) {
           throw new Error(`lesson with id ${input.id} not found`);
@@ -204,6 +241,20 @@ export const lessonRouter = createTRPCRouter({
             throw new Error(`embed for lesson ${input.id} not found`);
           }
         }
+        return lessonResult[0];
+      });
+      if (!lesson?.id) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `lesson with id ${input.id} not found`,
+        });
+      }
+
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "UPDATE_LESSON",
+        lessonId: lesson.id,
+        courseId: lesson.courseId,
       });
     }),
 

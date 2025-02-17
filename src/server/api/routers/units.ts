@@ -1,7 +1,14 @@
 import { z } from "zod";
-import { protectedProcedure, createTRPCRouter, publicProcedure, courseProcedure } from "../trpc";
+import {
+  protectedProcedure,
+  createTRPCRouter,
+  publicProcedure,
+  courseProcedure,
+} from "../trpc";
 import { asc, eq } from "drizzle-orm";
 import { units } from "@/server/db/schema";
+import { insertLog } from "../actions/logs";
+import { TRPCError } from "@trpc/server";
 
 export const unitsRouter = createTRPCRouter({
   getUnitsForDashboard: publicProcedure
@@ -38,7 +45,24 @@ export const unitsRouter = createTRPCRouter({
 
       const { id } = data;
 
-      await ctx.db.update(units).set(data).where(eq(units.id, id));
+      const updatedUnit = await ctx.db
+        .update(units)
+        .set(data)
+        .where(eq(units.id, id))
+        .returning({
+          id: units.id,
+          courseId: units.courseId,
+        });
+      if (!updatedUnit[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Unit not found",
+        });
+      }
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "UPDATE_UNIT",
+      });
     }),
   reorder: protectedProcedure
     .input(
@@ -63,6 +87,11 @@ export const unitsRouter = createTRPCRouter({
         );
 
         await Promise.all(updates);
+      });
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "REORDER_UNIT",
+        courseId: input.courseId,
       });
     }),
   getMinimalUnit: protectedProcedure
@@ -90,10 +119,26 @@ export const unitsRouter = createTRPCRouter({
     )
     .use(courseProcedure)
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.insert(units).values({
-        ...input,
-        order: input.position ?? 1000,
-        isPublished: input.isPublished ?? false,
+      const newUnit = await ctx.db
+        .insert(units)
+        .values({
+          ...input,
+          order: input.position ?? 1000,
+          isPublished: input.isPublished ?? false,
+        })
+        .returning();
+      if (!newUnit[0]) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create unit",
+        });
+      }
+
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "CREATE_UNIT",
+        courseId: newUnit[0].courseId,
+        unitId: newUnit[0].id,
       });
     }),
   getTableData: protectedProcedure

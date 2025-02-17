@@ -4,18 +4,31 @@ import { eq, or, desc, sql, and } from "drizzle-orm";
 import { courses, courseUsers, users } from "@/server/db/schema";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { insertLog } from "../actions/logs";
 
 export const usersRouter = createTRPCRouter({
   update: adminProcedure
     .input(updateUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.update(users).set(input).where(eq(users.id, input.id));
+      await Promise.all([
+        ctx.db.update(users).set(input).where(eq(users.id, input.id)),
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "UPDATE_USER",
+        }),
+      ]);
       revalidatePath("/admin");
     }),
   delete: adminProcedure
     .input(deleteUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(users).where(eq(users.id, input.id));
+      await Promise.all([
+        ctx.db.delete(users).where(eq(users.id, input.id)),
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "DELETE_USER",
+        }),
+      ]);
       revalidatePath("/admin");
     }),
   getUsers: adminProcedure

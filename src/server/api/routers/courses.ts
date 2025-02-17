@@ -1,7 +1,14 @@
 import { courses, lessons, units } from "@/server/db/schema";
 import { z } from "zod";
-import { adminProcedure, courseProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
+import {
+  adminProcedure,
+  courseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "../trpc";
 import { eq } from "drizzle-orm";
+import { insertLog } from "../actions/logs";
+import { TRPCError } from "@trpc/server";
 
 export const courseRouter = createTRPCRouter({
   create: adminProcedure
@@ -16,6 +23,10 @@ export const courseRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(courses).values(input);
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "CREATE_COURSE",
+      });
     }),
   update: protectedProcedure
     .input(
@@ -36,10 +47,22 @@ export const courseRouter = createTRPCRouter({
     )
     .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db
+      const course = await ctx.db
         .update(courses)
         .set(input.content)
-        .where(eq(courses.id, input.courseId));
+        .where(eq(courses.id, input.courseId))
+        .returning({ id: courses.id });
+      if (!course[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Course not found",
+        });
+      }
+      await insertLog({
+        userId: ctx.session.user.id,
+        action: "UPDATE_COURSE",
+        courseId: course[0]?.id,
+      });
     }),
   getBreadcrumbData: protectedProcedure
     .input(
@@ -59,15 +82,15 @@ export const courseRouter = createTRPCRouter({
         }),
         unitId
           ? ctx.db.query.units.findFirst({
-            where: eq(units.id, unitId),
-            columns: { id: true, name: true },
-          })
+              where: eq(units.id, unitId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
         lessonId
           ? ctx.db.query.lessons.findFirst({
-            where: eq(lessons.id, lessonId),
-            columns: { id: true, name: true },
-          })
+              where: eq(lessons.id, lessonId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
       ]);
 

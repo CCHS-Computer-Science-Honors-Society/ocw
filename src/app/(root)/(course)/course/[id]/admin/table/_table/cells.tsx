@@ -16,7 +16,7 @@ export const EditableTextCell = <T extends object>({
   column: { id },
   table,
 }: CellContext<T, string>): JSX.Element => {
-  const initialValue = getValue() as string;
+  const initialValue = getValue();
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const EditableCheckboxCell = <T extends object>({
   column: { id },
   table,
 }: CellContext<T, boolean>): JSX.Element => {
-  const initialValue = getValue() as boolean;
+  const initialValue = getValue();
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export const EditableSelectCell = <T extends object>({
 }: CellContext<T, string> & {
   options: { label: string; value: string }[];
 }) => {
-  const initialValue = getValue() as string;
+  const initialValue = getValue();
   const [value, setValue] = useState(initialValue);
   const [open, setOpen] = useState(false);
 
