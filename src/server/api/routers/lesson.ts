@@ -11,6 +11,7 @@ import type { JSONContent } from "novel";
 import { revalidateTag } from "next/cache";
 import { insertLog } from "../actions/logs";
 import { TRPCError } from "@trpc/server";
+import { after } from "next/server";
 
 export const lessonRouter = createTRPCRouter({
   create: protectedProcedure
@@ -21,8 +22,7 @@ export const lessonRouter = createTRPCRouter({
         embedUrl: z.string().optional(),
         content: z.any().optional(),
         description: z.string(),
-        unitId: z.string(),
-        contentType: z
+        unitId: z.string(), contentType: z
           .enum(["tiptap", "quizlet", "notion", "google_docs"])
           .default("tiptap"),
         password: z.string().optional(),
@@ -80,12 +80,14 @@ export const lessonRouter = createTRPCRouter({
         });
       }
 
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "CREATE_LESSON",
-        courseId: courseId,
-        lessonId,
-      });
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "CREATE_LESSON",
+          courseId: courseId,
+          lessonId,
+        });
+      })
 
       revalidateTag("getCourseById");
     }),
@@ -134,13 +136,14 @@ export const lessonRouter = createTRPCRouter({
         });
       }
 
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "CREATE_UNIT",
-        id: unit[0]?.id,
-        courseId,
-      });
-
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "CREATE_UNIT",
+          id: unit[0]?.id,
+          courseId,
+        });
+      })
       revalidateTag("getCourseById");
     }),
 
@@ -249,13 +252,15 @@ export const lessonRouter = createTRPCRouter({
           message: `lesson with id ${input.id} not found`,
         });
       }
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "UPDATE_LESSON",
+          lessonId: lesson.id,
+          courseId: lesson.courseId,
+        });
+      })
 
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "UPDATE_LESSON",
-        lessonId: lesson.id,
-        courseId: lesson.courseId,
-      });
     }),
 
   getTableData: protectedProcedure

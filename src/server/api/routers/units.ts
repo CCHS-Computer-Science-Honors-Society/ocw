@@ -9,6 +9,7 @@ import { asc, eq } from "drizzle-orm";
 import { units } from "@/server/db/schema";
 import { insertLog } from "../actions/logs";
 import { TRPCError } from "@trpc/server";
+import { after } from "next/server";
 
 export const unitsRouter = createTRPCRouter({
   getUnitsForDashboard: publicProcedure
@@ -59,10 +60,13 @@ export const unitsRouter = createTRPCRouter({
           message: "Unit not found",
         });
       }
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "UPDATE_UNIT",
-      });
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "UPDATE_UNIT",
+        });
+      })
+
     }),
   reorder: protectedProcedure
     .input(
@@ -88,11 +92,13 @@ export const unitsRouter = createTRPCRouter({
 
         await Promise.all(updates);
       });
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "REORDER_UNIT",
-        courseId: input.courseId,
-      });
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "REORDER_UNIT",
+          courseId: input.courseId,
+        });
+      })
     }),
   getMinimalUnit: protectedProcedure
     .input(z.object({ unitId: z.string() }))
@@ -134,12 +140,14 @@ export const unitsRouter = createTRPCRouter({
         });
       }
 
-      await insertLog({
-        userId: ctx.session.user.id,
-        action: "CREATE_UNIT",
-        courseId: newUnit[0].courseId,
-        unitId: newUnit[0].id,
-      });
+      after(() => {
+        insertLog({
+          userId: ctx.session.user.id,
+          action: "CREATE_UNIT",
+          courseId: newUnit[0]?.courseId,
+          unitId: newUnit[0]?.id,
+        });
+      })
     }),
   getTableData: protectedProcedure
     .input(
