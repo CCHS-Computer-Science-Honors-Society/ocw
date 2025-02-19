@@ -1,5 +1,5 @@
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { Unit } from "./types";
+import { type CellContext, type ColumnDef } from "@tanstack/react-table";
+import { type Unit } from "./types";
 import { EditableCheckboxCell, EditableTextCell } from "./cells";
 
 export const getColumns = (): ColumnDef<Unit>[] => {

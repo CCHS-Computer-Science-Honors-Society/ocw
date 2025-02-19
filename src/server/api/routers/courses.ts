@@ -24,8 +24,8 @@ export const courseRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(courses).values(input);
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "CREATE_COURSE",
         });
@@ -62,8 +62,8 @@ export const courseRouter = createTRPCRouter({
           message: "Course not found",
         });
       }
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "UPDATE_COURSE",
           courseId: course[0]?.id,

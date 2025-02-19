@@ -80,8 +80,8 @@ export const lessonRouter = createTRPCRouter({
         });
       }
 
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "CREATE_LESSON",
           courseId: courseId,
@@ -136,8 +136,8 @@ export const lessonRouter = createTRPCRouter({
         });
       }
 
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "CREATE_UNIT",
           id: unit[0]?.id,
@@ -252,8 +252,8 @@ export const lessonRouter = createTRPCRouter({
           message: `lesson with id ${input.id} not found`,
         });
       }
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "UPDATE_LESSON",
           lessonId: lesson.id,

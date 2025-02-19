@@ -1,7 +1,7 @@
 import { db } from "@/server/db";
 import { type InsertLog, log } from "@/server/db/schema";
 
-export const insertLog = async (newLog: InsertLog) => {
+export const  insertLog = async (newLog: InsertLog) => {
   try {
     if (!newLog.userId || !newLog.action) {
       throw new Error("Invalid log entry: missing required fields");

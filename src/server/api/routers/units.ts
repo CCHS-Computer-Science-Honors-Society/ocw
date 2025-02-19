@@ -60,8 +60,8 @@ export const unitsRouter = createTRPCRouter({
           message: "Unit not found",
         });
       }
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "UPDATE_UNIT",
         });
@@ -92,8 +92,8 @@ export const unitsRouter = createTRPCRouter({
 
         await Promise.all(updates);
       });
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "REORDER_UNIT",
           courseId: input.courseId,
@@ -140,8 +140,8 @@ export const unitsRouter = createTRPCRouter({
         });
       }
 
-      after(() => {
-        insertLog({
+      after(async () => {
+        await insertLog({
           userId: ctx.session.user.id,
           action: "CREATE_UNIT",
           courseId: newUnit[0]?.courseId,
