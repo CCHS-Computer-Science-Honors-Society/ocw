@@ -10,11 +10,10 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
-import { createAuthPlugin } from "./trpc-middleware";
 
 /**
  * 1. CONTEXT
@@ -147,11 +146,41 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 
-const authPlugin = createAuthPlugin();
+const courseInputSchema = z.object({
+  courseId: z.string(),
+});
 
-// Define a procedure that includes the authorization middleware
-export const courseProcedure = protectedProcedure.unstable_concat(
-  authPlugin.authorizeProcedure,
-);
+export const courseProcedure = t.middleware(async ({ ctx, input, next }) => {
+  const parsed = courseInputSchema.safeParse(input);
+  if (!parsed.success) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "missing or invalid courseId",
+    });
+  }
+
+  const { courseId } = parsed.data;
+
+  const user = ctx.session?.user;
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "no user session found",
+    });
+  }
+
+  // global admin bypasses course level checks
+  if (user.role === "admin") return next();
+
+  const courseRole = user.courses?.[courseId];
+  if (courseRole === "admin" || courseRole === "editor") {
+    return next();
+  }
+
+  throw new TRPCError({
+    code: "UNAUTHORIZED",
+    message: "insufficient course role",
+  });
+});
 
 export { t };

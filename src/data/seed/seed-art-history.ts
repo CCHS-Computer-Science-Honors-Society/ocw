@@ -368,6 +368,7 @@ const lessonsInserts = [
 const lessonEmbedInserts = lessonsInserts.map((lesson) => ({
   id: `${lesson.id}-embed`,
   lessonId: lesson.id,
+  courseId: "ap-art-history",
   embedUrl: lesson.embedUrl,
   password: null,
 }));
@@ -378,10 +379,10 @@ async function seedArtHistory() {
     await db.insert(units).values(unitInserts).onConflictDoNothing();
     console.log("Finished Units");
     console.log("Seeding Lessons...");
-    await db
-      .insert(lessons)
-      .values(lessonsInserts.map(({ embedUrl, ...lesson }) => lesson))
-      .onConflictDoNothing();
+    // await db
+    //   .insert(lessons)
+    //   .values(lessonsInserts.map(({ embedUrl, ...lesson }) => lesson))
+    //   .onConflictDoNothing();
     console.log("Finished Lessons");
     console.log("Seeding Lesson Embeds...");
     await db

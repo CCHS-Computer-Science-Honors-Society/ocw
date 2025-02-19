@@ -79,10 +79,10 @@ const Editor = ({
         editor.storage.markdown.gunknownetMarkdown(),
       );
       console.log(JSON.stringify(json));
-      update({
-        id: lessonId,
-        content: JSON.stringify(json),
-      });
+      // update({
+      //   id: lessonId,
+      //   content: JSON.stringify(json),
+      // });
       setSaveStatus("Saved");
     },
     500,

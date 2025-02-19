@@ -1,7 +1,15 @@
 import { courses, lessons, units } from "@/server/db/schema";
 import { z } from "zod";
-import { adminProcedure, courseProcedure, createTRPCRouter } from "../trpc";
+import {
+  adminProcedure,
+  courseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "../trpc";
 import { eq } from "drizzle-orm";
+import { insertLog } from "../actions/logs";
+import { TRPCError } from "@trpc/server";
+import { after } from "next/server";
 
 export const courseRouter = createTRPCRouter({
   create: adminProcedure
@@ -16,8 +24,15 @@ export const courseRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(courses).values(input);
+      after(async () => {
+        await insertLog({
+          userId: ctx.session.user.id,
+          action: "CREATE_COURSE",
+        });
+      })
+
     }),
-  update: courseProcedure
+  update: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -34,19 +49,35 @@ export const courseRouter = createTRPCRouter({
         }),
       }),
     )
+    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db
+      const course = await ctx.db
         .update(courses)
         .set(input.content)
-        .where(eq(courses.id, input.courseId));
+        .where(eq(courses.id, input.courseId))
+        .returning({ id: courses.id });
+      if (!course[0]) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Course not found",
+        });
+      }
+      after(async () => {
+        await insertLog({
+          userId: ctx.session.user.id,
+          action: "UPDATE_COURSE",
+          courseId: course[0]?.id,
+        });
+      })
+
     }),
-  getBreadcrumbData: courseProcedure
+  getBreadcrumbData: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
         unitId: z.string().optional(),
         lessonId: z.string().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const { courseId, unitId, lessonId } = input;
@@ -76,7 +107,5 @@ export const courseRouter = createTRPCRouter({
       if (lesson) breadcrumbs.push({ id: lesson.id, name: lesson.name });
 
       return breadcrumbs;
-    })
+    }),
 });
-
-

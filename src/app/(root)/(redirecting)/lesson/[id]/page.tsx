@@ -14,7 +14,7 @@ const getMinimalLesson = cache(
         embeds: {
           columns: {
             embedUrl: true,
-          }
+          },
         },
         unit: {
           columns: {

@@ -45,6 +45,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { useParams } from "next/navigation";
 
 const lessonSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -70,6 +71,8 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
   const [open, setOpen] = useState(false);
   const [unitOpen, setUnitOpen] = useState(false);
 
+  const { id } = useParams();
+  const courseId = id as string;
   const form = useForm<LessonFormData>({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
@@ -109,6 +112,7 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
     // Prepare the final data to be sent to the API
     const lessonData = {
       ...data,
+      courseId,
       content,
     };
     createLesson(lessonData);

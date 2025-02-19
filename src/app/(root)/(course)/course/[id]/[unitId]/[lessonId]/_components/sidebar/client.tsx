@@ -7,10 +7,7 @@ import { useState, useMemo, useCallback, memo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
-import {
-  SidebarGroup,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { SidebarGroup, SidebarMenuItem } from "@/components/ui/sidebar";
 import { type SidebarData } from "../../_queries";
 import { GetIcon } from "./icons";
 import { Separator } from "@/components/ui/separator";
@@ -136,9 +133,7 @@ function LessonsSidebar({
   }
 
   return (
-    <SidebarGroup
-      className="rounded-3xl "
-    >
+    <SidebarGroup className="rounded-3xl">
       <ScrollArea className="h-[calc(100vh-64px)] p-4 text-sm">
         <div className="mb-4 flex items-center justify-between text-gray-500">
           <Button
@@ -180,9 +175,7 @@ function LessonsSidebar({
             className="space-y-2"
           >
             {currentUnit.lessons.map((lesson) => (
-              <SidebarMenuItem
-                key={lesson.id}
-              >
+              <SidebarMenuItem key={lesson.id}>
                 <Link
                   onClick={() =>
                     handleLessonClick({
@@ -190,33 +183,32 @@ function LessonsSidebar({
                       unitId: lesson.unitId,
                     })
                   }
-                  className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted text-black font-semibold" : "text-gray-500"}`}
+                  className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted font-semibold text-black" : "text-gray-500"}`}
                   href={{
-                    pathname: lesson.pureLink ? lesson.embeds.embedUrl : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
+                    pathname: lesson.pureLink
+                      ? lesson.embeds.embedUrl
+                      : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
                   }}
                 >
-                  <div className={`flex items-center text-md rounded-md p-2 `}>
+                  <div className={`text-md flex items-center rounded-md p-2`}>
                     <GetIcon type={lesson.contentType} />
                     <span className="ml-2">{lesson.name}</span>
                   </div>
-                  <Separator className='' orientation='horizontal' />
+                  <Separator className="" orientation="horizontal" />
                 </Link>
-
               </SidebarMenuItem>
             ))}
           </motion.div>
         </AnimatePresence>
       </ScrollArea>
-      {
-        isOverlayOpen && (
-          <Overlay
-            data={data}
-            onSelectUnit={handleSelectUnit}
-            onClose={toggleOverlay}
-          />
-        )
-      }
-    </SidebarGroup >
+      {isOverlayOpen && (
+        <Overlay
+          data={data}
+          onSelectUnit={handleSelectUnit}
+          onClose={toggleOverlay}
+        />
+      )}
+    </SidebarGroup>
   );
 }
 

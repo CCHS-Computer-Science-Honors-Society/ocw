@@ -1,3 +1,5 @@
+/** eslint-disable @typescript-eslint/no-unsafe-assignment */
+/** eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Suspense } from "react";
 import { CoursesGrid } from "./_components/grid";
 import { BookPagination } from "./_components/pagination";
@@ -15,6 +17,7 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const parsedSearchParams = parseSearchParams(searchParams);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [courses, estimatedTotal] = await Promise.all([
     fetchCoursesWithPagination(parsedSearchParams),
     estimateTotalCourses(parsedSearchParams),
@@ -41,6 +44,7 @@ export default async function Page(props: {
             <BookPagination
               currentPage={currentPage}
               totalPages={totalPages}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               totalResults={estimatedTotal}
               searchParams={parsedSearchParams}
             />

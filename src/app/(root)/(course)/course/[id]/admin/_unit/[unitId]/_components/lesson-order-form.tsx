@@ -29,6 +29,7 @@ export const LessonOrderForm = ({ unitId, courseId }: LessonsFormProps) => {
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     update({
       courseId,
+      unitId,
       data: updateData,
     });
   };

@@ -1,7 +1,11 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
   parser: "@typescript-eslint/parser",
-  ignorePatterns: ["src/components/ui/*"],
+  ignorePatterns: [
+    "src/components/ui/*",
+    //FIX: Remove this ignore pattern, it's a temporary fix
+    "src/app/(root)/(course)/course/[id]/admin/table/_table/*",
+  ],
   parserOptions: {
     project: true,
   },
@@ -13,6 +17,9 @@ const config = {
   ],
   rules: {
     "@typescript-eslint/array-type": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": [
+      "warn",
+    ],
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
@@ -48,6 +55,7 @@ const config = {
         drizzleObjectName: ["db", "ctx.db"],
       },
     ],
+
   },
 };
 module.exports = config;

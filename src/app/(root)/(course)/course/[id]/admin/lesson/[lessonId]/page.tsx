@@ -28,7 +28,11 @@ export default async function Page({
               name: lesson.name,
               isPublished: lesson.isPublished,
               embedUrl: lesson.embedId ?? undefined,
-              contentType: lesson.contentType as "google_docs" | "notion" | "quizlet" | "tiptap",
+              contentType: lesson.contentType as
+                | "google_docs"
+                | "notion"
+                | "quizlet"
+                | "tiptap",
             }}
           />
         </div>
@@ -44,3 +48,4 @@ export default async function Page({
     </main>
   );
 }
+export const dynamic = "force-dynamic";

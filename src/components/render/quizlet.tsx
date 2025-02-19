@@ -24,7 +24,7 @@ export function QuizletEmbed({
           target="_blank"
           rel="noopener noreferrer"
           className={buttonVariants({
-            variant: "default"
+            variant: "default",
           })}
         >
           Open in new tab

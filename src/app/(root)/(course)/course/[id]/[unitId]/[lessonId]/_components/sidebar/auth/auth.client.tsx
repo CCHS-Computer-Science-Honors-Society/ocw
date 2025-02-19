@@ -1,21 +1,33 @@
-"use client"
+"use client";
 
-import { useSidebar, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { ChevronsUpDown, LogOut } from "lucide-react"
-import Link from "next/link"
+import {
+  useSidebar,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronsUpDown, LogOut } from "lucide-react";
+import Link from "next/link";
 
 export function AuthClient({
   user,
 }: {
   user: {
-    name?: string | null
-    email?: string | null
-    image?: string | null
-  }
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -61,7 +73,7 @@ export function AuthClient({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={'/logout'}>
+              <Link href={"/logout"}>
                 <LogOut />
                 Log out
               </Link>
@@ -70,7 +82,5 @@ export function AuthClient({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
-
-
