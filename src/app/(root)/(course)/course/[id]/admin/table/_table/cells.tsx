@@ -24,7 +24,9 @@ export const EditableTextCell = <T extends object>({
   }, [initialValue]);
 
   const handleBlur = () => {
-    table.options.meta?.updateData(index, id as keyof T, value);
+    if (value !== initialValue) {
+      table.options.meta?.updateData(index, id as keyof T, value);
+    }
   };
 
   return (
@@ -52,7 +54,10 @@ export const EditableCheckboxCell = <T extends object>({
   const handleChange = () => {
     const newValue = !value;
     setValue(newValue);
-    table.options.meta?.updateData(index, id as keyof T, newValue);
+    
+    if (newValue !== initialValue) {
+      table.options.meta?.updateData(index, id as keyof T, newValue);
+    }
   };
 
   return (
@@ -79,8 +84,11 @@ export const EditableSelectCell = <T extends object>({
 
   function handleChange(value: string) {
     setValue(value);
-    console.log(row.index, column.id as keyof T, value);
-    table.options.meta?.updateData(row.index, column.id as keyof T, value);
+    
+    if (value !== initialValue) {
+      console.log(row.index, column.id as keyof T, value);
+      table.options.meta?.updateData(row.index, column.id as keyof T, value);
+    }
   }
 
   useEffect(() => setValue(initialValue), [initialValue]);
