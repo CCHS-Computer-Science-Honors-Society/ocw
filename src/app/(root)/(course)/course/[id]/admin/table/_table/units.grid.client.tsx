@@ -14,16 +14,20 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 import { type Unit } from "./types";
 import { getColumns } from "./unit.columns";
 import { toast } from "sonner";
+import { createId } from "@paralleldrive/cuid2";
 
 export const UnitTable = (props: { id: string }) => {
   const { id } = props;
+  const [creating, isCreating] = useState(false)
+
   const [data] = api.units.getTableData.useSuspenseQuery({
     courseId: id,
   });
+
   const utils = api.useUtils();
   const { mutate } = api.units.update.useMutation({
     onError(error, __, ctx) {
@@ -91,6 +95,7 @@ export const UnitTable = (props: { id: string }) => {
 
         <Table>
           <TableHeader>
+
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

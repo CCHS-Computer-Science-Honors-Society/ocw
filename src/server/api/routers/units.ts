@@ -116,6 +116,7 @@ export const unitsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
+        id: z.string().optional(),
         courseId: z.string(),
         name: z.string(),
         description: z.string(),
@@ -129,6 +130,7 @@ export const unitsRouter = createTRPCRouter({
         .insert(units)
         .values({
           ...input,
+          id: input.id,
           order: input.position ?? 1000,
           isPublished: input.isPublished ?? false,
         })
