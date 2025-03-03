@@ -206,7 +206,7 @@ export const units = createTable(
     name: varchar("name", {
       length: 225,
     }).notNull(),
-    description: text("description").notNull(),
+    description: text("description"),
     isPublished: boolean("is_published").default(false).notNull(),
     order: integer("order").notNull(),
   },
