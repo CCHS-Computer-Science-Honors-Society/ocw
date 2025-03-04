@@ -24,7 +24,7 @@ Before proceeding with the setup, make sure you have the following installed on 
    Run the command below to clone the repository. Make sure Git is installed. If not, you can [download Git here](https://git-scm.com/downloads).
 
    ```bash
-   git clone https://github.com/CCHS-Computer-Science-Honors-Society/topsecret.git
+   git clone https://github.com/CCHS-Computer-Science-Honors-Society/ocw.git
    ```
 
 2. **Navigate to the Project Directory**
@@ -32,7 +32,7 @@ Before proceeding with the setup, make sure you have the following installed on 
    Move into the newly cloned project directory:
 
    ```bash
-   cd topsecret
+   cd ocw
    ```
 
 3. **Copy Environment Variables Template**
