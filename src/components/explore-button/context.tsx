@@ -6,6 +6,7 @@ interface ExploreContextType {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isMobile: boolean;
+  resetExplore: () => void;
 }
 
 const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
@@ -44,8 +45,28 @@ export const ExploreProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [isOpen]);
 
+  const resetExplore = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    const handleLinkClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === "A" || target.closest("a")) {
+        resetExplore();
+      }
+    };
+
+    document.addEventListener("click", handleLinkClick);
+    return () => {
+      document.removeEventListener("click", handleLinkClick);
+    };
+  }, []);
+
   return (
-    <ExploreContext.Provider value={{ isOpen, setIsOpen, isMobile }}>
+    <ExploreContext.Provider
+      value={{ isOpen, setIsOpen, isMobile, resetExplore }}
+    >
       {children}
     </ExploreContext.Provider>
   );

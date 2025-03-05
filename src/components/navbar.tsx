@@ -30,6 +30,15 @@ function Navbar({
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
+                    <Link href="/courses" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Courses
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
                     <Link href="/contributors" legacyBehavior passHref>
                       <NavigationMenuLink
                         className={navigationMenuTriggerStyle()}
@@ -39,11 +48,20 @@ function Navbar({
                     </Link>
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <Link href="/courses" legacyBehavior passHref>
+                    <Link href="/about" legacyBehavior passHref>
                       <NavigationMenuLink
                         className={navigationMenuTriggerStyle()}
                       >
-                        Courses
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link href="/contact" legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Contact
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>

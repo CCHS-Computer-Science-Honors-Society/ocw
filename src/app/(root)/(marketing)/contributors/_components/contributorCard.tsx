@@ -19,15 +19,18 @@ export default function ContributorCard({
   function handleClick() {
     setIsExpanded(!isExpanded);
   }
+
   return (
     <div
-      className={`overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 ease-in-out ${
+      className={`cursor-pointer overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 ease-in-out ${
         isExpanded ? "max-h-[500px]" : "h-20"
       }`}
-      onClick={() => handleClick}
+      onClick={handleClick}
     >
       <div
-        className={`flex ${isExpanded ? "flex-col items-start" : "flex-row items-center"} p-4`}
+        className={`flex ${
+          isExpanded ? "flex-col items-start" : "flex-row items-center"
+        } p-4`}
       >
         <div
           className={`relative ${
