@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import type { Result as SearchResult } from "@/app/api/search/route";
+import { api } from "@/trpc/react";
 
 const SEARCH_HISTORY_KEY = "searchHistoryOCWOverall";
 
@@ -22,12 +21,6 @@ export function SearchDropdownComponent() {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [searchResults, setSearchResults] = React.useState<SearchResult>({
-    courses: [],
-    units: [],
-    lessons: [],
-  });
   const [searchHistory, setSearchHistory] = React.useState<string[]>([]);
 
   const params = useParams();
@@ -37,8 +30,7 @@ export function SearchDropdownComponent() {
     const savedHistory = localStorage.getItem(SEARCH_HISTORY_KEY);
     if (savedHistory) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        setSearchHistory(JSON.parse(savedHistory));
+        setSearchHistory(JSON.parse(savedHistory) as string[]);
       } catch (error) {
         console.error("Error loading search history:", error);
       }
@@ -72,33 +64,23 @@ export function SearchDropdownComponent() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  React.useEffect(() => {
-    if (search.length === 0) {
-      setSearchResults({ courses: [], units: [], lessons: [] });
-    } else {
-      setIsLoading(true);
+  // Use tRPC query for search
+  const searchQuery = api.search.search.useQuery(
+    { q: search },
+    {
+      enabled: search.length > 0,
+    },
+  );
 
-      const searchedFor = search;
-      fetch(`/api/search?q=${search}`)
-        .then(async (results) => {
-          if (search !== searchedFor) {
-            return;
-          }
-          const json = (await results.json()) as SearchResult;
-          setIsLoading(false);
-          setSearchResults(json);
-        })
-        .catch((e) => {
-          console.error(e);
-          toast.error("Something went wrong, please try again later.");
-          setIsLoading(false);
-        });
-    }
-  }, [search]);
+  const searchResults = searchQuery.data ?? {
+    courses: [],
+    units: [],
+    lessons: [],
+  };
+  const isLoading = searchQuery.isLoading;
 
   const handleAddToHistory = (item: string) => {
     if (!item.trim()) return; // Don't add empty strings
-    console.log(item);
 
     // Remove duplicates and keep only the last 5 searches
     const newHistory = [item, ...searchHistory]

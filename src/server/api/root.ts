@@ -4,6 +4,7 @@ import { unitsRouter } from "@/server/api/routers/units";
 
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { usersRouter } from "@/server/api/routers/users";
+import { searchRouter } from "./routers/search";
 
 /**
  * This is the primary router for your server.
@@ -13,6 +14,7 @@ import { usersRouter } from "@/server/api/routers/users";
 export const appRouter = createTRPCRouter({
   courses: courseRouter,
   lesson: lessonRouter,
+  search: searchRouter,
   users: usersRouter,
   units: unitsRouter,
 });
