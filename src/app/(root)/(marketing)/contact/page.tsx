@@ -16,7 +16,7 @@ export default function ContactPage() {
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col items-center">
             <img
-              src="/headshots/default_headshot.jpg"
+              src="https://ugakd4mkxv.ufs.sh/f/QRXW6mPDvNgcf1bAHpXv5c4nkOatgwsmYj96KRpli3hUEdx1"
               alt="Aniketh Chenjeri"
               className="mb-4 h-20 rounded-full"
             />
@@ -36,7 +36,7 @@ export default function ContactPage() {
           </div>
           <div className="flex flex-col items-center">
             <img
-              src="/headshots/jason.png"
+              src="https://ugakd4mkxv.ufs.sh/f/QRXW6mPDvNgcBOk5v5CzYZbKVLiWvQ9r1lpMUyjw58osCXnO"
               alt="Jason Chen"
               className="full full 0 mb-4 h-20 rounded-full"
             />
