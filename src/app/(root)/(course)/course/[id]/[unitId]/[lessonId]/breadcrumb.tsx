@@ -6,9 +6,14 @@ import {
   BreadcrumbPage,
   Breadcrumb,
 } from "@/components/ui/breadcrumb";
-import React from "react";
-import { getSidebarData } from "./_queries";
+import React, { cache } from "react";
+import { getSidebarData, type SidebarData } from "./_queries";
 
+const getCurrentLesson = cache((data: SidebarData, lessonId: string) => {
+  return data.flatMap((unit) =>
+    unit.lessons.filter((lesson) => lesson.id === lessonId),
+  )[0]?.name;
+});
 export const BreadcrumbCourse = async ({
   params,
 }: {
@@ -20,9 +25,7 @@ export const BreadcrumbCourse = async ({
   const { id: courseId, lessonId } = await params;
   const data = await getSidebarData(courseId);
 
-  const currentLesson = data.flatMap((unit) =>
-    unit.lessons.filter((lesson) => lesson.id === lessonId),
-  )[0]?.name;
+  const currentLesson = getCurrentLesson(data, lessonId);
 
   return (
     <div>
