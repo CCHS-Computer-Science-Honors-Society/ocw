@@ -28,8 +28,7 @@ export default async function Layout({
       <SidebarProvider
         style={{
           //@ts-expect-error should work according to docs
-          "--sidebar-width": "30rem",
-          "--sidebar-width-mobile": "20rem",
+          "--sidebar-width": "21rem",
         }}
       >
         <Suspense>

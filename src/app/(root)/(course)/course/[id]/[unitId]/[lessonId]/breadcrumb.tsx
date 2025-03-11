@@ -19,33 +19,40 @@ export const BreadcrumbCourse = async ({
 }) => {
   const { id: courseId, lessonId } = await params;
   const data = await getSidebarData(courseId);
+
+  const currentLesson = data.flatMap((unit) =>
+    unit.lessons.filter((lesson) => lesson.id === lessonId),
+  )[0]?.name;
+
   return (
     <div>
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem className="">
-            <BreadcrumbLink href="/courses">Courses</BreadcrumbLink>
+          <BreadcrumbItem className="hidden md:flex">
+            <BreadcrumbLink href="/courses" className="hidden md:flex">
+              Courses
+            </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="" />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/course/${data[0]?.courseId}`}>
+          <BreadcrumbSeparator className="hidden md:flex" />
+          <BreadcrumbItem className="hidden md:flex">
+            <BreadcrumbLink
+              className="hidden md:flex"
+              href={`/course/${data[0]?.courseId}`}
+            >
               {data[0]?.course.name ?? "Unknown Course"}
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="" />
-          <BreadcrumbItem>
+          <BreadcrumbSeparator className="hidden md:flex" />
+          <BreadcrumbItem className="hidden md:flex">
             <BreadcrumbLink
               href={`/course/${data[0]?.courseId}/${data[0]?.id}`}
             >
               {data[0]?.name ?? "Unknown Unit"}
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="" />
+          <BreadcrumbSeparator className="hidden md:flex" />
           <BreadcrumbItem>
-            <BreadcrumbPage>
-              {data[0]?.lessons.find((lesson) => lesson.id === lessonId)
-                ?.name ?? "Unknown Lesson"}
-            </BreadcrumbPage>
+            <BreadcrumbPage>{currentLesson ?? "Unknown Lesson"}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
