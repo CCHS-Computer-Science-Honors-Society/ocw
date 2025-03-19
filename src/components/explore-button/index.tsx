@@ -239,13 +239,13 @@ function ExploreContent() {
                   <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {navigationData.map((section) => (
                       <div key={section.title} className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-500">
+                        <h3 className="text-3xl font-bold text-[#1a365d]">
                           {section.title}
                         </h3>
                         {section.categories.map((category) => (
                           <div key={category.name} className="space-y-2">
                             {category.name !== section.title && (
-                              <h4 className="text-sm font-medium">
+                              <h4 className="font-lg text-lg font-bold text-[#8b0800]">
                                 {category.name}
                               </h4>
                             )}
