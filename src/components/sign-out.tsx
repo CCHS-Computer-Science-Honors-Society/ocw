@@ -12,7 +12,7 @@ export function SignOut() {
 
   const handleSignOut = () => {
     setLoading(true);
-    router.push("/api/auth/signout");
+    router.push("/logout");
     router.refresh();
   };
 
@@ -29,7 +29,7 @@ export const SignInButton = () => {
       className={buttonVariants({
         variant: "ghost",
       })}
-      href="/api/auth/signin"
+      href="/login"
     >
       Sign In
     </Link>

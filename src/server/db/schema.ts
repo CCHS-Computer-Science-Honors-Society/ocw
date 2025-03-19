@@ -14,7 +14,6 @@ import {
   varchar,
   vector,
 } from "drizzle-orm/pg-core";
-import { type AdapterAccount } from "next-auth/adapters";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -24,7 +23,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTable;
 
-export const users = createTable("user", {
+export const user = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
@@ -44,63 +43,44 @@ export const users = createTable("user", {
   image: varchar("image", { length: 255 }),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
+export const usersRelations = relations(user, ({ many }) => ({
+  accounts: many(account),
   courses: many(courseUsers),
 }));
 
-export const accounts = createTable(
-  "account",
-  {
-    userId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    type: varchar("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
-    provider: varchar("provider", { length: 255 }).notNull(),
-    providerAccountId: varchar("provider_account_id", {
-      length: 255,
-    }).notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: varchar("token_type", { length: 255 }),
-    scope: varchar("scope", { length: 255 }),
-    id_token: text("id_token"),
-    session_state: varchar("session_state", { length: 255 }),
-  },
-  (account) => [
-    primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-    index("account_user_id_idx").on(account.userId),
-  ],
-);
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text('account_id').notNull(),
+  providerId: text('provider_id').notNull(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  idToken: text('id_token'),
+  accessTokenExpiresAt: timestamp('access_token_expires_at'),
+  refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
+  scope: text('scope'),
+  password: text('password'),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull()
+});
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+export const accountsRelations = relations(account, ({ one }) => ({
+  user: one(user, { fields: [account.userId], references: [user.id] }),
 }));
 
-export const sessions = createTable(
-  "session",
-  {
-    sessionToken: varchar("session_token", { length: 255 })
-      .notNull()
-      .primaryKey(),
-    userId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (session) => [index("session_user_id_idx").on(session.userId)],
-);
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: timestamp('expires_at').notNull(),
+  token: text('token').notNull().unique(),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
+});
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+export const sessionsRelations = relations(session, ({ one }) => ({
+  user: one(user, { fields: [session.userId], references: [user.id] }),
 }));
 
 export const verificationTokens = createTable(
@@ -115,6 +95,16 @@ export const verificationTokens = createTable(
   },
   (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })],
 );
+
+
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at'),
+  updatedAt: timestamp('updated_at')
+});
 
 export const courses = createTable(
   "courses",
@@ -154,6 +144,19 @@ export type Courses = Pick<
   "id" | "name" | "description" | "imageUrl"
 >;
 
+export const coursePermissionAction = [
+  "create_unit",
+  "edit_unit",
+  'delete_unit',
+  "create_lesson",
+  "edit_lesson",
+  "delete_lesson",
+  "reorder_lesson",
+  "manage_users",
+] as const;
+
+export type CoursePermissionAction = typeof coursePermissionAction[number];
+
 export const courseUsers = createTable(
   "course_users",
   {
@@ -162,13 +165,14 @@ export const courseUsers = createTable(
       .references(() => courses.id),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => user.id),
     role: varchar("role", {
       length: 255,
       enum: ["admin", "editor", "user"],
     })
       .notNull()
       .default("user"),
+    permissions: varchar("permissions", { length: 100, enum: coursePermissionAction }).array(),
   },
   (t) => [
     primaryKey({
@@ -182,9 +186,9 @@ export const courseUsersRelations = relations(courseUsers, ({ one }) => ({
     fields: [courseUsers.courseId],
     references: [courses.id],
   }),
-  user: one(users, {
+  user: one(user, {
     fields: [courseUsers.userId],
-    references: [users.id],
+    references: [user.id],
   }),
 }));
 
@@ -354,7 +358,7 @@ export const log = createTable("log", {
     .$defaultFn(() => createId()),
   userId: text("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
   lessonId: text("lesson_id").references(() => lessons.id),
   unitId: text("unit_id").references(() => units.id),
   courseId: text("course_id").references(() => courses.id),
@@ -365,9 +369,9 @@ export const log = createTable("log", {
 export type InsertLog = typeof log.$inferInsert;
 
 export const logRelations = relations(log, ({ one }) => ({
-  user: one(users, {
+  user: one(user, {
     fields: [log.userId],
-    references: [users.id],
+    references: [user.id],
   }),
   course: one(courses, {
     fields: [log.courseId],

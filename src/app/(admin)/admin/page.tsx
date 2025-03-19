@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { UsersTable } from "./_components/users-table";
 import { CreateCoursePopup } from "./_components/courses";
 import { api, HydrateClient } from "@/trpc/server";
-import { auth } from "@/server/auth";
+import { getSession } from "@/server/auth/auth.server";
 
 export default async function Page() {
-  const session = await auth();
+  const session = await getSession();
   if (session?.user.role != "admin") {
     redirect("/");
   }

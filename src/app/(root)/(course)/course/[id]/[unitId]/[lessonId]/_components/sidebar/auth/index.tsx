@@ -1,9 +1,9 @@
-import { auth } from "@/server/auth";
 import React from "react";
 import { AuthClient } from "./auth.client";
+import { getSession } from "@/server/auth/auth.server";
 
 export async function UserNav() {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session || !session.user) {
     return null;

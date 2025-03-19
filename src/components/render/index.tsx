@@ -1,7 +1,7 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
-import type { Session } from "next-auth";
 import dynamic from "next/dynamic";
 import { FlashcardPage } from "./flashcard-page";
+import type { Session } from "@/server/auth";
 
 const TiptapLesson = dynamic(
   () => import("./tiptap").then((mod) => mod.TiptapLesson),
@@ -86,9 +86,7 @@ export function checkIsEdit(session: Session | null, courseId: string) {
   if (!user) return false;
 
   const isAdmin = user.role === "admin";
-  const isCourseAdminOrEditor =
-    user.courses?.[courseId] === "admin" ||
-    user.courses?.[courseId] === "editor";
+  //TODO: impl after new auth
 
-  return isAdmin || isCourseAdminOrEditor;
+  return isAdmin;
 }
