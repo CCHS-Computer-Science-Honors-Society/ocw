@@ -31,7 +31,8 @@ export const EditableTextCell = <T extends object>({
 
   return (
     <Input
-      value={value}
+      value={value ?? undefined}
+      className="h-8 w-full border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
       onChange={(e) => setValue(e.target.value)}
       onBlur={handleBlur}
     />
@@ -54,7 +55,7 @@ export const EditableCheckboxCell = <T extends object>({
   const handleChange = () => {
     const newValue = !value;
     setValue(newValue);
-    
+
     if (newValue !== initialValue) {
       table.options.meta?.updateData(index, id as keyof T, newValue);
     }
@@ -84,7 +85,7 @@ export const EditableSelectCell = <T extends object>({
 
   function handleChange(value: string) {
     setValue(value);
-    
+
     if (value !== initialValue) {
       console.log(row.index, column.id as keyof T, value);
       table.options.meta?.updateData(row.index, column.id as keyof T, value);
@@ -101,7 +102,7 @@ export const EditableSelectCell = <T extends object>({
       open={open}
       onOpenChange={setOpen}
     >
-      <SelectTrigger className="w-[280px]">
+      <SelectTrigger className="w-[280px] h-8 border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background">
         <SelectValue placeholder="select a value" />
       </SelectTrigger>
       <SelectContent>

@@ -16,7 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
+
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = z.object({
   name: z.string().min(1).max(100),
@@ -31,18 +34,19 @@ function CreateUnit({
   courseId: string;
   callback: () => void;
 }) {
+  const api = useTRPC();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  const utils = api.useUtils();
+  const queryClient = useQueryClient();
 
-  const { mutate: createUnit } = api.lesson.createUnit.useMutation({
+  const { mutate: createUnit } = useMutation(api.lesson.createUnit.mutationOptions({
     onSuccess: () => {
       form.reset();
-      void utils.units.invalidate();
+      void queryClient.invalidateQueries(api.units.pathFilter());
       callback();
     },
-  });
+  }));
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     createUnit({

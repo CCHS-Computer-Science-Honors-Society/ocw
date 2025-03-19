@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,8 +43,10 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import { useParams } from "next/navigation";
+
+import { useMutation } from "@tanstack/react-query";
 
 const lessonSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -68,6 +69,7 @@ type CreateLessonFormProps = {
 };
 
 export function CreateLessonForm({ units }: CreateLessonFormProps) {
+  const api = useTRPC();
   const [open, setOpen] = useState(false);
   const [unitOpen, setUnitOpen] = useState(false);
 
@@ -80,12 +82,12 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
     },
   });
 
-  const { mutate: createLesson } = api.lesson.create.useMutation({
+  const { mutate: createLesson } = useMutation(api.lesson.create.mutationOptions({
     onSuccess: () => {
       setOpen(false);
       form.reset();
     },
-  });
+  }));
 
   const onSubmit = async (data: LessonFormData) => {
     // Here you would typically send the data to your API
@@ -220,7 +222,7 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
                         >
                           {field.value
                             ? units.find((unit) => unit.id === field.value)
-                                ?.name
+                              ?.name
                             : "Select unit"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>

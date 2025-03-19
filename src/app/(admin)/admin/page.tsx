@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { UsersTable } from "./_components/users-table";
 import { CreateCoursePopup } from "./_components/courses";
-import { api, HydrateClient } from "@/trpc/server";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { getSession } from "@/server/auth/auth.server";
 
 export default async function Page() {
@@ -10,7 +10,13 @@ export default async function Page() {
   if (session?.user.role != "admin") {
     redirect("/");
   }
-  void api.users.getUsers.prefetchInfinite({});
+  prefetch(trpc.users.getUsers.infiniteQueryOptions(
+    { limit: 10 },
+    {
+      staleTime: 30 * 60 * 1000,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  ));
 
   return (
     <main className="container mx-auto p-4">

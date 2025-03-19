@@ -1,4 +1,4 @@
-"use client";
+"use client";;
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
+
+import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
   name: z.string(),
@@ -37,6 +39,7 @@ export function UpdateLesson({
 }: {
   defaultValues: FormSchema & { id: string };
 }) {
+  const api = useTRPC();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,7 +50,7 @@ export function UpdateLesson({
     },
   });
 
-  const { isPending: isLoading } = api.lesson.update.useMutation({
+  const { isPending: isLoading } = useMutation(api.lesson.update.mutationOptions({
     onSuccess: () => {
       toast.success("Lesson updated successfully!");
     },
@@ -56,7 +59,7 @@ export function UpdateLesson({
         error.message ?? "An error occurred while updating the lesson.",
       );
     },
-  });
+  }));
 
   function onSubmit() {
     return "depricated use table";

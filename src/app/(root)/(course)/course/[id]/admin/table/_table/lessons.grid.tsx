@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { LessonTable } from "./lesson.grid.client";
 import { db } from "@/server/db";
 import { units } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { cache } from "@/lib/cache";
-import { api } from "@/trpc/server";
-import { auth } from "@/server/auth";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { LessonTableSkeleton } from "./lesson.grid.skeleton";
 
 const getData = cache(
   async (courseId: string) => {
@@ -30,17 +30,17 @@ export const LessonGrid = async ({
   }>;
 }) => {
   const courseId = (await params).id;
-  const [units, session] = await Promise.all([getData(courseId), auth()]);
+  const units = await getData(courseId);
 
-  if (session?.user) {
-    void api.lesson.getTableData.prefetch({
-      courseId,
-    });
-  }
+  prefetch(trpc.lesson.getTableData.queryOptions({
+    courseId,
+  }));
 
   return (
-    <div>
-      <LessonTable units={units} courseId={courseId} />
-    </div>
+    <HydrateClient>
+      <Suspense fallback={<LessonTableSkeleton />}>
+        <LessonTable units={units} courseId={courseId} />
+      </Suspense>
+    </HydrateClient>
   );
 };

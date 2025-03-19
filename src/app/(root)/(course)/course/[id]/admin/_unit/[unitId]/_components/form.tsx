@@ -1,4 +1,4 @@
-"use client";
+"use client";;
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,8 +15,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { api, type RouterOutputs } from "@/trpc/react";
+import { useTRPC, type RouterOutputs } from "@/trpc/react";
 import { LoadingButton } from "@/components/ui/loading-button";
+
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const schema = z.object({
   name: z.string().min(1).max(60),
@@ -32,19 +35,20 @@ interface FormContextProps {
 }
 
 export function LessonForm({ courseId, data }: FormContextProps) {
+  const api = useTRPC();
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       ...data,
     },
   });
-  const utils = api.useUtils();
+  const queryClient = useQueryClient();
 
-  const { mutate: update, isPending: isLoading } = api.units.update.useMutation(
+  const { mutate: update, isPending: isLoading } = useMutation(api.units.update.mutationOptions(
     {
       onSuccess: () => {
         toast.success("Unit updated successfully!");
-        void utils.units.invalidate();
+        void queryClient.invalidateQueries(api.units.pathFilter());
         form.reset(form.getValues()); // Reset dirty state after successful update
       },
       onError: (error) => {
@@ -53,7 +57,7 @@ export function LessonForm({ courseId, data }: FormContextProps) {
         );
       },
     },
-  );
+  ));
 
   if (!data) return null;
   const onSubmit = (formData: FormData) => {

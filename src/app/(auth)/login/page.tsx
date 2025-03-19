@@ -8,8 +8,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignIn() {
   const { data } = useSession()
-  const searchParams = useSearchParams()
-  const from = searchParams.get("from")
   const router = useRouter()
 
   if (data?.user) {
@@ -39,7 +37,7 @@ export default function SignIn() {
                 onClick={async () => {
                   await signIn.social({
                     provider: "google",
-                    callbackURL: from ?? '/'
+                    callbackURL: '/'
                   });
                 }}
               >

@@ -1,28 +1,34 @@
 "use client";
-
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import { UnitsList } from "./units-dnd";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UnitsFormProps {
   courseId: string;
 }
 
 export const UnitsForm = ({ courseId }: UnitsFormProps) => {
-  const utils = api.useUtils();
-  const [initialData] = api.units.getUnitsForDashboard.useSuspenseQuery({
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+  const {
+    data: initialData
+  } = useSuspenseQuery(api.units.getUnitsForDashboard.queryOptions({
     courseId,
-  });
+  }));
   const { mutate: update, isPending: isUpdating } =
-    api.units.reorder.useMutation({
+    useMutation(api.units.reorder.mutationOptions({
       onSuccess: () => {
-        void utils.units.invalidate();
+        void queryClient.invalidateQueries(api.units.pathFilter());
       },
-    });
+    }));
   const router = useRouter();
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {
