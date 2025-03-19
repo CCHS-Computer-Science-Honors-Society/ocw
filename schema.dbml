@@ -1,0 +1,171 @@
+enum content_type {
+  google_docs
+  notion
+  quizlet
+  tiptap
+  flashcard
+}
+
+table account {
+  user_id varchar(255) [not null]
+  type varchar(255) [not null]
+  provider varchar(255) [not null]
+  provider_account_id varchar(255) [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type varchar(255)
+  scope varchar(255)
+  id_token text
+  session_state varchar(255)
+
+  indexes {
+    (provider, provider_account_id) [pk]
+    user_id [name: 'account_user_id_idx']
+  }
+}
+
+table course_users {
+  course_id text [not null]
+  user_id text [not null]
+  role varchar(255) [not null, default: 'user']
+
+  indexes {
+    (course_id, user_id) [pk]
+  }
+}
+
+table courses {
+  id text [pk, not null]
+  subject_id text [not null]
+  name text [not null]
+  aliases text[] [not null]
+  is_public boolean [not null, default: false]
+  image_url text [not null, default: '/placeholder.svg']
+  units_length integer [not null, default: 0]
+  description text [not null]
+
+  indexes {
+    is_public [name: 'isPublicCourseIdx']
+    name [name: 'course_name_trgm_index']
+    name [name: 'course_name_search_index']
+    description [name: 'course_description_search_index']
+  }
+}
+
+table easy_note_card {
+  id text [pk, not null]
+  front text [not null]
+  embedding vector(1536)
+  options text[] [not null]
+  images text[]
+  unitId text [not null]
+  chapter integer [not null]
+  back text [not null]
+}
+
+table lesson_embed {
+  id text [pk, not null]
+  password text
+  lessonId text [not null]
+  embed_url text [not null]
+
+  indexes {
+    lessonId [name: 'lesson_embed_lesson_id_idx']
+  }
+}
+
+table lessons {
+  id text [pk, not null]
+  order integer [not null]
+  isPublished boolean [not null, default: false]
+  pure_link boolean [not null, default: false]
+  content_type content_type [not null]
+  courseId text [not null]
+  unitId text [not null]
+  name text [not null]
+  content jsonb
+
+  indexes {
+    name [name: 'units_title_search_index']
+    name [name: 'lesson_title_trgm_index']
+  }
+}
+
+table log {
+  id text [pk, not null]
+  user_id text [not null]
+  lesson_id text
+  unit_id text
+  course_id text
+  action varchar(50) [not null]
+  timestamp timestamp [not null, default: `now()`]
+}
+
+table session {
+  session_token varchar(255) [pk, not null]
+  user_id varchar(255) [not null]
+  expires "timestamp with time zone" [not null]
+
+  indexes {
+    user_id [name: 'session_user_id_idx']
+  }
+}
+
+table units {
+  id text [pk, not null]
+  courseId text [not null]
+  name varchar(225) [not null]
+  description text [not null]
+  is_published boolean [not null, default: false]
+  order integer [not null]
+
+  indexes {
+    name [name: 'unit_name_trgm_index']
+    name [name: 'units_name_search_index']
+    description [name: 'units_description_search_index']
+  }
+}
+
+table user {
+  id varchar(255) [pk, not null]
+  name varchar(255)
+  role varchar(255) [not null, default: 'user']
+  email varchar(255) [not null]
+  email_verified "timestamp with time zone" [default: `CURRENT_TIMESTAMP`]
+  image varchar(255)
+}
+
+table verification_token {
+  identifier varchar(255) [not null]
+  token varchar(255) [not null]
+  expires "timestamp with time zone" [not null]
+
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+ref: account.user_id > user.id
+
+ref: course_users.course_id > courses.id
+
+ref: course_users.user_id > user.id
+
+ref: easy_note_card.unitId > units.id
+
+ref: lessons.id - lesson_embed.lessonId
+
+ref: lessons.unitId > units.id
+
+ref: log.user_id - user.id
+
+ref: log.course_id > courses.id
+
+ref: log.unit_id > units.id
+
+ref: log.lesson_id > lessons.id
+
+ref: session.user_id - user.id
+
+ref: units.courseId > courses.id
