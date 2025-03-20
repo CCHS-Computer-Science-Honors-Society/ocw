@@ -22,6 +22,18 @@ export default function AboutPage() {
             of our academics, accelerates the pace of our learning, and deepens
             the level of our understanding.
           </p>
+          <p className="leading-relaxed">
+            To learn more about our platforms technical details, visit our{" "}
+            <a
+              href="https://creekocw-docs.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              documentation site
+            </a>
+            .
+          </p>
           <br />
           <h1 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900">
             Our Mission
