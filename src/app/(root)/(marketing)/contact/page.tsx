@@ -42,8 +42,8 @@ export default function ContactPage() {
             />
             <h2 className="text-xl font-semibold text-gray-900">Jason Chen</h2>
             <p className="text-center text-gray-600">
-              Jason is the Co-Founder of the old OpenCourseWare platform and is
-              helping develop the platform.
+              Jason is the Co-Founder of the original OpenCourseWare site and is
+              helping develop this platform.
             </p>
             <a
               href="mailto:jchen3200@gatech.edu"

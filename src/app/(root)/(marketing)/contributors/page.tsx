@@ -17,7 +17,7 @@ const contributors = [
     avatar:
       "https://ugakd4mkxv.ufs.sh/f/QRXW6mPDvNgcBOk5v5CzYZbKVLiWvQ9r1lpMUyjw58osCXnO",
     description:
-      "Jason is the Co-Founder of the old OpenCourseWare site and is helping develop this platform.",
+      "Jason is the Co-Founder of the original OpenCourseWare site and is helping develop this platform",
   },
   {
     id: 3,
