@@ -12,6 +12,7 @@ export const roleToPermissions: Record<CourseRole, CoursePermissionAction[]> = {
     "edit_lesson",
     "delete_lesson",
     "reorder_lesson",
+    "manage_course",
     "manage_users",
   ],
   editor: [
@@ -28,10 +29,13 @@ export const roleToPermissions: Record<CourseRole, CoursePermissionAction[]> = {
 /**
  * checks if a user has admin rights (either global or course-specific)
  */
-export async function hasAdminRights(
-  userId: string,
-  courseId: string,
-): Promise<boolean> {
+export async function hasAdminRights({
+  userId,
+  courseId,
+}: {
+  userId: string;
+  courseId: string;
+}): Promise<boolean> {
   // check if user is global admin
   const user = await db.query.user.findFirst({
     where: (user) => eq(user.id, userId),
@@ -58,11 +62,15 @@ export async function hasAdminRights(
 /**
  * grants a specific permission to a user for a course
  */
-export async function addPermission(
-  courseId: string,
-  userId: string,
-  permission: CoursePermissionAction,
-): Promise<void> {
+export async function addPermission({
+  courseId,
+  userId,
+  permission,
+}: {
+  courseId: string;
+  userId: string;
+  permission: CoursePermissionAction;
+}): Promise<void> {
   const query = sql`
     UPDATE ${courseUsers}
     SET ${courseUsers.permissions} = array_append(coalesce(${courseUsers.permissions}, '{}'::text[]), ${permission})
@@ -75,11 +83,15 @@ export async function addPermission(
 /**
  * revokes a specific permission from a user for a course
  */
-export async function removePermission(
-  courseId: string,
-  userId: string,
-  permission: CoursePermissionAction,
-): Promise<void> {
+export async function removePermission({
+  courseId,
+  userId,
+  permission,
+}: {
+  courseId: string;
+  userId: string;
+  permission: CoursePermissionAction;
+}): Promise<void> {
   const query = sql`
     UPDATE ${courseUsers}
     SET ${courseUsers.permissions} = array_remove(
@@ -170,4 +182,17 @@ export async function assignRole({
         role,
       },
     });
+}
+
+export async function hasPermission({
+  courseId,
+  userId,
+  permission,
+}: {
+  courseId: string;
+  userId: string;
+  permission: CoursePermissionAction;
+}) {
+  const userPermissions = await getUserPermissions({ courseId, userId });
+  return userPermissions.includes(permission);
 }

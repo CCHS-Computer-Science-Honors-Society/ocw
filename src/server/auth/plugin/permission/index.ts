@@ -1,342 +1,196 @@
-import { BetterAuthPlugin } from "better-auth";
-import { createAuthEndpoint, APIError, sessionMiddleware } from "better-auth/api";
-import { db } from "@/server/db"; // Your database instance
-import { and, eq, inArray } from "drizzle-orm";
+import { type BetterAuthPlugin, z } from "better-auth";
 import {
-  user,
-  courseUsers,
-  coursePermissions,
-  coursePermissionActions,
-  type coursePermissionAction,
-} from "@/server/db/schema";
-import { createId } from "@paralleldrive/cuid2";
+  createAuthEndpoint,
+  APIError,
+  sessionMiddleware,
+} from "better-auth/api";
+import { db } from "@/server/db"; // Your database instance
+import { and, eq } from "drizzle-orm";
+import { courseUsers, coursePermissionAction } from "@/server/db/schema";
+import { tryCatch } from "@/lib/try-catch";
+import { addPermission, removePermission } from "./service";
 
-export const coursePermissionsPlugin = () => ({
-  id: "coursePermissions",
+export const coursePermissionsPlugin = () =>
+  ({
+    id: "coursePermissions",
 
-  // Define endpoints
-  endpoints: {
-    // Check if user has permission
-    checkPermission: createAuthEndpoint("/course-permissions/check", {
-      method: "POST",
-      use: [sessionMiddleware],
-    }, async (ctx) => {
-      const { courseId, action } = ctx.body;
-      const session = ctx.context.session;
+    // Define endpoints
+    endpoints: {
+      // Check if user has permission
+      checkPermission: createAuthEndpoint(
+        "/course-permissions/check",
+        {
+          method: "POST",
+          use: [sessionMiddleware],
+        },
+        async (ctx) => {
+          // Validate the request body using Zod
+          const schema = z.object({
+            courseId: z.string(),
+            action: z.enum(coursePermissionAction),
+          });
+          const result = schema.safeParse(ctx.body);
 
-      if (!session?.user) {
-        throw new APIError("UNAUTHORIZED");
-      }
+          if (!result.success) {
+            throw new APIError("BAD_REQUEST", result.error);
+          }
 
-      // Check if user is global admin
-      const user = await db.query.users.findFirst({
-        where: eq(user.id, session.user.id),
-      });
+          const { courseId, action } = result.data;
 
-      if (user?.role === "admin") {
-        return ctx.json({ granted: true });
-      }
+          // Ensure a valid session exists
+          const session = ctx.context.session;
+          if (!session?.user) {
+            throw new APIError("UNAUTHORIZED");
+          }
 
-      // Check if user is a course admin
-      const courseUser = await db.query.courseUsers.findFirst({
-        where: and(
-          eq(courseUsers.userId, session.user.id),
-          eq(courseUsers.courseId, courseId),
-          eq(courseUsers.role, "admin")
-        ),
-      });
-
-      if (courseUser) {
-        return ctx.json({ granted: true });
-      }
-
-      // Check specific permission
-      const permission = await db.query.coursePermissions.findFirst({
-        where: and(
-          eq(coursePermissions.userId, session.user.id),
-          eq(coursePermissions.courseId, courseId),
-          eq(coursePermissions.action, action)
-        ),
-      });
-
-      return ctx.json({ granted: permission?.granted === true });
-    }),
-
-    // Grant permission
-    grantPermission: createAuthEndpoint("/course-permissions/grant", {
-      method: "POST",
-      use: [sessionMiddleware],
-    }, async (ctx) => {
-      const { courseId, userId, action } = ctx.body;
-      const session = ctx.context.session;
-
-      if (!session?.user) {
-        throw new APIError("UNAUTHORIZED");
-      }
-
-      // Check if requester is admin
-      const user = await db.query.users.findFirst({
-        where: eq(user.id, session.user.id),
-      });
-
-      const courseUser = await db.query.courseUsers.findFirst({
-        where: and(
-          eq(courseUsers.userId, session.user.id),
-          eq(courseUsers.courseId, courseId),
-          eq(courseUsers.role, "admin")
-        ),
-      });
-
-      if (user?.role !== "admin" && !courseUser) {
-        throw new APIError("FORBIDDEN");
-      }
-
-      // Insert or update permission
-      await db
-        .insert(coursePermissions)
-        .values({
-          id: createId(),
-          courseId,
-          userId,
-          action,
-          granted: true,
-          updatedAt: new Date(),
-        })
-        .onConflictDoUpdate({
-          target: [
-            coursePermissions.courseId,
-            coursePermissions.userId,
-            coursePermissions.action
-          ],
-          set: {
-            granted: true,
-            updatedAt: new Date(),
-          },
-        });
-
-      return ctx.json({ success: true });
-    }),
-
-    // Revoke permission
-    revokePermission: createAuthEndpoint("/course-permissions/revoke", {
-      method: "POST",
-      use: [sessionMiddleware],
-    }, async (ctx) => {
-      const { courseId, userId, action } = ctx.body;
-      const session = ctx.context.session;
-
-      if (!session?.user) {
-        throw new APIError("UNAUTHORIZED");
-      }
-
-      // Check if requester is admin
-      const user = await db.query.users.findFirst({
-        where: eq(user.id, session.user.id),
-      });
-
-      const courseUser = await db.query.courseUsers.findFirst({
-        where: and(
-          eq(courseUsers.userId, session.user.id),
-          eq(courseUsers.courseId, courseId),
-          eq(courseUsers.role, "admin")
-        ),
-      });
-
-      if (user?.role !== "admin" && !courseUser) {
-        throw new APIError("FORBIDDEN");
-      }
-
-      // Insert or update permission
-      await db
-        .insert(coursePermissions)
-        .values({
-          id: createId(),
-          courseId,
-          userId,
-          action,
-          granted: false,
-          updatedAt: new Date(),
-        })
-        .onConflictDoUpdate({
-          target: [
-            coursePermissions.courseId,
-            coursePermissions.userId,
-            coursePermissions.action
-          ],
-          set: {
-            granted: false,
-            updatedAt: new Date(),
-          },
-        });
-
-      return ctx.json({ success: true });
-    }),
-
-    // Get user permissions
-    getUserPermissions: createAuthEndpoint("/course-permissions/user", {
-      method: "POST",
-      use: [sessionMiddleware],
-    }, async (ctx) => {
-      const { courseId, userId } = ctx.body;
-      const session = ctx.context.session;
-
-      if (!session?.user) {
-        throw new APIError("UNAUTHORIZED");
-      }
-
-      // Only allow admins or the user themselves to view permissions
-      if (session.user.id !== userId) {
-        const user = await db.query.users.findFirst({
-          where: eq(user.id, session.user.id),
-        });
-
-        const courseUser = await db.query.courseUsers.findFirst({
-          where: and(
-            eq(courseUsers.userId, session.user.id),
-            eq(courseUsers.courseId, courseId),
-            eq(courseUsers.role, "admin")
-          ),
-        });
-
-        if (user?.role !== "admin" && !courseUser) {
-          throw new APIError("FORBIDDEN");
-        }
-      }
-
-      // Check if user is a global admin
-      const user = await db.query.users.findFirst({
-        where: eq(user.id, userId),
-      });
-
-      if (user?.role === "admin") {
-        // Global admins have all permissions
-        return ctx.json({
-          isGlobalAdmin: true,
-          permissions: coursePermissionActions.map(action => ({
-            action,
-            granted: true
-          }))
-        });
-      }
-
-      // Check if user is a course admin
-      const courseUser = await db.query.courseUsers.findFirst({
-        where: and(
-          eq(courseUsers.userId, userId),
-          eq(courseUsers.courseId, courseId)
-        ),
-      });
-
-      if (courseUser?.role === "admin") {
-        // Course admins have all permissions for this course
-        return ctx.json({
-          isCourseAdmin: true,
-          permissions: coursePermissionActions.map(action => ({
-            action,
-            granted: true
-          }))
-        });
-      }
-
-      // Get specific permissions
-      const permissions = await db.query.coursePermissions.findMany({
-        where: and(
-          eq(coursePermissions.userId, userId),
-          eq(coursePermissions.courseId, courseId)
-        ),
-      });
-
-      // Create a complete list of permissions (including those not set)
-      const allPermissions = coursePermissionActions.map((action: any) => {
-        const permission = permissions.find(p => p.action === action);
-        return {
-          action,
-          granted: permission?.granted === true
-        };
-      });
-
-      return ctx.json({
-        isGlobalAdmin: false,
-        isCourseAdmin: false,
-        permissions: allPermissions
-      });
-    }),
-
-    // Setup default permissions
-    setupDefaultPermissions: createAuthEndpoint("/course-permissions/setup", {
-      method: "POST",
-      use: [sessionMiddleware],
-    }, async (ctx) => {
-      const { courseId, userId, role } = ctx.body;
-      const session = ctx.context.session;
-
-      if (!session?.user) {
-        throw new APIError("UNAUTHORIZED");
-      }
-
-      // Check if requester has permission
-      const user = await db.query.users.findFirst({
-        where: eq(user.id, session.user.id),
-      });
-
-      const courseUser = await db.query.courseUsers.findFirst({
-        where: and(
-          eq(courseUsers.userId, session.user.id),
-          eq(courseUsers.courseId, courseId),
-          eq(courseUsers.role, "admin")
-        ),
-      });
-
-      if (user?.role !== "admin" && !courseUser) {
-        throw new APIError("FORBIDDEN");
-      }
-
-      // Define permissions based on role
-      let permissionsToGrant: CoursePermissionAction[] = [];
-
-      if (role === "admin") {
-        // Admin gets all permissions
-        permissionsToGrant = [...coursePermissionActions];
-      } else if (role === "editor") {
-        // Editor can edit content but not delete or create courses
-        permissionsToGrant = [
-          "edit_course",
-          "create_unit", "edit_unit", "reorder_unit",
-          "create_lesson", "edit_lesson", "delete_lesson", "reorder_lesson"
-        ] as CoursePermissionAction[];
-      } else {
-        // Regular user gets limited permissions
-        permissionsToGrant = [] as CoursePermissionAction[];
-      }
-
-      // First clear existing permissions to avoid stale entries
-      await db.delete(coursePermissions)
-        .where(and(
-          eq(coursePermissions.userId, userId),
-          eq(coursePermissions.courseId, courseId)
-        ));
-
-      // Insert all permissions
-      if (permissionsToGrant.length > 0) {
-        await db.insert(coursePermissions)
-          .values(
-            permissionsToGrant.map(action => ({
-              id: createId(),
-              courseId,
-              userId,
-              action,
-              granted: true,
-              updatedAt: new Date(),
-              createdAt: new Date()
-            }))
+          // Fetch the global user details
+          const { data: user, error: userError } = await tryCatch(
+            db.query.user.findFirst({
+              where: (user) => eq(user.id, session.user.id),
+            }),
           );
-      }
+          if (userError) {
+            console.error("Error fetching user from database:", userError);
+            throw new APIError("BAD_REQUEST", userError);
+          }
 
-      return ctx.json({ success: true });
-    }),
-  },
+          // If the user is a global admin, immediately grant access
+          if (user?.role === "admin") {
+            return ctx.json({ granted: true });
+          }
 
-  // Add hooks to protect course endpoints
-  hooks: {
-  },
-} satisfies BetterAuthPlugin);
+          // Fetch the course user record for the given course
+          const { data: courseUser, error: courseUserError } = await tryCatch(
+            db.query.courseUsers.findFirst({
+              where: and(
+                eq(courseUsers.userId, session.user.id),
+                eq(courseUsers.courseId, courseId),
+                eq(courseUsers.role, "admin"),
+              ),
+            }),
+          );
+          if (courseUserError) {
+            console.error(
+              "Error fetching course user from database:",
+              courseUserError,
+            );
+            throw new APIError("BAD_REQUEST", courseUserError);
+          }
+
+          // If the user is a course admin, immediately grant access
+          if (courseUser?.role === "admin") {
+            return ctx.json({ granted: true });
+          }
+
+          // Otherwise, check if the user has the specified permission
+          const hasPermission =
+            courseUser?.permissions && Array.isArray(courseUser.permissions)
+              ? courseUser.permissions.includes(action)
+              : false;
+
+          return ctx.json({ granted: hasPermission });
+        },
+      ),
+
+      // Grant permission
+      grantPermission: createAuthEndpoint(
+        "/course-permissions/grant",
+        {
+          method: "POST",
+          use: [sessionMiddleware],
+        },
+        async (ctx) => {
+          const schema = z.object({
+            courseId: z.string(),
+            userId: z.string(),
+            action: z.enum(coursePermissionAction),
+          });
+
+          const result = schema.safeParse(ctx.body);
+          if (!result.success) {
+            throw new APIError("BAD_REQUEST", result.error);
+          }
+          const { courseId, userId, action } = result.data;
+
+          const session = ctx.context.session;
+
+          if (!session?.user) {
+            throw new APIError("UNAUTHORIZED");
+          }
+
+          const { data: courseUser, error: courseUserError } = await tryCatch(
+            db.query.courseUsers.findFirst({
+              where: and(
+                eq(courseUsers.userId, session.user.id),
+                eq(courseUsers.courseId, courseId),
+                eq(courseUsers.role, "admin"),
+              ),
+            }),
+          );
+
+          if (courseUserError) {
+            throw new APIError("NOT_FOUND");
+          }
+
+          if (
+            session.user?.role !== "admin" &&
+            !(courseUser?.role === "admin")
+          ) {
+            throw new APIError("FORBIDDEN");
+          }
+
+          await addPermission({ userId, courseId, permission: action });
+          return ctx.json({ success: true });
+        },
+      ),
+
+      // Revoke permission
+      revokePermission: createAuthEndpoint(
+        "/course-permissions/revoke",
+        {
+          method: "POST",
+          use: [sessionMiddleware],
+        },
+        async (ctx) => {
+          const schema = z.object({
+            courseId: z.string(),
+            userId: z.string(),
+            action: z.enum(coursePermissionAction),
+          });
+
+          const result = schema.safeParse(ctx.body);
+          if (!result.success) {
+            throw new APIError("BAD_REQUEST");
+          }
+
+          const { courseId, userId, action } = result.data;
+
+          const session = ctx.context.session;
+
+          if (!session?.user) {
+            throw new APIError("UNAUTHORIZED");
+          }
+
+          const courseUser = await db.query.courseUsers.findFirst({
+            where: and(
+              eq(courseUsers.userId, session.user.id),
+              eq(courseUsers.courseId, courseId),
+            ),
+          });
+
+          if (
+            session.user?.role !== "admin" &&
+            !(courseUser?.role === "admin")
+          ) {
+            throw new APIError("FORBIDDEN");
+          }
+
+          await removePermission({ userId, courseId, permission: action });
+          return ctx.json({ success: true });
+        },
+      ),
+    },
+
+    // Add hooks to protect course endpoints
+    hooks: {},
+  }) satisfies BetterAuthPlugin;
