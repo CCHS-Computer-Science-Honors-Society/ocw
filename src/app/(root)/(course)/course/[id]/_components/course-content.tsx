@@ -4,8 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Link } from "@/components/ui/link";
 import { getCourseById } from "@/server/api/scripts";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const CourseContent = async (props: {
@@ -34,6 +34,7 @@ export const CourseContent = async (props: {
               <div className="mb-1 text-gray-500">UNIT {index + 1}</div>
               <Link
                 href={`/course/${course.id}/${unit.id}`}
+                prefetch
                 className="break-words text-[#1e3a7b] hover:underline"
               >
                 {unit.name}
@@ -66,6 +67,7 @@ export const CourseContent = async (props: {
                     <div className="space-y-3 py-2">
                       {unit.lessons.map((lesson, index) => (
                         <Link
+                          prefetch
                           key={index}
                           href={`/course/${course.id}/${unit.id}/${lesson.id}`}
                           className="block text-[#1e3a7b] hover:underline"

@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import {
   Table,
   TableBody,
@@ -8,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import {
   flexRender,
   getCoreRowModel,
@@ -19,6 +18,10 @@ import { getColumns } from "./lesson.columns";
 import type { Lesson } from "./types";
 import { toast } from "sonner";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+
 type LessonTableProps = {
   units: {
     label: string;
@@ -28,17 +31,20 @@ type LessonTableProps = {
 };
 
 export const LessonTable = ({ units, courseId }: LessonTableProps) => {
-  const [data] = api.lesson.getTableData.useSuspenseQuery({
+  const api = useTRPC();
+  const {
+    data: data
+  } = useSuspenseQuery(api.lesson.getTableData.queryOptions({
     courseId: courseId,
-  });
-  const utils = api.useUtils();
-  const { mutate } = api.lesson.update.useMutation({
+  }));
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(api.lesson.update.mutationOptions({
     onError(error, __, ctx) {
-      const typedCtx = ctx as { prevData?: Lesson[] };
+      const typedCtx = ctx as unknown as { prevData?: Lesson[] };
       if (!typedCtx.prevData) return;
-      utils.lesson.getTableData.setData(
-        { courseId: courseId },
-        typedCtx.prevData,
+      queryClient.setQueryData(
+        api.lesson.getTableData.queryKey({ courseId: courseId }),
+        typedCtx.prevData
       );
       //make sure to set that prevData is lesson[]
       toast.error(
@@ -47,12 +53,12 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
     },
     onSettled() {
       // Sync with server once mutation has settled
-      void utils.lesson.getTableData.invalidate();
+      void queryClient.invalidateQueries(api.lesson.getTableData.pathFilter());
     },
     async onMutate(newData) {
-      await utils.lesson.getTableData.cancel();
-      const prevData = utils.lesson.getTableData.getData();
-      utils.lesson.getTableData.setData({ courseId: courseId }, (oldData) => {
+      await queryClient.cancelQueries(api.lesson.getTableData.pathFilter());
+      const prevData = queryClient.getQueryData(api.lesson.getTableData.queryKey());
+      queryClient.setQueryData(api.lesson.getTableData.queryKey({ courseId: courseId }), (oldData) => {
         if (!oldData) return oldData;
         const index = oldData.findIndex((item) => item.id === newData.id);
         if (index === -1) return oldData;
@@ -76,7 +82,7 @@ export const LessonTable = ({ units, courseId }: LessonTableProps) => {
       });
       return { prevData };
     },
-  });
+  }));
 
   const table = useReactTable({
     data,

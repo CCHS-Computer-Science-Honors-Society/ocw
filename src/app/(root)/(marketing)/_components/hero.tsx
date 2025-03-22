@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative bg-background">
+    <section className="relative h-full">
       <div className="container relative z-auto mx-auto flex flex-col gap-5 px-4 text-center">
         <h2 className="mb-8 text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl">
           Education with OpenCourseWare

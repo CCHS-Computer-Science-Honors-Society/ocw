@@ -1,7 +1,7 @@
 import { deleteUserInput, updateUserInput } from "@/validators/users";
 import { adminProcedure, createTRPCRouter, protectedProcedure } from "../trpc";
 import { eq, or, desc, sql, and } from "drizzle-orm";
-import { courses, courseUsers, users } from "@/server/db/schema";
+import { courses, courseUsers, user } from "@/server/db/schema";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { insertLog } from "../actions/logs";
@@ -11,19 +11,19 @@ export const usersRouter = createTRPCRouter({
   update: adminProcedure
     .input(updateUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.update(users).set(input).where(eq(users.id, input.id))
-        after(async () => {
-          await insertLog({
-            userId: ctx.session.user.id,
-            action: "UPDATE_USER",
-          })
+      await ctx.db.update(user).set(input).where(eq(user.id, input.id))
+      after(async () => {
+        await insertLog({
+          userId: ctx.session.user.id,
+          action: "UPDATE_USER",
         })
-        revalidatePath("/admin");
+      })
+      revalidatePath("/admin");
     }),
   delete: adminProcedure
     .input(deleteUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(users).where(eq(users.id, input.id))
+      await ctx.db.delete(user).where(eq(user.id, input.id))
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
@@ -44,10 +44,10 @@ export const usersRouter = createTRPCRouter({
 
       const items = await ctx.db
         .select()
-        .from(users)
-        .orderBy(desc(users.id))
+        .from(user)
+        .orderBy(desc(user.id))
         .limit(limit + 1)
-        .where(cursor ? sql`${users.id} < ${cursor}` : undefined);
+        .where(cursor ? sql`${user.id} < ${cursor}` : undefined);
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
@@ -90,6 +90,6 @@ export const usersRouter = createTRPCRouter({
             or(eq(courseUsers.role, "admin"), eq(courseUsers.role, "editor")),
           ),
         )
-        .innerJoin(users, eq(users.id, courseUsers.userId));
+        .innerJoin(user, eq(user.id, courseUsers.userId));
     }),
 });

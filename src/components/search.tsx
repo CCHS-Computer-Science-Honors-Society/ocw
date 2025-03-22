@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
@@ -13,11 +12,14 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
+
+import { useQuery } from "@tanstack/react-query";
 
 const SEARCH_HISTORY_KEY = "searchHistoryOCWOverall";
 
 export function SearchDropdownComponent() {
+  const api = useTRPC();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -65,12 +67,12 @@ export function SearchDropdownComponent() {
   }, []);
 
   // Use tRPC query for search
-  const searchQuery = api.search.search.useQuery(
+  const searchQuery = useQuery(api.search.search.queryOptions(
     { q: search },
     {
       enabled: search.length > 0,
     },
-  );
+  ));
 
   const searchResults = searchQuery.data ?? {
     courses: [],

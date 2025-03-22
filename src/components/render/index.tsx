@@ -1,32 +1,9 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
-import type { Session } from "next-auth";
-import dynamic from "next/dynamic";
 import { FlashcardPage } from "./flashcard-page";
-
-const TiptapLesson = dynamic(
-  () => import("./tiptap").then((mod) => mod.TiptapLesson),
-  {
-    loading: () => <p>Loading...</p>,
-  },
-);
-
-const GoogleDocsLesson = dynamic(
-  () => import("./google-docs").then((mod) => mod.GoogleDocsEmbed),
-  {
-    loading: () => <p>Loading...</p>,
-  },
-);
-
-const QuizletEmbed = dynamic(
-  () => import("./quizlet").then((mod) => mod.QuizletEmbed),
-  {
-    loading: () => <p>Loading...</p>,
-  },
-);
-
-const Notion = dynamic(() => import("./notion").then((mod) => mod.Notion), {
-  loading: () => <p>Loading...</p>,
-});
+import type { Session } from "@/server/auth";
+import { QuizletEmbed } from "./quizlet";
+import { Notion } from "./notion";
+import { GoogleDocsEmbed } from "./google-docs";
 
 export default function RenderLesson({
   lesson,
@@ -52,14 +29,6 @@ export default function RenderLesson({
   }
 
   switch (lesson.contentType) {
-    case "tiptap":
-      return (
-        <TiptapLesson
-          content={lesson.content}
-          title={lesson.name}
-          isEdit={readOnly}
-        />
-      );
     case "quizlet":
       return (
         <QuizletEmbed
@@ -74,7 +43,7 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return <GoogleDocsLesson embedId={lesson.embedId} />;
+      return <GoogleDocsEmbed embedId={lesson.embedId} />;
     case "flashcard":
       return <FlashcardPage unitId={lesson.unitId} />;
   }
@@ -86,9 +55,7 @@ export function checkIsEdit(session: Session | null, courseId: string) {
   if (!user) return false;
 
   const isAdmin = user.role === "admin";
-  const isCourseAdminOrEditor =
-    user.courses?.[courseId] === "admin" ||
-    user.courses?.[courseId] === "editor";
+  //TODO: impl after new auth
 
-  return isAdmin || isCourseAdminOrEditor;
+  return isAdmin;
 }

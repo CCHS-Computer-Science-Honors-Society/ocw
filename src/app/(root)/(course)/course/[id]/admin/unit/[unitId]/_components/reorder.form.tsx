@@ -1,12 +1,15 @@
-"use client";
-
+"use client";;
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import { LessonsList } from "./reorder.client";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface LessonsFormProps {
   id: string;
@@ -14,17 +17,20 @@ interface LessonsFormProps {
 }
 
 export const LessonsForm = ({ id, unitId }: LessonsFormProps) => {
+  const api = useTRPC();
   const courseId = id;
-  const utils = api.useUtils();
-  const [initialData] = api.lesson.getLessonsForDashboard.useSuspenseQuery({
+  const queryClient = useQueryClient();
+  const {
+    data: initialData
+  } = useSuspenseQuery(api.lesson.getLessonsForDashboard.queryOptions({
     unitId,
-  });
+  }));
   const { mutate: update, isPending: isUpdating } =
-    api.lesson.reorder.useMutation({
+    useMutation(api.lesson.reorder.mutationOptions({
       onSuccess: () => {
-        void utils.lesson.invalidate();
+        void queryClient.invalidateQueries(api.lesson.pathFilter());
       },
-    });
+    }));
   const router = useRouter();
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {

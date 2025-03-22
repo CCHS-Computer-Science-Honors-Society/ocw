@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -32,40 +31,57 @@ import {
 import type { User } from "../types";
 import { toast } from "sonner";
 import type { UpdateUserData } from "@/validators/users";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
+
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function UsersTable() {
+  const api = useTRPC();
   const router = useRouter();
 
-  const [{ pages }, { fetchNextPage, hasNextPage, isFetchingNextPage }] =
-    api.users.getUsers.useSuspenseInfiniteQuery(
+  const {
+    data: { pages },
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery(
+    api.users.getUsers.infiniteQueryOptions(
       { limit: 10 },
       {
+        // 30 minutes
+        staleTime: 30 * 60 * 1000,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       },
-    );
+    ),
+  );
 
   const users = pages.flatMap((page) => page.items);
 
-  const utils = api.useUtils();
-  const { mutate: update } = api.users.update.useMutation({
-    onSuccess: () => {
-      void utils.users.getUsers.invalidate();
-      toast.success("Updated");
-    },
-    onError: (err) => {
-      toast.error(`Error updating user: ${err.message}`);
-    },
-  });
-  const { mutate: deleteUser } = api.users.delete.useMutation({
-    onSuccess: () => {
-      void utils.users.getUsers.invalidate();
-      toast.success("Deleted");
-    },
-    onError: (err) => {
-      toast.error(`Error deleting user: ${err.message}`);
-    },
-  });
+  const queryClient = useQueryClient();
+  const { mutate: update } = useMutation(
+    api.users.update.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries(api.users.getUsers.pathFilter());
+        toast.success("Updated");
+      },
+      onError: (err) => {
+        toast.error(`Error updating user: ${err.message}`);
+      },
+    }),
+  );
+  const { mutate: deleteUser } = useMutation(
+    api.users.delete.mutationOptions({
+      onSuccess: () => {
+        void queryClient.invalidateQueries(api.users.getUsers.pathFilter());
+        toast.success("Deleted");
+      },
+      onError: (err) => {
+        toast.error(`Error deleting user: ${err.message}`);
+      },
+    }),
+  );
 
   const [loading, setLoading] = React.useState<string | null>(null);
   const [editing, setEditing] = React.useState<string | null>(null);

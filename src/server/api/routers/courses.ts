@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { insertLog } from "../actions/logs";
 import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
+import { hasPermission } from "@/server/auth/plugin/permission/service";
 
 export const courseRouter = createTRPCRouter({
   create: adminProcedure
@@ -29,8 +30,7 @@ export const courseRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           action: "CREATE_COURSE",
         });
-      })
-
+      });
     }),
   update: protectedProcedure
     .input(
@@ -49,8 +49,19 @@ export const courseRouter = createTRPCRouter({
         }),
       }),
     )
-    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
+      if (
+        !(await hasPermission({
+          userId: ctx.session.user.id,
+          courseId: input.courseId,
+          permission: "manage_course",
+        }))
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to perform this action",
+        });
+      }
       const course = await ctx.db
         .update(courses)
         .set(input.content)
@@ -68,8 +79,7 @@ export const courseRouter = createTRPCRouter({
           action: "UPDATE_COURSE",
           courseId: course[0]?.id,
         });
-      })
-
+      });
     }),
   getBreadcrumbData: protectedProcedure
     .input(
@@ -89,15 +99,15 @@ export const courseRouter = createTRPCRouter({
         }),
         unitId
           ? ctx.db.query.units.findFirst({
-            where: eq(units.id, unitId),
-            columns: { id: true, name: true },
-          })
+              where: eq(units.id, unitId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
         lessonId
           ? ctx.db.query.lessons.findFirst({
-            where: eq(lessons.id, lessonId),
-            columns: { id: true, name: true },
-          })
+              where: eq(lessons.id, lessonId),
+              columns: { id: true, name: true },
+            })
           : Promise.resolve(undefined),
       ]);
 

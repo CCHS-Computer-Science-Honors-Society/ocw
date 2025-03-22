@@ -3,8 +3,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import { auth } from "@/server/auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getSession } from "@/server/auth/auth.server";
 
 function getLink(id: string, unitId?: string, lessonId?: string) {
   if (lessonId) {
@@ -28,7 +28,7 @@ export default async function EditButton({
   const { lessonId, unitId, id } = await params;
 
   const link = getLink(id, unitId, lessonId);
-  const session = await auth();
+  const session = await getSession();
 
   const hasEdit = checkIsEdit(session, id);
 

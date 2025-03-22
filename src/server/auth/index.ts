@@ -1,10 +1,30 @@
-import NextAuth from "next-auth";
-import { cache } from "react";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "../db";
+import { env } from "@/env";
+import { coursePermissionsPlugin } from "./plugin/permission";
 
-import { authConfig } from "./config";
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+  }),
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        default: "user",
+        fieldName: "role",
+        required: true,
+      },
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: env.AUTH_GOOGLE_ID,
+      clientSecret: env.AUTH_GOOGLE_SECRET,
+    },
+  },
+  plugins: [coursePermissionsPlugin()],
+});
 
-const { auth: uncachedAuth, handlers, signIn, signOut } = NextAuth(authConfig);
-
-const auth = cache(uncachedAuth);
-
-export { auth, handlers, signIn, signOut };
+export type Session = typeof auth.$Infer.Session;

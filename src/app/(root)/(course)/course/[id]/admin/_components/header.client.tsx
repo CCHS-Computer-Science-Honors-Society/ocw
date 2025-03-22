@@ -11,8 +11,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useRouter, useParams } from "next/navigation";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import { z } from "zod";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const safeString = z.preprocess((val) => {
   return Array.isArray(val) ? val[0] : val;
@@ -25,6 +27,7 @@ const paramsSchema = z.object({
 });
 
 export const ClientHeader = () => {
+  const api = useTRPC();
   const router = useRouter();
   const rawParams = useParams();
   const { id, unitId, lessonId } = paramsSchema.parse(rawParams);
@@ -35,11 +38,13 @@ export const ClientHeader = () => {
     else if (index === 2) router.push(`/course/${id}/admin/lesson/${lessonId}`);
   };
 
-  const [breadcrumbs] = api.courses.getBreadcrumbData.useSuspenseQuery({
+  const {
+    data: breadcrumbs
+  } = useSuspenseQuery(api.courses.getBreadcrumbData.queryOptions({
     courseId: id,
     unitId: unitId,
     lessonId: lessonId,
-  });
+  }));
 
   return (
     <div>

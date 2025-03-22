@@ -1,7 +1,7 @@
 import React from "react";
 import { UnitTable } from "./units.grid.client";
-import { api } from "@/trpc/server";
-import { auth } from "@/server/auth";
+import { prefetch, trpc } from "@/trpc/server";
+import { getSession } from "@/server/auth/auth.server";
 
 export const Units = async ({
   params,
@@ -10,13 +10,11 @@ export const Units = async ({
     id: string;
   }>;
 }) => {
-  const [{ id }, session] = await Promise.all([params, auth()]);
+  const { id } = await params
 
-  if (session?.user) {
-    void api.units.getTableData.prefetch({
-      courseId: id,
-    });
-  }
+  prefetch(trpc.units.getUnitsForDashboard.queryOptions({
+    courseId: id,
+  }));
 
   return (
     <div>

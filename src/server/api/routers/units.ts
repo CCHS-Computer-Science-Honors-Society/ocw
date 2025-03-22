@@ -1,15 +1,11 @@
 import { z } from "zod";
-import {
-  protectedProcedure,
-  createTRPCRouter,
-  publicProcedure,
-  courseProcedure,
-} from "../trpc";
+import { protectedProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { asc, eq } from "drizzle-orm";
 import { units } from "@/server/db/schema";
 import { insertLog } from "../actions/logs";
 import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
+import { hasPermission } from "@/server/auth/plugin/permission/service";
 
 export const unitsRouter = createTRPCRouter({
   getUnitsForDashboard: publicProcedure
@@ -40,8 +36,19 @@ export const unitsRouter = createTRPCRouter({
         }),
       }),
     )
-    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
+      if (
+        !(await hasPermission({
+          userId: ctx.session.user.id,
+          courseId: input.courseId,
+          permission: "edit_unit",
+        }))
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You do not have permission to manage this course",
+        });
+      }
       const { data } = input;
 
       const { id } = data;
@@ -65,8 +72,7 @@ export const unitsRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           action: "UPDATE_UNIT",
         });
-      })
-
+      });
     }),
   reorder: protectedProcedure
     .input(
@@ -80,8 +86,19 @@ export const unitsRouter = createTRPCRouter({
         ),
       }),
     )
-    .use(courseProcedure)
     .mutation(async ({ ctx, input }) => {
+      if (
+        !(await hasPermission({
+          userId: ctx.session.user.id,
+          courseId: input.courseId,
+          permission: "edit_unit",
+        }))
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to reorder units",
+        });
+      }
       await ctx.db.transaction(async (tx) => {
         const updates = input.data.map((item) =>
           tx
@@ -98,7 +115,7 @@ export const unitsRouter = createTRPCRouter({
           action: "REORDER_UNIT",
           courseId: input.courseId,
         });
-      })
+      });
     }),
   getMinimalUnit: protectedProcedure
     .input(z.object({ unitId: z.string() }))
@@ -123,8 +140,19 @@ export const unitsRouter = createTRPCRouter({
         isPublished: z.boolean().optional(),
       }),
     )
-    .use(courseProcedure)
     .mutation(async ({ input, ctx }) => {
+      if (
+        !(await hasPermission({
+          userId: ctx.session.user.id,
+          courseId: input.courseId,
+          permission: "edit_unit",
+        }))
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to create units",
+        });
+      }
       const newUnit = await ctx.db
         .insert(units)
         .values({
@@ -147,7 +175,7 @@ export const unitsRouter = createTRPCRouter({
           courseId: newUnit[0]?.courseId,
           unitId: newUnit[0]?.id,
         });
-      })
+      });
     }),
   getTableData: protectedProcedure
     .input(

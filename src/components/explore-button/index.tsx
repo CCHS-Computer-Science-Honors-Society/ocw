@@ -218,7 +218,7 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className={`fixed inset-0 z-40 bg-white ${isMobile ? "overflow-y-auto" : ""}`}
+            className={`fixed bg-background inset-0 z-40 ${isMobile ? "overflow-y-auto" : ""}`}
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
@@ -256,6 +256,7 @@ function ExploreContent() {
                                   whileHover={{ scale: 1.003 }}
                                 >
                                   <Link
+                                    prefetch
                                     href={course.link}
                                     className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
                                     onClick={() => setIsOpen(false)}

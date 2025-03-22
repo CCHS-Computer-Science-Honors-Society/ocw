@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import {
   Table,
   TableBody,
@@ -8,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
 import {
   flexRender,
   getCoreRowModel,
@@ -19,27 +18,34 @@ import { type Unit } from "./types";
 import { getColumns } from "./unit.columns";
 import { toast } from "sonner";
 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+
 export const UnitTable = (props: { id: string }) => {
+  const api = useTRPC();
   const { id } = props;
-  const [data] = api.units.getTableData.useSuspenseQuery({
+  const {
+    data: data
+  } = useSuspenseQuery(api.units.getTableData.queryOptions({
     courseId: id,
-  });
-  const utils = api.useUtils();
-  const { mutate } = api.units.update.useMutation({
+  }));
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(api.units.update.mutationOptions({
     onError(error, __, ctx) {
       const typedCtx = ctx as { prevData?: Unit[] };
       if (!typedCtx.prevData) return;
-      utils.units.getTableData.setData({ courseId: id }, typedCtx.prevData);
+      queryClient.setQueryData(api.units.getTableData.queryKey({ courseId: id }), typedCtx.prevData);
       toast.error(
         error.message ?? "An error occurred while updating the unit.",
       );
     },
 
     async onMutate(newData) {
-      await utils.units.getTableData.cancel();
-      const prevData = utils.units.getTableData.getData();
+      await queryClient.cancelQueries(api.units.getTableData.pathFilter());
+      const prevData = queryClient.getQueryData(api.units.getTableData.queryKey());
 
-      utils.units.getTableData.setData({ courseId: id }, (oldData) => {
+      queryClient.setQueryData(api.units.getTableData.queryKey({ courseId: id }), (oldData) => {
         if (!oldData) return oldData;
 
         const index = oldData.findIndex((item) => item.id === newData.data.id);
@@ -63,9 +69,9 @@ export const UnitTable = (props: { id: string }) => {
     },
     onSettled() {
       // Sync with server once mutation has settled
-      void utils.units.getTableData.invalidate();
+      void queryClient.invalidateQueries(api.units.getTableData.pathFilter());
     },
-  });
+  }));
 
   const table = useReactTable({
     data,

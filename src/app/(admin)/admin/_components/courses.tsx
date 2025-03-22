@@ -1,4 +1,4 @@
-"use client";
+"use client";;
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { api } from "@/trpc/react";
+import { useTRPC } from "@/trpc/react";
+
+import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
   name: z.string().min(1).max(50),
@@ -50,11 +52,12 @@ const formSchema = z.object({
 });
 
 export function MyForm({ callback }: { callback: () => void }) {
-  const { mutate: create } = api.courses.create.useMutation({
+  const api = useTRPC();
+  const { mutate: create } = useMutation(api.courses.create.mutationOptions({
     onSuccess: () => {
       callback();
     },
-  });
+  }));
   const languages = [
     {
       label: "Computer Science",
