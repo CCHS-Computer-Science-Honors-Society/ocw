@@ -1,7 +1,6 @@
 import RenderLesson from "@/components/render";
 import { getLesson } from "@/server/api/scripts/lessons";
 import { auth } from "@/server/auth";
-import { UpdateLesson } from "./_components/form";
 import { notFound } from "next/navigation";
 
 export default async function Page({
@@ -13,7 +12,7 @@ export default async function Page({
   }>;
 }) {
   const { lessonId, id } = await params;
-  const [lesson, session] = await Promise.all([getLesson(lessonId), auth()]);
+  const [lesson] = await Promise.all([getLesson(lessonId)]);
 
   if (!lesson) {
     return notFound();

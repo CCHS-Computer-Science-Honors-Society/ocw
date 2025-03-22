@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db";
 import { env } from "@/env";
 import { coursePermissionsPlugin } from "./plugin/permission";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -24,7 +25,7 @@ export const auth = betterAuth({
       clientSecret: env.AUTH_GOOGLE_SECRET,
     },
   },
-  plugins: [coursePermissionsPlugin()],
+  plugins: [coursePermissionsPlugin(), nextCookies()],
   debug: true,
 });
 
