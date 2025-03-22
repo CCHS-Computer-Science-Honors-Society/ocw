@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
+import { Embed } from "../iframe";
 
 export function QuizletEmbed({
   embedId,
@@ -34,11 +35,10 @@ export function QuizletEmbed({
         ) : null}
       </div>
       <div className="flex-grow">
-        <iframe
-          loading="eager"
+        <Embed
           src={url}
           className="h-full w-full border-0"
-        ></iframe>
+        ></Embed>
       </div>
     </div>
   );

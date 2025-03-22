@@ -35,11 +35,10 @@ export const user = createTable("user", {
   })
     .notNull()
     .default("user"),
-  email: varchar("email", { length: 255 }).notNull(),
-  emailVerified: timestamp("email_verified", {
-    mode: "date",
-    withTimezone: true,
-  }).default(sql`CURRENT_TIMESTAMP`),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
   image: varchar("image", { length: 255 }),
 });
 
@@ -327,10 +326,10 @@ export const easyNoteCard = createTable("easy_note_card", {
     .$defaultFn(() => createId()),
   front: text("front").notNull(),
   embedding: vector("embedding", { dimensions: 1536 }),
-  options: text("options").array().notNull(),
+  options: text("options").array(),
   images: text("images").array(),
-  unitId: text("unitId").notNull(),
-  chapter: integer("chapter").notNull(),
+  unitId: text("unitId"),
+  chapter: integer("chapter"),
   back: text("back").notNull(),
 });
 

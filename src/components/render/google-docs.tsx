@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
+import { Embed } from "../iframe";
 
 export function GoogleDocsEmbed({ embedId }: { embedId: string | null }) {
   if (!embedId) return <div>Invalid Quizlet Embed</div>;
@@ -7,7 +8,7 @@ export function GoogleDocsEmbed({ embedId }: { embedId: string | null }) {
   return (
     <div className="flex h-screen flex-col">
       {/* Make the iframe take up most of the screen */}
-      <iframe
+      <Embed
         src={embedId}
         className="h-[87vh] w-full rounded-xl border-muted shadow-2xl"
       />

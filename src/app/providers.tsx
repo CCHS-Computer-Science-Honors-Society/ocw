@@ -8,20 +8,14 @@ import { ThemeProvider } from "./_providers/theme";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        disableTransitionOnChange
-      >
-        <PostHogProvider>
-          <TRPCReactProvider>
-            <ExploreProvider>
-              {children}
-            </ExploreProvider>
-          </TRPCReactProvider>
-          <Toaster position="top-center" richColors />
-        </PostHogProvider>
-      </ThemeProvider>
+      <PostHogProvider>
+        <TRPCReactProvider>
+          <ExploreProvider>
+            {children}
+          </ExploreProvider>
+        </TRPCReactProvider>
+        <Toaster position="top-center" richColors />
+      </PostHogProvider>
     </>
   );
 }

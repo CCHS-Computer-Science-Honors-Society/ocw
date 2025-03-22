@@ -25,6 +25,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [coursePermissionsPlugin()],
+  debug: true,
 });
 
 export type Session = typeof auth.$Infer.Session;
