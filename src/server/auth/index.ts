@@ -27,6 +27,7 @@ export const auth = betterAuth({
   },
   plugins: [coursePermissionsPlugin(), nextCookies()],
   debug: true,
+  trustedOrigins: ["https://www.creekocw.com"],
 });
 
 export type Session = typeof auth.$Infer.Session;
