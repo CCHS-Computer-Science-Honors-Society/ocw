@@ -3,18 +3,25 @@ import { TRPCReactProvider } from "@/trpc/react";
 import React from "react";
 import { Toaster } from "sonner";
 import { PostHogProvider } from "./_providers/posthog";
+import { ThemeProvider } from "./_providers/theme";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <PostHogProvider>
-        <TRPCReactProvider>
-          <ExploreProvider>
-            {children}
-          </ExploreProvider>
-        </TRPCReactProvider>
-        <Toaster position="top-center" richColors />
-      </PostHogProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        disableTransitionOnChange
+      >
+        <PostHogProvider>
+          <TRPCReactProvider>
+            <ExploreProvider>
+              {children}
+            </ExploreProvider>
+          </TRPCReactProvider>
+          <Toaster position="top-center" richColors />
+        </PostHogProvider>
+      </ThemeProvider>
     </>
   );
 }

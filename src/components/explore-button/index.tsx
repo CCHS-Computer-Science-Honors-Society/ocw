@@ -218,7 +218,7 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className={`fixed inset-0 z-40 bg-white ${isMobile ? "overflow-y-auto" : ""}`}
+            className={`fixed bg-background inset-0 z-40 ${isMobile ? "overflow-y-auto" : ""}`}
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
