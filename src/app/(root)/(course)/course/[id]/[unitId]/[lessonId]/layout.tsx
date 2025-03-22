@@ -7,11 +7,16 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { BreadcrumbCourse } from "./breadcrumb";
 import { LessonSidebar } from "./_components/sidebar";
-import Explore from "@/components/explore-button";
 import { SearchDropdownComponent } from "@/components/search";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const Explore = dynamic(import("@/components/explore-button"), {
+  ssr: true,
+  loading: () => <div>Loading...</div>,
+})
 
 export default async function Layout({
   children,

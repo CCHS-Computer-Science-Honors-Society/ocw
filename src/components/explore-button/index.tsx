@@ -256,6 +256,7 @@ function ExploreContent() {
                                   whileHover={{ scale: 1.003 }}
                                 >
                                   <Link
+                                    prefetch
                                     href={course.link}
                                     className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
                                     onClick={() => setIsOpen(false)}

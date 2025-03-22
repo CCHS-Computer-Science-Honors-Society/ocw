@@ -1,10 +1,6 @@
+import RenderLesson from "@/components/render";
 import { getLesson } from "@/server/api/scripts/lessons";
 import { notFound, redirect } from "next/navigation";
-import dynamic from "next/dynamic";
-
-const RenderLesson = dynamic(() => import("@/components/render"), {
-  loading: () => <div>Loading...</div>,
-});
 
 export default async function Page({
   params,

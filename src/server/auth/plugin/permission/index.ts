@@ -1,4 +1,4 @@
-import { type BetterAuthPlugin, z } from "better-auth";
+import { type BetterAuthPlugin } from "better-auth";
 import {
   createAuthEndpoint,
   APIError,
@@ -9,6 +9,7 @@ import { and, eq } from "drizzle-orm";
 import { courseUsers, coursePermissionAction } from "@/server/db/schema";
 import { tryCatch } from "@/lib/try-catch";
 import { addPermission, removePermission } from "./service";
+import { z } from "zod";
 
 export const coursePermissionsPlugin = () =>
   ({

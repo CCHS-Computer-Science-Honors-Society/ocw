@@ -177,6 +177,7 @@ function LessonsSidebar({
             {currentUnit.lessons.map((lesson) => (
               <SidebarMenuItem key={lesson.id}>
                 <Link
+                  prefetch
                   onClick={() =>
                     handleLessonClick({
                       lessonId: lesson.id,

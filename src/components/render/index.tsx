@@ -1,33 +1,9 @@
 import type { Lesson } from "@/server/api/scripts/lessons";
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
 import { FlashcardPage } from "./flashcard-page";
 import type { Session } from "@/server/auth";
-
-const Loading = () => (<Skeleton className="w-full h-full">
-</Skeleton>)
-
-const GoogleDocsLesson = dynamic(
-  () => import("./google-docs").then((mod) => mod.GoogleDocsEmbed),
-  {
-    loading: () => <Loading />,
-    ssr: true,
-  },
-);
-
-const QuizletEmbed = dynamic(
-  () => import("./quizlet").then((mod) => mod.QuizletEmbed),
-  {
-    loading: () => <Loading />,
-    ssr: true,
-
-  },
-);
-
-const Notion = dynamic(() => import("./notion").then((mod) => mod.Notion), {
-  loading: () => <Loading />,
-  ssr: true,
-});
+import { QuizletEmbed } from "./quizlet";
+import { Notion } from "./notion";
+import { GoogleDocsEmbed } from "./google-docs";
 
 export default function RenderLesson({
   lesson,
@@ -67,7 +43,7 @@ export default function RenderLesson({
         </div>
       );
     case "google_docs":
-      return <GoogleDocsLesson embedId={lesson.embedId} />;
+      return <GoogleDocsEmbed embedId={lesson.embedId} />;
     case "flashcard":
       return <FlashcardPage unitId={lesson.unitId} />;
   }
