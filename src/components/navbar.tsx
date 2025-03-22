@@ -30,7 +30,7 @@ function Navbar({
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <Link href="/courses" legacyBehavior passHref>
+                    <Link href="/courses" prefetch legacyBehavior passHref>
                       <NavigationMenuLink
                         className={navigationMenuTriggerStyle()}
                       >

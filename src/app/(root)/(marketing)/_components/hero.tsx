@@ -26,10 +26,12 @@ export function HeroSection() {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
           <Button size="lg" className="rounded-full" asChild>
-            <Link href="/courses">See All Courses</Link>
+            <Link prefetch href="/courses">
+              See All Courses
+            </Link>
           </Button>
           <Button size="lg" variant="outline" className="rounded-full" asChild>
-            <Link href="/resources">Browse Resources</Link>
+            <Link href="/about">Learn About Us</Link>
           </Button>
         </div>
       </div>
