@@ -327,10 +327,10 @@ export const easyNoteCard = createTable("easy_note_card", {
     .$defaultFn(() => createId()),
   front: text("front").notNull(),
   embedding: vector("embedding", { dimensions: 1536 }),
-  options: text("options").array().notNull(),
+  options: text("options").array(),
   images: text("images").array(),
-  unitId: text("unitId").notNull(),
-  chapter: integer("chapter").notNull(),
+  unitId: text("unitId"),
+  chapter: integer("chapter"),
   back: text("back").notNull(),
 });
 
