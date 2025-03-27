@@ -1,10 +1,32 @@
 import { db } from "@/server/db";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { CreateLesson } from "./_components/create";
-import { CreateUnitPopup } from "./_components/create-unit";
 import { UnitsForm } from "./_components/units-dnd-form";
+import { CreateLessonForm } from "./lesson/[lessonId]/_components/form";
+import { units } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import { CreateUnitForm } from "./_components/create-unit";
+const getData = async (courseId: string) => {
+  return await db.query.courses.findFirst({
+    where: (courses, { eq }) => eq(courses.id, courseId),
+    columns: {
+      id: true,
+      name: true,
+      description: true,
+      unitLength: true,
+    },
+  });
+};
 
+const getUnits = async (courseId: string) => {
+  return await db
+    .select({
+      label: units.name,
+      value: units.id,
+    })
+    .from(units)
+    .where(eq(units.courseId, courseId));
+};
 export default async function Page({
   params,
 }: {
@@ -14,21 +36,15 @@ export default async function Page({
 }) {
   const courseId = (await params).id;
 
-  const [data] = await Promise.all([
-    db.query.courses.findFirst({
-      where: (courses, { eq }) => eq(courses.id, courseId),
-      columns: {
-        id: true,
-        name: true,
-        description: true,
-        unitLength: true,
-      },
-    }),
+  const [data, unitsMap] = await Promise.all([
+    getData(courseId),
+    getUnits(courseId),
   ]);
 
   if (!data) {
     notFound();
   }
+  console.log(unitsMap);
 
   return (
     <div className="container mx-auto flex flex-col gap-10 pt-10">
@@ -37,8 +53,8 @@ export default async function Page({
           <h1 className="text-3xl font-bold">{data.name}</h1>
         </div>
         <div className="flex flex-row gap-4">
-          <CreateLesson courseId={courseId} />
-          <CreateUnitPopup courseId={courseId} />
+          <CreateLessonForm units={unitsMap} courseId={courseId} />
+          <CreateUnitForm courseId={courseId} />
         </div>
       </div>
 

@@ -198,7 +198,7 @@ function ExploreContent() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium hover:bg-gray-100"
+        className="flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium text-primary hover:bg-gray-100"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -218,7 +218,7 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className={`fixed bg-background inset-0 z-40 ${isMobile ? "overflow-y-auto" : ""}`}
+            className={`fixed inset-0 z-40 bg-background ${isMobile ? "overflow-y-auto" : ""}`}
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (

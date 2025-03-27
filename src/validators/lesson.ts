@@ -31,6 +31,7 @@ export const createLesson = createInsertSchema(lessons)
   })
   .omit({
     content: true,
+    order: true,
   });
 
 export type CreateLesson = z.infer<typeof createLesson>;
@@ -38,5 +39,6 @@ export type CreateLesson = z.infer<typeof createLesson>;
 export const createLessonFormSchema = createLesson.omit({
   courseId: true,
   id: true,
-  order: true,
 });
+
+export type CreateLessonFormSchema = z.infer<typeof createLessonFormSchema>;

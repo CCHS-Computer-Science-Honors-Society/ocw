@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
@@ -67,12 +67,14 @@ export function SearchDropdownComponent() {
   }, []);
 
   // Use tRPC query for search
-  const searchQuery = useQuery(api.search.search.queryOptions(
-    { q: search },
-    {
-      enabled: search.length > 0,
-    },
-  ));
+  const searchQuery = useQuery(
+    api.search.search.queryOptions(
+      { q: search },
+      {
+        enabled: search.length > 0,
+      },
+    ),
+  );
 
   const searchResults = searchQuery.data ?? {
     courses: [],
@@ -119,7 +121,7 @@ export function SearchDropdownComponent() {
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 rounded-2xl p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+        className="relative h-9 w-9 rounded-2xl border-black/30 p-0 text-primary xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
         onClick={() => setOpen(true)}
       >
         <Search className="h-4 w-4 rounded-xl xl:mr-2" aria-hidden="true" />

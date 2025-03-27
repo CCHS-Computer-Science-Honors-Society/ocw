@@ -3,12 +3,14 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
+  navigationMenuTriggerStyle as nv,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";
+import { cn } from "@/lib/utils";
 
+const navigationMenuTriggerStyle = cn(nv(), "text-primary");
 function Navbar({
   userNav,
   isSearch,
@@ -32,7 +34,7 @@ function Navbar({
                   <NavigationMenuItem>
                     <Link href="/courses" prefetch legacyBehavior passHref>
                       <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
+                        className={navigationMenuTriggerStyle}
                       >
                         Courses
                       </NavigationMenuLink>
@@ -41,7 +43,7 @@ function Navbar({
                   <NavigationMenuItem>
                     <Link href="/contributors" legacyBehavior passHref>
                       <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
+                        className={navigationMenuTriggerStyle}
                       >
                         Contributors
                       </NavigationMenuLink>
@@ -50,7 +52,7 @@ function Navbar({
                   <NavigationMenuItem>
                     <Link href="/about" legacyBehavior passHref>
                       <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
+                        className={navigationMenuTriggerStyle}
                       >
                         About
                       </NavigationMenuLink>
@@ -59,7 +61,7 @@ function Navbar({
                   <NavigationMenuItem>
                     <Link href="/contact" legacyBehavior passHref>
                       <NavigationMenuLink
-                        className={navigationMenuTriggerStyle()}
+                        className={navigationMenuTriggerStyle}
                       >
                         Contact
                       </NavigationMenuLink>

@@ -48,7 +48,7 @@ function CourseLink({
       prefetch={noFilters ? true : null}
     >
       <Card className="flex h-full flex-col overflow-hidden">
-        <div className="flex aspect-video items-center justify-center bg-muted">
+        <div className="flex aspect-video items-center justify-center bg-gray-100">
           <BookOpen className="h-10 w-10 text-muted-foreground" />
         </div>
         <CardContent className="flex-grow p-6">

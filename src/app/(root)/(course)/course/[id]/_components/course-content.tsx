@@ -22,9 +22,9 @@ export const CourseContent = async (props: {
     <div className="flex flex-1">
       {/* Sidebar */}
       <div className="hidden border-r bg-white p-6 lg:block lg:w-96">
-        <div className="mb-6 rounded-lg bg-blue-100 p-4">
-          <h2 className="text-xl font-bold text-blue-800">{course.name}</h2>
-          <p className="mt-1 text-sm text-blue-600">
+        <div className="mb-6 rounded-lg bg-primary/10 p-4">
+          <h2 className="text-xl font-bold text-primary/80">{course.name}</h2>
+          <p className="mt-1 text-sm text-primary/60">
             {course.units.length} UNITS
           </p>
         </div>
@@ -54,7 +54,7 @@ export const CourseContent = async (props: {
                 <AccordionItem value="unit-1" className="rounded-lg border">
                   <AccordionTrigger className="px-4 hover:no-underline">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
                         {course.units.indexOf(unit) + 1}
                       </div>
                       <div className="text-left">

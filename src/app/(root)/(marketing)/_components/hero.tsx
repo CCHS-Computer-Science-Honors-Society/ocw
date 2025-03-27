@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative h-full">
+    <section className="relative h-[38vh]">
       <div className="container relative z-auto mx-auto flex flex-col gap-5 px-4 text-center">
         <h2 className="mb-8 text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl">
           Education with OpenCourseWare
@@ -25,12 +25,12 @@ export function HeroSection() {
           ))}
         </div>
         <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-          <Button size="lg" className="rounded-full" asChild>
+          <Button size="lg" className="" asChild>
             <Link prefetch href="/courses">
               See All Courses
             </Link>
           </Button>
-          <Button size="lg" variant="outline" className="rounded-full" asChild>
+          <Button size="lg" variant="outline" className="" asChild>
             <Link href="/about">Learn About Us</Link>
           </Button>
         </div>

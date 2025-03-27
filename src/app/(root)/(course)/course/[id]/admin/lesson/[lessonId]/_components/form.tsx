@@ -38,20 +38,58 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { createLessonFormSchema } from "@/validators/lesson";
 import type { z } from "zod";
 import { useTRPC } from "@/trpc/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { PlusIcon } from "lucide-react";
-
+import { Check, ChevronsUpDown, PlusIcon } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ContentTypeEnum } from "@/server/db/schema";
 // Define the form schema type
 type CreateLessonFormValues = z.infer<typeof createLessonFormSchema>;
 
-export function CreateLessonForm({ courseId }: { courseId: string }) {
+export function CreateLessonForm({
+  courseId,
+  units = [], // Provide a default empty array
+}: {
+  courseId: string;
+  units: {
+    label: string;
+    value: string;
+  }[];
+}) {
+  console.log("Units received in component:", units);
   const api = useTRPC();
+  const queryClient = useQueryClient();
+  const qKey = api.units.getUnitsForDashboard.queryKey();
   const { mutate, isPending: isLoading } = useMutation(
     api.lesson.create.mutationOptions({
       onSuccess: () => {
         toast.success("Lesson updated successfully!");
+        void queryClient.invalidateQueries({
+          queryKey: qKey,
+        });
       },
       onError: (error) => {
         toast.error(
@@ -71,6 +109,8 @@ export function CreateLessonForm({ courseId }: { courseId: string }) {
       name: "",
       isPublished: false,
       pureLink: false,
+      unitId: "",
+      contentType: "quizlet",
       embed: {
         password: "",
         embedUrl: "",
@@ -82,6 +122,10 @@ export function CreateLessonForm({ courseId }: { courseId: string }) {
     mutate({ ...values, courseId });
     setOpen(false);
     form.reset();
+  }
+  // At the beginning of your component
+  if (!units || !Array.isArray(units)) {
+    return <div>No Units Available</div>;
   }
 
   // Form content that will be used in both Dialog and Drawer
@@ -110,21 +154,87 @@ export function CreateLessonForm({ courseId }: { courseId: string }) {
 
         <FormField
           control={form.control}
-          name="unitId"
+          name="contentType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base font-semibold">Unit ID</FormLabel>
+              <FormLabel>Content</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enter unit ID (optional)"
-                  {...field}
-                  value={field.value ?? ""}
-                  className="h-12"
-                />
+                <Select {...field}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Please select a content type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Types</SelectLabel>
+                      {ContentTypeEnum.map((type) => (
+                        <SelectItem value={type} key={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <FormDescription>
-                Optional: Assign this lesson to a specific unit
-              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="unitId"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Unit</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value
+                        ? units.find((unit) => unit.value === field.value)
+                            ?.label
+                        : "Select unit"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search unit..." />
+                    <CommandList>
+                      <CommandEmpty>No unit found.</CommandEmpty>
+                      <CommandGroup>
+                        {units.map((unit) => (
+                          <CommandItem
+                            value={unit.label} // Add this line
+                            key={unit.value}
+                            onSelect={() => {
+                              form.setValue("unitId", unit.value);
+                            }}
+                          >
+                            {unit.label}
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                unit.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}

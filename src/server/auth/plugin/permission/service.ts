@@ -1,6 +1,8 @@
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/server/db";
 import { courseUsers, type CoursePermissionAction } from "@/server/db/schema";
+import { User } from "lucide-react";
+import { role } from "better-auth/plugins/access";
 type CourseRole = "admin" | "editor" | "user";
 
 export const roleToPermissions: Record<CourseRole, CoursePermissionAction[]> = {
@@ -135,16 +137,31 @@ export async function getUserStatus({
   permissions: string[];
   role: string;
 }> {
-  const userCourse = await db.query.courseUsers.findFirst({
-    columns: {
-      permissions: true,
-      role: true,
-    },
-    where: and(
-      eq(courseUsers.userId, userId),
-      eq(courseUsers.courseId, courseId),
-    ),
-  });
+  const [userCourse, user] = await Promise.all([
+    db.query.courseUsers.findFirst({
+      columns: {
+        permissions: true,
+        role: true,
+      },
+      where: and(
+        eq(courseUsers.userId, userId),
+        eq(courseUsers.courseId, courseId),
+      ),
+    }),
+    db.query.user.findFirst({
+      columns: {
+        role: true,
+      },
+      where: (user) => eq(user.id, userId),
+    }),
+  ]);
+  if (user?.role === "admin") {
+    return {
+      permissions: [],
+      role: "admin",
+    };
+  }
+
   if (!userCourse) {
     return {
       permissions: [],
@@ -193,6 +210,9 @@ export async function hasPermission({
   userId: string;
   permission: CoursePermissionAction;
 }) {
-  const userPermissions = await getUserPermissions({ courseId, userId });
-  return userPermissions.includes(permission);
+  const userPermissions = await getUserStatus({ courseId, userId });
+  if (userPermissions.role === "admin") {
+    return true;
+  }
+  return userPermissions.permissions.includes(permission);
 }
