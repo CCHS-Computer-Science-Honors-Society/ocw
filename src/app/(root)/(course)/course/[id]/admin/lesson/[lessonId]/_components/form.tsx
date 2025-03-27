@@ -159,8 +159,11 @@ export function CreateLessonForm({
             <FormItem>
               <FormLabel>Content</FormLabel>
               <FormControl>
-                <Select {...field}>
-                  <SelectTrigger>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Please select a content type" />
                   </SelectTrigger>
                   <SelectContent>
