@@ -1,4 +1,4 @@
-import { asc, eq, max, sql } from "drizzle-orm";
+import { asc, eq, max } from "drizzle-orm";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { lessons, lessonEmbed } from "@/server/db/schema";
@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
 import { hasPermission } from "@/server/auth/plugin/permission/service";
 import { createLesson, updateLesson } from "@/validators/lesson";
+import { revalidatePath } from "next/cache";
 
 export const lessonRouter = createTRPCRouter({
   create: protectedProcedure
@@ -51,6 +52,9 @@ export const lessonRouter = createTRPCRouter({
         ...embed,
         lessonId,
       });
+
+      revalidatePath(`/course/${input.courseId}/${input.unitId}/${lessonId}`);
+      revalidatePath(`/course/${input.courseId}/`);
 
       after(async () => {
         await insertLog({

@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
 import { hasPermission } from "@/server/auth/plugin/permission/service";
 import { createUnit } from "@/validators/unit";
+import { revalidatePath } from "next/cache";
 
 export const unitsRouter = createTRPCRouter({
   getUnitsForDashboard: publicProcedure
@@ -69,6 +70,8 @@ export const unitsRouter = createTRPCRouter({
           message: "Unit not found",
         });
       }
+
+      revalidatePath(`/course/${input.courseId}/`);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
