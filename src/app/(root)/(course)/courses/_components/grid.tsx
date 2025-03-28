@@ -39,13 +39,11 @@ function CourseLink({
   course: Courses;
   searchParams: SearchParams;
 }) {
-  const noFilters = Object.values(searchParams).every((v) => v === undefined);
-
   return (
     <Link
       href={`/course/${course.id}?${stringifySearchParams(searchParams)}`}
       className="block h-full transition ease-in-out md:hover:scale-105"
-      prefetch={noFilters ? true : null}
+      prefetch={true}
     >
       <Card className="flex h-full flex-col overflow-hidden">
         <div className="flex aspect-video items-center justify-center bg-gray-100">
