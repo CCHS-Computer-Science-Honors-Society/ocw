@@ -1,6 +1,6 @@
-"use client"
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useState, useEffect, useRef } from 'react';
+"use client";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface EmbedLoaderProps {
   src: string;
@@ -33,7 +33,7 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
         setHasError(true);
         setIsLoading(false);
         if (onError) {
-          onError(new Error('Embed load timed out'));
+          onError(new Error("Embed load timed out"));
         }
       }
     }, timeout);
@@ -51,12 +51,12 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
     }
   };
 
-  const handleError = () => {
+  const handleError = (e) => {
     clearTimeout(timeoutRef.current);
     setHasError(true);
     setIsLoading(false);
     if (onError) {
-      onError(new Error('Failed to load embed'));
+      onError(new Error("Failed to load embed"));
     }
   };
 
@@ -64,34 +64,29 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
     <div className={className}>
       {isLoading && !hasError && (
         <div className="loader" role="alert" aria-live="assertive">
-          {loaderComponent || <div className="h-[87vh] w-full rounded-xl border-muted shadow-2xl flex flex-col justify-center items-center">
-            <LoaderCircleIcon className="animate-spin" />
-            Loading...
-            If this takes a long time, try turning off your vpn or clicking the Open in new Tab button.
-          </div>}
+          {loaderComponent ?? (
+            <div className="flex h-[87vh] w-full flex-col items-center justify-center rounded-xl border-muted shadow-2xl">
+              <LoaderCircleIcon className="animate-spin" />
+              Loading... If this takes a long time, try turning off your vpn or
+              clicking the Open in new Tab button.
+            </div>
+          )}
         </div>
       )}
 
-      {hasError && (
-        <div className="error-message" role="alert" aria-live="assertive">
-          <p>Unable to load embedded content.</p>
-          {/* Optionally, add a button to retry */}
-          {/* <button onClick={retryFunction}>Retry</button> */}
-        </div>
-      )}
-
-      {!hasError && (
-        <iframe
-          ref={iframeRef}
-          src={embedUrl}
-          onLoad={handleLoad}
-          onError={handleError}
-          style={{ display: isLoading ? 'none' : 'block', width: '100%', height: '100%' }}
-          title="Embedded Content"
-          loading='eager'
-        />
-      )}
+      <iframe
+        ref={iframeRef}
+        src={embedUrl}
+        onLoad={handleLoad}
+        onError={(e) => handleError(e)}
+        style={{
+          display: isLoading ? "none" : "block",
+          width: "100%",
+          height: "100%",
+        }}
+        title="Embedded Content"
+        loading="eager"
+      />
     </div>
   );
 };
-
