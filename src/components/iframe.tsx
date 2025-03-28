@@ -12,6 +12,10 @@ interface EmbedLoaderProps {
 }
 
 const DEFAULT_TIMEOUT = 10000; // 10 seconds
+/*
+ * TODO: we have  error managment but if any errors are present it stops the embed from rendering entirely and displays the error message.
+ * we need to find a way to only stop the embed when there are breaking errors and not just when there are errors.
+ */
 
 export const Embed: React.FC<EmbedLoaderProps> = ({
   src: embedUrl,
@@ -51,7 +55,7 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
     }
   };
 
-  const handleError = (e) => {
+  const handleError = () => {
     clearTimeout(timeoutRef.current);
     setHasError(true);
     setIsLoading(false);
@@ -62,23 +66,28 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
 
   return (
     <div className={className}>
-      {isLoading && !hasError && (
+      {isLoading && !hasError ? (
         <div className="loader" role="alert" aria-live="assertive">
           {loaderComponent ?? (
             <div className="flex h-[87vh] w-full flex-col items-center justify-center rounded-xl border-muted shadow-2xl">
               <LoaderCircleIcon className="animate-spin" />
-              Loading... If this takes a long time, try turning off your vpn or
-              clicking the Open in new Tab button.
+              <div className="text-center">
+                Loading...
+                <ul className="mt-2 text-sm text-gray-600">
+                  <li>If this takes a long time, try turning off your VPN</li>
+                  <li>Click the Open in new Tab button</li>
+                </ul>
+              </div>
             </div>
           )}
         </div>
-      )}
+      ) : null}
 
       <iframe
         ref={iframeRef}
         src={embedUrl}
         onLoad={handleLoad}
-        onError={(e) => handleError(e)}
+        onError={handleError}
         style={{
           display: isLoading ? "none" : "block",
           width: "100%",
