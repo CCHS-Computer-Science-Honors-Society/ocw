@@ -7,7 +7,7 @@ import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
 import { hasPermission } from "@/server/auth/plugin/permission/service";
 import { createLesson, updateLesson } from "@/validators/lesson";
-import { revalidatePath } from "next/cache";
+import { callInvalidate } from "@/lib/cache/callInvalidate";
 
 export const lessonRouter = createTRPCRouter({
   create: protectedProcedure
@@ -53,9 +53,7 @@ export const lessonRouter = createTRPCRouter({
         lessonId,
       });
 
-      revalidatePath(`/course/${input.courseId}/${input.unitId}/${lessonId}`);
-      revalidatePath(`/course/${input.courseId}/`);
-
+      await callInvalidate(input.courseId);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
@@ -119,6 +117,8 @@ export const lessonRouter = createTRPCRouter({
         );
         await Promise.all(updates);
       });
+
+      await callInvalidate(input.courseId);
       after(async () => {
         await insertLog({
           action: "REORDER_LESSON",
@@ -167,6 +167,8 @@ export const lessonRouter = createTRPCRouter({
           message: `lesson with id ${input.id} not found`,
         });
       }
+
+      await callInvalidate(input.courseId);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,

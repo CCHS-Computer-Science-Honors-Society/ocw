@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import {
   Table,
   TableBody,
@@ -25,53 +25,67 @@ import { useQueryClient } from "@tanstack/react-query";
 export const UnitTable = (props: { id: string }) => {
   const api = useTRPC();
   const { id } = props;
-  const {
-    data: data
-  } = useSuspenseQuery(api.units.getTableData.queryOptions({
-    courseId: id,
-  }));
+  const { data: data } = useSuspenseQuery(
+    api.units.getTableData.queryOptions({
+      courseId: id,
+    }),
+  );
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(api.units.update.mutationOptions({
-    onError(error, __, ctx) {
-      const typedCtx = ctx as { prevData?: Unit[] };
-      if (!typedCtx.prevData) return;
-      queryClient.setQueryData(api.units.getTableData.queryKey({ courseId: id }), typedCtx.prevData);
-      toast.error(
-        error.message ?? "An error occurred while updating the unit.",
-      );
-    },
+  const { mutate } = useMutation(
+    api.units.update.mutationOptions({
+      onError(error, __, ctx) {
+        const typedCtx = ctx as { prevData?: Unit[] };
+        if (!typedCtx.prevData) return;
+        queryClient.setQueryData(
+          api.units.getTableData.queryKey({ courseId: id }),
+          typedCtx.prevData,
+        );
+        toast.error(
+          error.message ?? "An error occurred while updating the unit.",
+        );
+      },
 
-    async onMutate(newData) {
-      await queryClient.cancelQueries(api.units.getTableData.pathFilter());
-      const prevData = queryClient.getQueryData(api.units.getTableData.queryKey());
+      async onMutate(newData) {
+        await queryClient.cancelQueries(api.units.getTableData.pathFilter());
+        const prevData = queryClient.getQueryData(
+          api.units.getTableData.queryKey(),
+        );
+        console.log("newData", newData);
+        console.log("prevData", prevData);
 
-      queryClient.setQueryData(api.units.getTableData.queryKey({ courseId: id }), (oldData) => {
-        if (!oldData) return oldData;
+        queryClient.setQueryData(
+          api.units.getTableData.queryKey({ courseId: id }),
+          (oldData) => {
+            if (!oldData) return oldData;
 
-        const index = oldData.findIndex((item) => item.id === newData.data.id);
-        if (index === -1) return oldData;
+            const index = oldData.findIndex(
+              (item) => item.id === newData.data.id,
+            );
+            if (index === -1) return oldData;
 
-        const updated = [...oldData];
-        const currentItem = updated[index];
+            const updated = [...oldData];
+            const currentItem = updated[index];
 
-        if (!currentItem) return oldData;
+            if (!currentItem) return oldData;
 
-        updated[index] = {
-          ...currentItem,
-          name: newData.data.name ?? currentItem.name,
-          isPublished: newData.data.isPublished ?? currentItem.isPublished,
-          courseId: newData.courseId ?? currentItem.courseId,
-          id: newData.data.id ?? currentItem.id,
-        };
-        return updated;
-      });
-      return { prevData };
-    },
-    onSettled() {
-      // Sync with server once mutation has settled
-      void queryClient.invalidateQueries(api.units.getTableData.pathFilter());
-    },
-  }));
+            updated[index] = {
+              ...currentItem,
+              name: newData.data.name ?? currentItem.name,
+              isPublished: newData.data.isPublished ?? currentItem.isPublished,
+              courseId: newData.courseId ?? currentItem.courseId,
+              id: newData.data.id ?? currentItem.id,
+            };
+            return updated;
+          },
+        );
+        return { prevData };
+      },
+      onSettled() {
+        // Sync with server once mutation has settled
+        void queryClient.invalidateQueries(api.units.getTableData.pathFilter());
+      },
+    }),
+  );
 
   const table = useReactTable({
     data,
