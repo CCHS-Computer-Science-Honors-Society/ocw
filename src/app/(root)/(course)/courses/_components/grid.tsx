@@ -12,7 +12,7 @@ export async function CoursesGrid({
   searchParams: SearchParams;
 }) {
   return (
-    <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
+    <div className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
       {!courses?.length ? (
         <p className="col-span-full text-center text-muted-foreground">
           No courses found.
