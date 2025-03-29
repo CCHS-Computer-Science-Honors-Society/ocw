@@ -15,7 +15,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ChevronRight } from "lucide-react";
+import {
+  ChevronRight,
+  HouseIcon,
+  SettingsIcon,
+  UserPlusIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { z } from "zod";
@@ -24,14 +29,17 @@ function getData(id: string) {
   return {
     navMain: [
       {
+        icon: <HouseIcon />,
         title: "Overview",
         url: `/course/${id}/admin`,
       },
       {
+        icon: <UserPlusIcon />,
         title: "Users",
         url: `/course/${id}/admin/users`,
       },
       {
+        icon: <SettingsIcon />,
         title: "Settings",
         url: `/course/${id}/admin/settings`,
       },
@@ -55,9 +63,10 @@ export function MainNav() {
         {data.navMain.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <Link prefetch href={item.url}>
+                {item.icon}
                 <span>{item.title}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
@@ -73,7 +82,10 @@ export function MainNav() {
               <SidebarMenuSub>
                 <SidebarMenuSubItem key={"Units"}>
                   <SidebarMenuSubButton asChild>
-                    <Link href={`/course/${idParsed}/admin/table/units`}>
+                    <Link
+                      prefetch
+                      href={`/course/${idParsed}/admin/table/units`}
+                    >
                       <span>Units</span>
                     </Link>
                   </SidebarMenuSubButton>

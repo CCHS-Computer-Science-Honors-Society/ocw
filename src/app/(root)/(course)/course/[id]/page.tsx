@@ -55,5 +55,5 @@ export default async function CoursePage(props: {
     </div>
   );
 }
-
+export const dynamic = "force-static";
 export const experimental_ppr = true;

@@ -1,5 +1,7 @@
-import { lessons } from "@/server/db/schema";
+import { ContentTypeEnum, lessons } from "@/server/db/schema";
+import { lt } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
+import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
 import { z } from "zod";
 
 export const updateLesson = z.object({
@@ -7,6 +9,7 @@ export const updateLesson = z.object({
   courseId: z.string(),
   unitId: z.string().optional(),
   name: z.string().optional(),
+  contentType: z.enum(ContentTypeEnum).optional(),
   isPublished: z.boolean().optional(),
   pureLink: z.boolean().optional(),
   embed: z
@@ -42,3 +45,8 @@ export const createLessonFormSchema = createLesson.omit({
 });
 
 export type CreateLessonFormSchema = z.infer<typeof createLessonFormSchema>;
+
+export const contentTypeMap = ContentTypeEnum.map((c) => ({
+  label: c,
+  value: c,
+}));

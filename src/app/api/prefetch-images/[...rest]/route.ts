@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { parseHTML } from "linkedom";
 
 export const dynamic = "force-static";

@@ -1,8 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/server/db";
 import { courseUsers, type CoursePermissionAction } from "@/server/db/schema";
-import { User } from "lucide-react";
-import { role } from "better-auth/plugins/access";
 type CourseRole = "admin" | "editor" | "user";
 
 export const roleToPermissions: Record<CourseRole, CoursePermissionAction[]> = {

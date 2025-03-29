@@ -18,7 +18,7 @@ export function AppSidebar({
   courseswitcher: React.ReactNode;
 }) {
   return (
-    <Sidebar {...props}>
+    <Sidebar className="bg-muted/10" collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

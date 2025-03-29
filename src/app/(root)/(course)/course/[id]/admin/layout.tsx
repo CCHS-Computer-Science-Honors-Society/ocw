@@ -9,9 +9,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="bg-muted/10">
       <SidebarProvider>
         <AppSidebar
+          variant="inset"
           courseswitcher={
             <Suspense fallback="loading">
               <CourseSwitcher />

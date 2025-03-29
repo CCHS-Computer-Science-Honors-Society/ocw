@@ -5,7 +5,7 @@ import { getSession } from "@/server/auth/auth.server";
 export async function UserNav() {
   const session = await getSession();
 
-  if (!session || !session.user) {
+  if (!session?.user) {
     return null;
   }
 
