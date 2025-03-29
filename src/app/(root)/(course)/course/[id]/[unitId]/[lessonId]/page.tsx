@@ -29,3 +29,4 @@ export default async function Page({
     <RenderLesson isDisplay lesson={lesson} courseId={id} session={null} />
   );
 }
+export const dynamic = "force-static";
