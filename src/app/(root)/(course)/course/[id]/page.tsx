@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import CourseOverviewSkeleton from "./_components/course-units.skeleton";
 import { CourseContent } from "./_components/course-content";
+import { revalidatePath } from "next/cache";
+import { Button } from "@/components/ui/button";
 
 export async function generateMetadata({
   params,
@@ -38,6 +40,8 @@ export async function generateMetadata({
 export default async function CoursePage(props: {
   params: Promise<{ id: string }>;
 }) {
+  const id = (await props.params).id;
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
@@ -49,11 +53,20 @@ export default async function CoursePage(props: {
           </Suspense>
         }
       />
+      <form
+        onSubmit={async () => {
+          "use server";
+          revalidatePath(`/course/${id}`);
+        }}
+      >
+        <Button type="submit">
+          <span className="">Refresh</span>
+        </Button>
+      </form>
       <Suspense fallback={<CourseOverviewSkeleton />}>
         <CourseContent params={props.params} />
       </Suspense>
     </div>
   );
 }
-export const dynamic = "force-static";
 export const experimental_ppr = true;

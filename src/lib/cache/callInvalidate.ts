@@ -9,6 +9,22 @@ const baseUrl =
     : "http://localhost:3000";
 */
 
-export const callInvalidate = () => {
-  revalidatePath("/", "layout");
+export const callInvalidate = (
+  id?: string,
+  unitId?: string,
+  lessonId?: string,
+) => {
+  if (id) {
+    revalidatePath(`/course/${id}`);
+    if (unitId) {
+      revalidatePath(`/course/${id}/unitId}`);
+      if (lessonId) {
+        revalidatePath(`/course/[id]/[unitId]/[lessonId]`, "page");
+      }
+    }
+  } else {
+    // Handle the case when id is undefined
+    // Perhaps revalidate all courses:
+    revalidatePath(`/(root)/(course)/course`, "layout");
+  }
 };

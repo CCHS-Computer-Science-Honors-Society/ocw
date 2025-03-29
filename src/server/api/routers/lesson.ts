@@ -48,7 +48,7 @@ export const lessonRouter = createTRPCRouter({
         lessonId,
       });
 
-      callInvalidate();
+      callInvalidate(input.courseId, input.unitId, lessonId);
       after(async () => {
         await insertLog({
           userId: ctx.session?.user.id,
@@ -101,7 +101,7 @@ export const lessonRouter = createTRPCRouter({
         await Promise.all(updates);
       });
 
-      callInvalidate();
+      callInvalidate(input.courseId, input.unitId, input.data[0]?.id);
       after(async () => {
         await insertLog({
           action: "REORDER_LESSON",
@@ -198,7 +198,7 @@ export const lessonRouter = createTRPCRouter({
       });
 
       // Invalidate cache and log after successful transaction
-      callInvalidate();
+      callInvalidate(courseId, input.unitId, id);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,

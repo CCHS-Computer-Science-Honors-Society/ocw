@@ -64,7 +64,7 @@ export const unitsRouter = createTRPCRouter({
         });
       }
 
-      callInvalidate();
+      callInvalidate(input.courseId, updatedUnit[0]?.id);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
@@ -97,7 +97,7 @@ export const unitsRouter = createTRPCRouter({
         await Promise.all(updates);
       });
 
-      callInvalidate();
+      callInvalidate(input.courseId);
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
@@ -146,7 +146,8 @@ export const unitsRouter = createTRPCRouter({
         });
       }
 
-      callInvalidate();
+      callInvalidate(input.courseId);
+
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,

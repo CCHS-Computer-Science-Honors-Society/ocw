@@ -1,11 +1,7 @@
 "use client";
 
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
-import {
-  loggerLink,
-  createTRPCClient,
-  httpBatchStreamLink,
-} from "@trpc/client";
+import { loggerLink, createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { useState } from "react";
@@ -16,7 +12,7 @@ import { createQueryClient } from "./query-client";
 
 let browserQueryClient: QueryClient;
 const getQueryClient = () => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // Server: always make a new query client
     return createQueryClient();
   }
@@ -59,7 +55,7 @@ export function TRPCReactProvider(
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
-        httpBatchStreamLink({
+        httpBatchLink({
           transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
           headers: () => {
