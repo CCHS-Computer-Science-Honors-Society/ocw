@@ -1,11 +1,11 @@
 import { db } from "@/server/db";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { UnitsForm } from "./_components/units-dnd-form";
 import { CreateLessonForm } from "./lesson/[lessonId]/_components/form";
 import { units } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { CreateUnitForm } from "./_components/create-unit";
+import { UnitTable } from "./_components/table/unit";
 const getData = async (courseId: string) => {
   return await db.query.courses.findFirst({
     where: (courses, { eq }) => eq(courses.id, courseId),
@@ -59,7 +59,9 @@ export default async function Page({
       </div>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <UnitsForm courseId={courseId} />
+        <Suspense>
+          <UnitTable courseId={courseId} />
+        </Suspense>
       </Suspense>
     </div>
   );

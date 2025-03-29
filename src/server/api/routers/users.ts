@@ -11,25 +11,25 @@ export const usersRouter = createTRPCRouter({
   update: adminProcedure
     .input(updateUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.update(user).set(input).where(eq(user.id, input.id))
+      await ctx.db.update(user).set(input).where(eq(user.id, input.id));
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
           action: "UPDATE_USER",
-        })
-      })
+        });
+      });
       revalidatePath("/admin");
     }),
   delete: adminProcedure
     .input(deleteUserInput)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(user).where(eq(user.id, input.id))
+      await ctx.db.delete(user).where(eq(user.id, input.id));
       after(async () => {
         await insertLog({
           userId: ctx.session.user.id,
           action: "DELETE_USER",
-        })
-      })
+        });
+      });
       revalidatePath("/admin");
     }),
   getUsers: adminProcedure

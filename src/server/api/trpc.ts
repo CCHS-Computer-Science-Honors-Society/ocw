@@ -12,9 +12,10 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { z, ZodError } from "zod";
 
-import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import { getSession } from "../auth/auth.server";
+import { hasPermission } from "../auth/plugin/permission/service";
+import { type CoursePermissionAction } from "@/server/db/schema";
 
 /**
  * 1. CONTEXT
@@ -124,7 +125,7 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(({ ctx, next }) => {
-    if (!ctx.session || !ctx.session.user) {
+    if (!ctx.session?.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next({
@@ -136,7 +137,7 @@ export const protectedProcedure = t.procedure
   });
 
 export const adminProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user || ctx.session.user.role != "admin") {
+  if (!ctx.session?.user || ctx.session.user.role != "admin") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
@@ -147,41 +148,77 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 
-const courseInputSchema = z.object({
-  courseId: z.string(),
+const PermissionInputSchema = z.object({
+  courseId: z.string(), // Or z.string().uuid(), etc. depending on your ID format
 });
+/**
+ * Middleware factory to create permission checks for course-related actions.
+ * Ensures the user has a specific permission for a given courseId.
+ * Uses Zod `safeParse` to validate that the input contains `courseId`.
+ * Assumes it runs *after* `protectedProcedure`.
+ *
+ * @param permission - The permission string to check (e.g., "create_lesson").
+ * @param errorMessage - Optional custom error message.
+ */
+export const createPermissionCheckMiddleware = (
+  permission: CoursePermissionAction,
+  errorMessage = `You do not have permission to perform this action.`,
+) => {
+  return t.middleware(async (opts) => {
+    const { ctx, input, next } = opts;
+    const parseResult = PermissionInputSchema.safeParse(input);
+    if (!parseResult.success) {
+      console.error(
+        `Permission middleware (${permission}) failed input validation:`,
+        parseResult.error.flatten(),
+      );
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `Input validation failed: requires 'courseId'.`,
+        // Optionally pass Zod error details, matching your global formatter
+        cause: parseResult.error,
+      });
+    }
 
-export const courseProcedure = t.middleware(async ({ ctx, input, next }) => {
-  const parsed = courseInputSchema.safeParse(input);
-  if (!parsed.success) {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "missing or invalid courseId",
+    // 2. Input is valid, extract data
+    // Type assertion is safe here due to successful parseResult check
+    const { courseId } = parseResult.data;
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not logged in",
+      });
+    }
+    const userId = ctx.session.user.id;
+
+    if (!userId) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not logged in",
+      });
+    }
+    // 3. Perform the permission check
+    const authorized = await hasPermission({
+      userId,
+      courseId,
+      permission,
     });
-  }
 
-  const { courseId } = parsed.data;
+    if (!authorized) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: errorMessage,
+      });
+    }
 
-  const user = ctx.session?.user;
-  if (!user) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "no user session found",
+    // 4. User has permission, proceed to the next middleware or resolver
+    // Pass the validated context down. The context type remains ProtectedContext.
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
     });
-  }
-
-  // global admin bypasses course level checks
-  if (user.role === "admin") return next();
-
-  const courseRole = user.courses?.[courseId];
-  if (courseRole === "admin" || courseRole === "editor") {
-    return next();
-  }
-
-  throw new TRPCError({
-    code: "UNAUTHORIZED",
-    message: "insufficient course role",
   });
-});
-
+};
 export { t };

@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
-import { LessonTable } from "./lesson.grid.client";
 import { db } from "@/server/db";
 import { units } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { cache } from "@/lib/cache";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { LessonTableSkeleton } from "./lesson.grid.skeleton";
+import { LessonTable } from "../../_components/table/lesson";
 
 const getData = cache(
   async (courseId: string) => {
@@ -32,9 +32,11 @@ export const LessonGrid = async ({
   const courseId = (await params).id;
   const units = await getData(courseId);
 
-  prefetch(trpc.lesson.getTableData.queryOptions({
-    courseId,
-  }));
+  prefetch(
+    trpc.lesson.getTableData.queryOptions({
+      courseId,
+    }),
+  );
 
   return (
     <HydrateClient>

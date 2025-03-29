@@ -9,11 +9,7 @@ export default function Page({
     id: string;
   }>;
 }) {
-  return (
-    <Suspense fallback={<LessonTableSkeleton />}>
-      <LessonGrid params={params} />
-    </Suspense>
-  );
+  return <LessonGrid params={params} />;
 }
 
 export const experimental_ppr = true;
