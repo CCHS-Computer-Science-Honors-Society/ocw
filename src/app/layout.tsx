@@ -86,13 +86,6 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${ibm.className}`}>
-      <head>
-        <script
-          crossOrigin="anonymous"
-          src="//unpkg.com/react-scan/dist/auto.global.js"
-        />
-        {/* rest of your scripts go under */}
-      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
