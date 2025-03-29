@@ -40,8 +40,6 @@ export async function generateMetadata({
 export default async function CoursePage(props: {
   params: Promise<{ id: string }>;
 }) {
-  const id = (await props.params).id;
-
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
@@ -53,16 +51,6 @@ export default async function CoursePage(props: {
           </Suspense>
         }
       />
-      <form
-        onSubmit={async () => {
-          "use server";
-          revalidatePath(`/course/${id}`);
-        }}
-      >
-        <Button type="submit">
-          <span className="">Refresh</span>
-        </Button>
-      </form>
       <Suspense fallback={<CourseOverviewSkeleton />}>
         <CourseContent params={props.params} />
       </Suspense>
