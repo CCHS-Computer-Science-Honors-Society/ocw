@@ -1,0 +1,355 @@
+src/
+├── app
+│   ├── (admin)
+│   │   └── admin
+│   │       ├── _components
+│   │       │   ├── courses.tsx
+│   │       │   └── users-table.tsx
+│   │       ├── page.tsx
+│   │       └── types.ts
+│   ├── (auth)
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   └── logout
+│   │       └── page.tsx
+│   ├── (root)
+│   │   ├── (course)
+│   │   │   ├── course
+│   │   │   │   └── [id]
+│   │   │   │       ├── [unitId]
+│   │   │   │       │   ├── [lessonId]
+│   │   │   │       │   │   ├── _components
+│   │   │   │       │   │   │   ├── edit-button.tsx
+│   │   │   │       │   │   │   └── sidebar
+│   │   │   │       │   │   │       ├── auth
+│   │   │   │       │   │   │       │   ├── auth.client.tsx
+│   │   │   │       │   │   │       │   └── index.tsx
+│   │   │   │       │   │   │       ├── client.tsx
+│   │   │   │       │   │   │       ├── content.tsx
+│   │   │   │       │   │   │       ├── header.tsx
+│   │   │   │       │   │   │       ├── icons.tsx
+│   │   │   │       │   │   │       └── index.tsx
+│   │   │   │       │   │   ├── _queries
+│   │   │   │       │   │   │   └── index.ts
+│   │   │   │       │   │   ├── breadcrumb.tsx
+│   │   │   │       │   │   ├── layout.tsx
+│   │   │   │       │   │   └── page.tsx
+│   │   │   │       │   └── page.tsx
+│   │   │   │       ├── _components
+│   │   │   │       │   ├── course-content.tsx
+│   │   │   │       │   ├── course-units.skeleton.tsx
+│   │   │   │       │   ├── course-units.tsx
+│   │   │   │       │   └── courses.tsx
+│   │   │   │       ├── admin
+│   │   │   │       │   ├── _components
+│   │   │   │       │   │   ├── create-lesson.tsx
+│   │   │   │       │   │   ├── create-unit.tsx
+│   │   │   │       │   │   ├── create.tsx
+│   │   │   │       │   │   ├── header.client.tsx
+│   │   │   │       │   │   ├── header.tsx
+│   │   │   │       │   │   ├── main-nav.tsx
+│   │   │   │       │   │   ├── sidebar.tsx
+│   │   │   │       │   │   ├── switcher
+│   │   │   │       │   │   │   ├── client.tsx
+│   │   │   │       │   │   │   └── index.tsx
+│   │   │   │       │   │   ├── table
+│   │   │   │       │   │   │   ├── lesson
+│   │   │   │       │   │   │   │   ├── columns.tsx
+│   │   │   │       │   │   │   │   └── index.tsx
+│   │   │   │       │   │   │   ├── unit
+│   │   │   │       │   │   │   │   ├── columns.tsx
+│   │   │   │       │   │   │   │   └── index.tsx
+│   │   │   │       │   │   │   └── users
+│   │   │   │       │   │   │       └── index.tsx
+│   │   │   │       │   │   ├── units-dnd-form.tsx
+│   │   │   │       │   │   └── units-dnd.tsx
+│   │   │   │       │   ├── _unit
+│   │   │   │       │   │   └── [unitId]
+│   │   │   │       │   │       ├── _components
+│   │   │   │       │   │       │   ├── form-wrapper.tsx
+│   │   │   │       │   │       │   ├── form.tsx
+│   │   │   │       │   │       │   ├── lesson-order-form.tsx
+│   │   │   │       │   │       │   ├── lesson-order-wrapper.tsx
+│   │   │   │       │   │       │   └── lessons-dnd.tsx
+│   │   │   │       │   │       ├── _skeleton
+│   │   │   │       │   │       │   └── index.tsx
+│   │   │   │       │   │       └── page.tsx
+│   │   │   │       │   ├── layout.tsx
+│   │   │   │       │   ├── lesson
+│   │   │   │       │   │   └── [lessonId]
+│   │   │   │       │   │       ├── _components
+│   │   │   │       │   │       │   └── form.tsx
+│   │   │   │       │   │       └── page.tsx
+│   │   │   │       │   ├── logs
+│   │   │   │       │   │   ├── page.tsx
+│   │   │   │       │   │   └── table.tsx
+│   │   │   │       │   ├── page.tsx
+│   │   │   │       │   ├── table
+│   │   │   │       │   │   ├── _table
+│   │   │   │       │   │   │   ├── cells.tsx
+│   │   │   │       │   │   │   ├── declare.ts
+│   │   │   │       │   │   │   ├── lesson.columns.tsx
+│   │   │   │       │   │   │   ├── lesson.grid.client.tsx
+│   │   │   │       │   │   │   ├── lesson.grid.skeleton.tsx
+│   │   │   │       │   │   │   ├── lessons.grid.tsx
+│   │   │   │       │   │   │   ├── types.tsx
+│   │   │   │       │   │   │   ├── unit.columns.tsx
+│   │   │   │       │   │   │   ├── units.grid.client.tsx
+│   │   │   │       │   │   │   ├── units.grid.skeleton.tsx
+│   │   │   │       │   │   │   └── units.grid.tsx
+│   │   │   │       │   │   ├── lesson
+│   │   │   │       │   │   │   └── page.tsx
+│   │   │   │       │   │   └── units
+│   │   │   │       │   │       └── page.tsx
+│   │   │   │       │   ├── unit
+│   │   │   │       │   │   └── [unitId]
+│   │   │   │       │   │       ├── _components
+│   │   │   │       │   │       │   ├── reorder.client.tsx
+│   │   │   │       │   │       │   ├── reorder.form.tsx
+│   │   │   │       │   │       │   └── reorder.tsx
+│   │   │   │       │   │       └── page.tsx
+│   │   │   │       │   └── users
+│   │   │   │       │       └── page.tsx
+│   │   │   │       ├── layout.tsx
+│   │   │   │       ├── opengraph-image.tsx
+│   │   │   │       └── page.tsx
+│   │   │   └── courses
+│   │   │       ├── _components
+│   │   │       │   ├── courses-filter.tsx
+│   │   │       │   ├── courses-table.tsx
+│   │   │       │   ├── grid.tsx
+│   │   │       │   ├── pagination.tsx
+│   │   │       │   └── search.tsx
+│   │   │       ├── _queries
+│   │   │       │   └── index.ts
+│   │   │       ├── layout.tsx
+│   │   │       ├── loading.tsx
+│   │   │       └── page.tsx
+│   │   ├── (marketing)
+│   │   │   ├── _components
+│   │   │   │   ├── courselist.tsx
+│   │   │   │   └── hero.tsx
+│   │   │   ├── about
+│   │   │   │   └── page.tsx
+│   │   │   ├── account
+│   │   │   │   └── page.tsx
+│   │   │   ├── contact
+│   │   │   │   └── page.tsx
+│   │   │   ├── contributors
+│   │   │   │   ├── _components
+│   │   │   │   │   └── contributorCard.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── legal
+│   │   │   │   ├── cookie
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── privacy
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── tos
+│   │   │   │       └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── (redirecting)
+│   │   │   ├── lesson
+│   │   │   │   └── [id]
+│   │   │   │       └── page.tsx
+│   │   │   └── unit
+│   │   │       └── page.tsx
+│   │   ├── flashcards
+│   │   │   ├── _actions
+│   │   │   │   └── search-flashcards.tsx
+│   │   │   ├── _components
+│   │   │   │   ├── search-form.tsx
+│   │   │   │   └── search-result.tsx
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── _components
+│   │   └── post.tsx
+│   ├── _providers
+│   │   ├── posthog.tsx
+│   │   └── theme.tsx
+│   ├── api
+│   │   ├── auth
+│   │   │   └── [...all]
+│   │   │       └── route.ts
+│   │   ├── flashcards
+│   │   │   └── route.ts
+│   │   ├── prefetch-embeds
+│   │   │   └── [...rest]
+│   │   │       └── route.ts
+│   │   ├── prefetch-images
+│   │   │   └── [...rest]
+│   │   │       └── route.ts
+│   │   ├── revalidate
+│   │   │   └── [id]
+│   │   │       └── route.ts
+│   │   ├── revalidate-course
+│   │   │   └── [id]
+│   │   ├── search
+│   │   │   └── route.ts
+│   │   └── trpc
+│   │       └── [trpc]
+│   │           └── route.ts
+│   ├── layout.tsx
+│   └── providers.tsx
+├── components
+│   ├── explore-button
+│   │   ├── button.tsx
+│   │   ├── context.tsx
+│   │   └── index.tsx
+│   ├── iframe.tsx
+│   ├── login-form.tsx
+│   ├── navbar.tsx
+│   ├── render
+│   │   ├── flashcard-page.tsx
+│   │   ├── google-docs.tsx
+│   │   ├── index.tsx
+│   │   ├── notion-client.tsx
+│   │   ├── notion.tsx
+│   │   └── quizlet.tsx
+│   ├── search-flashcards.tsx
+│   ├── search.tsx
+│   ├── sign-out.tsx
+│   ├── ui
+│   │   ├── accordion.tsx
+│   │   ├── alert-dialog.tsx
+│   │   ├── alert.tsx
+│   │   ├── aspect-ratio.tsx
+│   │   ├── autoform
+│   │   │   ├── AutoForm.tsx
+│   │   │   ├── components
+│   │   │   │   ├── ArrayElementWrapper.tsx
+│   │   │   │   ├── ArrayWrapper.tsx
+│   │   │   │   ├── BooleanField.tsx
+│   │   │   │   ├── DateField.tsx
+│   │   │   │   ├── ErrorMessage.tsx
+│   │   │   │   ├── FieldWrapper.tsx
+│   │   │   │   ├── Form.tsx
+│   │   │   │   ├── NumberField.tsx
+│   │   │   │   ├── ObjectWrapper.tsx
+│   │   │   │   ├── SelectField.tsx
+│   │   │   │   ├── StringField.tsx
+│   │   │   │   └── SubmitButton.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── types.ts
+│   │   │   └── utils.ts
+│   │   ├── avatar.tsx
+│   │   ├── badge.tsx
+│   │   ├── breadcrumb.tsx
+│   │   ├── button.tsx
+│   │   ├── calendar.tsx
+│   │   ├── card.tsx
+│   │   ├── carousel.tsx
+│   │   ├── chart.tsx
+│   │   ├── checkbox.tsx
+│   │   ├── collapsible.tsx
+│   │   ├── command.tsx
+│   │   ├── context-menu.tsx
+│   │   ├── dialog.tsx
+│   │   ├── drawer.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── file-upload.tsx
+│   │   ├── form.tsx
+│   │   ├── hover-card.tsx
+│   │   ├── icons
+│   │   │   └── google.tsx
+│   │   ├── input-otp.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── link.tsx
+│   │   ├── loading-button.tsx
+│   │   ├── menubar.tsx
+│   │   ├── navigation-menu.tsx
+│   │   ├── pagination.tsx
+│   │   ├── popover.tsx
+│   │   ├── progress.tsx
+│   │   ├── radio-group.tsx
+│   │   ├── resizable.tsx
+│   │   ├── scroll-area.tsx
+│   │   ├── select.tsx
+│   │   ├── separator.tsx
+│   │   ├── sheet.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── skeleton.tsx
+│   │   ├── slider.tsx
+│   │   ├── sonner.tsx
+│   │   ├── switch.tsx
+│   │   ├── table.tsx
+│   │   ├── tabs.tsx
+│   │   ├── tags-input.tsx
+│   │   ├── textarea.tsx
+│   │   ├── toast.tsx
+│   │   ├── toggle-group.tsx
+│   │   ├── toggle.tsx
+│   │   ├── tooltip.tsx
+│   │   └── vercel-tabs.tsx
+│   └── user-menu.tsx
+├── data
+│   ├── easy_note_card.json
+│   └── seed
+│       ├── seed-art-history.ts
+│       ├── seed-courses.ts
+│       └── seed-rest.ts
+├── env.js
+├── hooks
+│   ├── use-backpressure.tsx
+│   ├── use-media-query.tsx
+│   └── use-mobile.tsx
+├── lib
+│   ├── cache
+│   │   ├── callInvalidate.ts
+│   │   └── index.ts
+│   ├── content.ts
+│   ├── try-catch.ts
+│   ├── url-state.ts
+│   └── utils.ts
+├── server
+│   ├── api
+│   │   ├── actions
+│   │   │   └── logs.ts
+│   │   ├── root.ts
+│   │   ├── routers
+│   │   │   ├── courses.ts
+│   │   │   ├── flashcards.ts
+│   │   │   ├── lesson.ts
+│   │   │   ├── logs.ts
+│   │   │   ├── post.ts
+│   │   │   ├── search.ts
+│   │   │   ├── units.ts
+│   │   │   └── users.ts
+│   │   ├── scripts
+│   │   │   ├── courses.ts
+│   │   │   ├── index.ts
+│   │   │   ├── lessons.ts
+│   │   │   └── search.ts
+│   │   └── trpc.ts
+│   ├── auth
+│   │   ├── auth.client.ts
+│   │   ├── auth.server.ts
+│   │   ├── index.ts
+│   │   ├── plugin
+│   │   │   └── permission
+│   │   │       ├── client.ts
+│   │   │       ├── index.ts
+│   │   │       └── service.ts
+│   │   └── types.ts
+│   └── db
+│       ├── ai.ts
+│       ├── index.ts
+│       ├── migrate.ts
+│       └── schema.ts
+├── styles
+│   └── globals.css
+├── trpc
+│   ├── query-client.ts
+│   ├── react.tsx
+│   ├── server.tsx
+│   └── utils.tsx
+├── types
+│   ├── index.ts
+│   └── nav.tsx
+└── validators
+    ├── lesson.ts
+    ├── unit.ts
+    └── users.ts
+
+105 directories, 248 files

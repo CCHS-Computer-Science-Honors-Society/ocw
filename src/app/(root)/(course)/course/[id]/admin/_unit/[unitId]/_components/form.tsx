@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,8 +44,8 @@ export function LessonForm({ courseId, data }: FormContextProps) {
   });
   const queryClient = useQueryClient();
 
-  const { mutate: update, isPending: isLoading } = useMutation(api.units.update.mutationOptions(
-    {
+  const { mutate: update, isPending: isLoading } = useMutation(
+    api.units.update.mutationOptions({
       onSuccess: () => {
         toast.success("Unit updated successfully!");
         void queryClient.invalidateQueries(api.units.pathFilter());
@@ -56,8 +56,8 @@ export function LessonForm({ courseId, data }: FormContextProps) {
           error.message || "An error occurred while updating the unit.",
         );
       },
-    },
-  ));
+    }),
+  );
 
   if (!data) return null;
   const onSubmit = (formData: FormData) => {

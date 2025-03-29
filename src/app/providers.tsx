@@ -10,9 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <>
       <PostHogProvider>
         <TRPCReactProvider>
-          <ExploreProvider>
-            {children}
-          </ExploreProvider>
+          <ExploreProvider>{children}</ExploreProvider>
         </TRPCReactProvider>
         <Toaster position="top-center" richColors />
       </PostHogProvider>

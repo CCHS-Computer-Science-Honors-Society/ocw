@@ -102,7 +102,7 @@ export const EditableSelectCell = <T extends object>({
       open={open}
       onOpenChange={setOpen}
     >
-      <SelectTrigger className="w-[280px] h-8 border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background">
+      <SelectTrigger className="h-8 w-[280px] border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background">
         <SelectValue placeholder="select a value" />
       </SelectTrigger>
       <SelectContent>

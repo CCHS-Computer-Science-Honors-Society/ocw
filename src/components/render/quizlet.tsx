@@ -35,10 +35,7 @@ export function QuizletEmbed({
         ) : null}
       </div>
       <div className="flex-grow">
-        <Embed
-          src={url}
-          className="h-full w-full border-0"
-        ></Embed>
+        <Embed src={url} className="h-full w-full border-0"></Embed>
       </div>
     </div>
   );

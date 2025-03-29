@@ -16,7 +16,7 @@ import dynamic from "next/dynamic";
 const Explore = dynamic(import("@/components/explore-button"), {
   ssr: true,
   loading: () => <div>Loading...</div>,
-})
+});
 
 export default async function Layout({
   children,

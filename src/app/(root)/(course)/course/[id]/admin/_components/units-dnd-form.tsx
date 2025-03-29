@@ -18,17 +18,18 @@ interface UnitsFormProps {
 export const UnitsForm = ({ courseId }: UnitsFormProps) => {
   const api = useTRPC();
   const queryClient = useQueryClient();
-  const {
-    data: initialData
-  } = useSuspenseQuery(api.units.getUnitsForDashboard.queryOptions({
-    courseId,
-  }));
-  const { mutate: update, isPending: isUpdating } =
-    useMutation(api.units.reorder.mutationOptions({
+  const { data: initialData } = useSuspenseQuery(
+    api.units.getUnitsForDashboard.queryOptions({
+      courseId,
+    }),
+  );
+  const { mutate: update, isPending: isUpdating } = useMutation(
+    api.units.reorder.mutationOptions({
       onSuccess: () => {
         void queryClient.invalidateQueries(api.units.pathFilter());
       },
-    }));
+    }),
+  );
   const router = useRouter();
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {

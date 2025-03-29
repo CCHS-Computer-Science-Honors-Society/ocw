@@ -18,9 +18,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 export function CourseSwitcherClient() {
   const api = useTRPC();
   const { id: currentCourseId } = useParams();
-  const {
-    data: courses
-  } = useSuspenseQuery(api.users.getElevatedCourses.queryOptions({}));
+  const { data: courses } = useSuspenseQuery(
+    api.users.getElevatedCourses.queryOptions({}),
+  );
   const router = useRouter();
   const activeCourse =
     courses.find((p) => p.id === currentCourseId) ?? courses[0];

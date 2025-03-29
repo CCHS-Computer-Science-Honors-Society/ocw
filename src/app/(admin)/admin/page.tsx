@@ -10,13 +10,15 @@ export default async function Page() {
   if (session?.user.role != "admin") {
     redirect("/");
   }
-  prefetch(trpc.users.getUsers.infiniteQueryOptions(
-    { limit: 10 },
-    {
-      staleTime: 30 * 60 * 1000,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  ));
+  prefetch(
+    trpc.users.getUsers.infiniteQueryOptions(
+      { limit: 10 },
+      {
+        staleTime: 30 * 60 * 1000,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
+  );
 
   return (
     <main className="container mx-auto p-4">

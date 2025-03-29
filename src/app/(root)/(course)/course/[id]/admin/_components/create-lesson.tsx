@@ -82,12 +82,14 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
     },
   });
 
-  const { mutate: createLesson } = useMutation(api.lesson.create.mutationOptions({
-    onSuccess: () => {
-      setOpen(false);
-      form.reset();
-    },
-  }));
+  const { mutate: createLesson } = useMutation(
+    api.lesson.create.mutationOptions({
+      onSuccess: () => {
+        setOpen(false);
+        form.reset();
+      },
+    }),
+  );
 
   const onSubmit = async (data: LessonFormData) => {
     // Here you would typically send the data to your API
@@ -222,7 +224,7 @@ export function CreateLessonForm({ units }: CreateLessonFormProps) {
                         >
                           {field.value
                             ? units.find((unit) => unit.id === field.value)
-                              ?.name
+                                ?.name
                             : "Select unit"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>

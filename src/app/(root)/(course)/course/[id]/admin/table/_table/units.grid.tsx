@@ -10,11 +10,13 @@ export const Units = async ({
     id: string;
   }>;
 }) => {
-  const { id } = await params
+  const { id } = await params;
 
-  prefetch(trpc.units.getUnitsForDashboard.queryOptions({
-    courseId: id,
-  }));
+  prefetch(
+    trpc.units.getUnitsForDashboard.queryOptions({
+      courseId: id,
+    }),
+  );
 
   return (
     <div>

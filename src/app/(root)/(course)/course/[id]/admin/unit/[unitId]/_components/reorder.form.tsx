@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -20,17 +20,18 @@ export const LessonsForm = ({ id, unitId }: LessonsFormProps) => {
   const api = useTRPC();
   const courseId = id;
   const queryClient = useQueryClient();
-  const {
-    data: initialData
-  } = useSuspenseQuery(api.lesson.getLessonsForDashboard.queryOptions({
-    unitId,
-  }));
-  const { mutate: update, isPending: isUpdating } =
-    useMutation(api.lesson.reorder.mutationOptions({
+  const { data: initialData } = useSuspenseQuery(
+    api.lesson.getLessonsForDashboard.queryOptions({
+      unitId,
+    }),
+  );
+  const { mutate: update, isPending: isUpdating } = useMutation(
+    api.lesson.reorder.mutationOptions({
       onSuccess: () => {
         void queryClient.invalidateQueries(api.lesson.pathFilter());
       },
-    }));
+    }),
+  );
   const router = useRouter();
 
   const onReorder = async (updateData: { id: string; position: number }[]) => {

@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import {
   Table,
   TableBody,
@@ -32,57 +32,67 @@ type LessonTableProps = {
 
 export const LessonTable = ({ units, courseId }: LessonTableProps) => {
   const api = useTRPC();
-  const {
-    data: data
-  } = useSuspenseQuery(api.lesson.getTableData.queryOptions({
-    courseId: courseId,
-  }));
+  const { data: data } = useSuspenseQuery(
+    api.lesson.getTableData.queryOptions({
+      courseId: courseId,
+    }),
+  );
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(api.lesson.update.mutationOptions({
-    onError(error, __, ctx) {
-      const typedCtx = ctx as unknown as { prevData?: Lesson[] };
-      if (!typedCtx.prevData) return;
-      queryClient.setQueryData(
-        api.lesson.getTableData.queryKey({ courseId: courseId }),
-        typedCtx.prevData
-      );
-      //make sure to set that prevData is lesson[]
-      toast.error(
-        error.message ?? "An error occurred while updating the lesson.",
-      );
-    },
-    onSettled() {
-      // Sync with server once mutation has settled
-      void queryClient.invalidateQueries(api.lesson.getTableData.pathFilter());
-    },
-    async onMutate(newData) {
-      await queryClient.cancelQueries(api.lesson.getTableData.pathFilter());
-      const prevData = queryClient.getQueryData(api.lesson.getTableData.queryKey());
-      queryClient.setQueryData(api.lesson.getTableData.queryKey({ courseId: courseId }), (oldData) => {
-        if (!oldData) return oldData;
-        const index = oldData.findIndex((item) => item.id === newData.id);
-        if (index === -1) return oldData;
-        const currentItem = oldData[index];
-        if (!currentItem) return oldData;
-        const updatedItem = {
-          ...currentItem,
-          name: newData.name ?? currentItem.name,
-          isPublished: newData.isPublished ?? currentItem.isPublished,
-          pureLink: newData.pureLink ?? currentItem.pureLink,
-          unitId: newData.unitId ?? currentItem.unitId,
-          embedPassword: newData.embed?.password ?? currentItem.embedPassword,
-          embedUrl: newData.embed?.embedUrl ?? currentItem.embedUrl,
-          id: newData.id ?? currentItem.id,
-        };
-        return [
-          ...oldData.slice(0, index),
-          updatedItem,
-          ...oldData.slice(index + 1),
-        ];
-      });
-      return { prevData };
-    },
-  }));
+  const { mutate } = useMutation(
+    api.lesson.update.mutationOptions({
+      onError(error, __, ctx) {
+        const typedCtx = ctx as unknown as { prevData?: Lesson[] };
+        if (!typedCtx.prevData) return;
+        queryClient.setQueryData(
+          api.lesson.getTableData.queryKey({ courseId: courseId }),
+          typedCtx.prevData,
+        );
+        //make sure to set that prevData is lesson[]
+        toast.error(
+          error.message ?? "An error occurred while updating the lesson.",
+        );
+      },
+      onSettled() {
+        // Sync with server once mutation has settled
+        void queryClient.invalidateQueries(
+          api.lesson.getTableData.pathFilter(),
+        );
+      },
+      async onMutate(newData) {
+        await queryClient.cancelQueries(api.lesson.getTableData.pathFilter());
+        const prevData = queryClient.getQueryData(
+          api.lesson.getTableData.queryKey(),
+        );
+        queryClient.setQueryData(
+          api.lesson.getTableData.queryKey({ courseId: courseId }),
+          (oldData) => {
+            if (!oldData) return oldData;
+            const index = oldData.findIndex((item) => item.id === newData.id);
+            if (index === -1) return oldData;
+            const currentItem = oldData[index];
+            if (!currentItem) return oldData;
+            const updatedItem = {
+              ...currentItem,
+              name: newData.name ?? currentItem.name,
+              isPublished: newData.isPublished ?? currentItem.isPublished,
+              pureLink: newData.pureLink ?? currentItem.pureLink,
+              unitId: newData.unitId ?? currentItem.unitId,
+              embedPassword:
+                newData.embed?.password ?? currentItem.embedPassword,
+              embedUrl: newData.embed?.embedUrl ?? currentItem.embedUrl,
+              id: newData.id ?? currentItem.id,
+            };
+            return [
+              ...oldData.slice(0, index),
+              updatedItem,
+              ...oldData.slice(index + 1),
+            ];
+          },
+        );
+        return { prevData };
+      },
+    }),
+  );
 
   const table = useReactTable({
     data,

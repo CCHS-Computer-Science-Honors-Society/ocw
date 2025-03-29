@@ -38,13 +38,13 @@ export const ClientHeader = () => {
     else if (index === 2) router.push(`/course/${id}/admin/lesson/${lessonId}`);
   };
 
-  const {
-    data: breadcrumbs
-  } = useSuspenseQuery(api.courses.getBreadcrumbData.queryOptions({
-    courseId: id,
-    unitId: unitId,
-    lessonId: lessonId,
-  }));
+  const { data: breadcrumbs } = useSuspenseQuery(
+    api.courses.getBreadcrumbData.queryOptions({
+      courseId: id,
+      unitId: unitId,
+      lessonId: lessonId,
+    }),
+  );
 
   return (
     <div>
