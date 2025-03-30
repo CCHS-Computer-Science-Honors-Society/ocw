@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 import { insertLog } from "../actions/logs";
 import { TRPCError } from "@trpc/server";
 import { after } from "next/server";
-import { hasPermission } from "@/server/auth/plugin/permission/service";
+import { userHasPermission } from "@/server/auth/plugin/permission/service";
 
 export const courseRouter = createTRPCRouter({
   create: adminProcedure
@@ -51,7 +51,7 @@ export const courseRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       if (
-        !(await hasPermission({
+        !(await userHasPermission({
           userId: ctx.session.user.id,
           courseId: input.courseId,
           permission: "manage_course",

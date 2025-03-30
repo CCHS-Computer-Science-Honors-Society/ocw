@@ -14,7 +14,7 @@ import { z, ZodError } from "zod";
 
 import { db } from "@/server/db";
 import { getSession } from "../auth/auth.server";
-import { hasPermission } from "../auth/plugin/permission/service";
+import { userHasPermission } from "../auth/plugin/permission/service";
 import { type CoursePermissionAction } from "@/server/db/schema";
 
 /**
@@ -198,7 +198,7 @@ export const createPermissionCheckMiddleware = (
       });
     }
     // 3. Perform the permission check
-    const authorized = await hasPermission({
+    const authorized = await userHasPermission({
       userId,
       courseId,
       permission,

@@ -6,8 +6,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import CourseOverviewSkeleton from "./_components/course-units.skeleton";
 import { CourseContent } from "./_components/course-content";
-import { revalidatePath } from "next/cache";
-import { Button } from "@/components/ui/button";
 
 export async function generateMetadata({
   params,

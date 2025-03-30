@@ -1,6 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/server/db";
 import { courseUsers, type CoursePermissionAction } from "@/server/db/schema";
+import { getSession } from "../../auth.server";
 type CourseRole = "admin" | "editor" | "user";
 
 export const roleToPermissions: Record<CourseRole, CoursePermissionAction[]> = {
@@ -199,7 +200,7 @@ export async function assignRole({
     });
 }
 
-export async function hasPermission({
+export async function userHasPermission({
   courseId,
   userId,
   permission,
@@ -213,4 +214,29 @@ export async function hasPermission({
     return true;
   }
   return userPermissions.permissions.includes(permission);
+}
+
+export async function userIncludesPermission({
+  courseId,
+  action,
+}: {
+  courseId: string;
+  action: CoursePermissionAction[];
+}) {
+  const session = await getSession();
+
+  if (!session?.user) {
+    return false;
+  }
+
+  if (session.user.role === "admin") {
+    return true;
+  }
+
+  const userPermissions = await getUserPermissions({
+    courseId,
+    userId: session.user.id,
+  });
+
+  return userPermissions.some((permission) => action.includes(permission));
 }
