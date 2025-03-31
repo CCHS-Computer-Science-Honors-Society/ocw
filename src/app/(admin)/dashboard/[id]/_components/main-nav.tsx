@@ -82,17 +82,14 @@ export function MainNav() {
               <SidebarMenuSub>
                 <SidebarMenuSubItem key={"Units"}>
                   <SidebarMenuSubButton asChild>
-                    <Link
-                      prefetch
-                      href={`/course/${idParsed}/admin/table/units`}
-                    >
+                    <Link prefetch href={`/dashboard/${idParsed}/tables/units`}>
                       <span>Units</span>
                     </Link>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>
                 <SidebarMenuSubItem key={"Lessons"}>
                   <SidebarMenuSubButton asChild>
-                    <Link href={`/course/${idParsed}/admin/table/lesson`}>
+                    <Link href={`/dashboard/${idParsed}/tables/lesson`}>
                       <span>Lesson</span>
                     </Link>
                   </SidebarMenuSubButton>
