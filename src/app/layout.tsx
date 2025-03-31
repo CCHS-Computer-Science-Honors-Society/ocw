@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { IBM_Plex_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { Providers } from "./providers";
+import { Suspense } from "react";
 
 const ibm = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -87,7 +88,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${ibm.className}`}>
       <body>
-        <Providers>{children}</Providers>
+        <Suspense fallback={<div>Loading essential data...</div>}>
+          <Providers>{children}</Providers>
+        </Suspense>
       </body>
     </html>
   );

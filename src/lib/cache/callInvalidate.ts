@@ -1,5 +1,5 @@
 // src/lib/cache/callInvalidate.ts
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import "server-only";
 
 /*
@@ -18,6 +18,7 @@ export const callInvalidate = (
     revalidatePath(`/course/${id}`);
     if (unitId) {
       revalidatePath(`/course/${id}/unitId}`);
+      revalidateTag("getUnits");
       if (lessonId) {
         revalidatePath(`/course/[id]/[unitId]/[lessonId]`, "page");
       }
@@ -27,4 +28,5 @@ export const callInvalidate = (
     // Perhaps revalidate all courses:
     revalidatePath(`/(root)/(course)/course`, "layout");
   }
+  revalidateTag("courseData");
 };

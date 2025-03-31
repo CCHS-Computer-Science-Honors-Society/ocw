@@ -10,6 +10,11 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  compiler: {
+    removeConsole: {
+      exclude: ["error"],
+    },
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -17,6 +22,7 @@ const config = {
     inlineCss: true,
     ppr: "incremental",
     reactCompiler: true,
+    dynamicIO: true,
   },
   //FIX: this will lead to high bills
   images: {

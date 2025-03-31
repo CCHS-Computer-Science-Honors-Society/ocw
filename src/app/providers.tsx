@@ -2,8 +2,7 @@ import { ExploreProvider } from "@/components/explore-button/context";
 import { TRPCReactProvider } from "@/trpc/react";
 import React from "react";
 import { Toaster } from "sonner";
-import { PostHogProvider } from "./_providers/posthog";
-import { ThemeProvider } from "./_providers/theme";
+import { PostHogProvider } from "./_providers/posthog.client";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

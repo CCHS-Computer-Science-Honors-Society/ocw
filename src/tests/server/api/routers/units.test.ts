@@ -7,7 +7,7 @@ import { appRouter, type AppRouter } from "@/server/api/root";
 
 // Import functions to mock
 import { getSession } from "@/server/auth/auth.server";
-import { hasPermission } from "@/server/auth/plugin/permission/service";
+import { userHasPermission } from "@/server/auth/plugin/permission/service";
 import type { CoursePermissionAction } from "@/server/db/schema"; // For typing mock
 import { callInvalidate } from "@/lib/cache/callInvalidate";
 import { insertLog } from "@/server/api/actions/logs";
@@ -67,7 +67,7 @@ describe("unitsRouter", () => {
     vi.clearAllMocks();
     // Default to logged-in user with permission for protected routes
     vi.mocked(getSession).mockResolvedValue(mockAuthenticatedSession);
-    vi.mocked(hasPermission).mockResolvedValue(true);
+    vi.mocked(userHasPermission).mockResolvedValue(true);
   });
 
   // Helper to create context and caller
@@ -131,7 +131,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.update(input)).resolves.toBeUndefined();
 
       // Verify permission check was called correctly
-      expect(hasPermission).toHaveBeenCalledWith({
+      expect(userHasPermission).toHaveBeenCalledWith({
         userId: mockUser.id,
         courseId: input.courseId,
         permission: permissionNeeded,
@@ -141,7 +141,7 @@ describe("unitsRouter", () => {
     });
 
     test("should throw UNAUTHORIZED if user lacks permission", async () => {
-      vi.mocked(hasPermission).mockResolvedValue(false); // Override permission mock
+      vi.mocked(userHasPermission).mockResolvedValue(false); // Override permission mock
       const { caller } = await setupTest();
 
       type Input = inferProcedureInput<AppRouter["units"]["update"]>;
@@ -153,7 +153,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.update(input)).rejects.toThrowError(
         /You do not have permission/, // Or check TRPCError code 'UNAUTHORIZED'
       );
-      expect(hasPermission).toHaveBeenCalledWith({
+      expect(userHasPermission).toHaveBeenCalledWith({
         userId: mockUser.id,
         courseId: input.courseId,
         permission: permissionNeeded,
@@ -175,7 +175,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.update(input)).rejects.toThrowError(
         /UNAUTHORIZED/,
       );
-      expect(hasPermission).not.toHaveBeenCalled(); // Permission check is not reached
+      expect(userHasPermission).not.toHaveBeenCalled(); // Permission check is not reached
     });
 
     test("should throw BAD_REQUEST if input lacks courseId", async () => {
@@ -195,7 +195,7 @@ describe("unitsRouter", () => {
         caller.units.update(invalidInput as any),
       ).rejects.toThrowError(/Input validation failed: requires 'courseId'/); // Check TRPCError code 'BAD_REQUEST'
 
-      expect(hasPermission).not.toHaveBeenCalled(); // Input validation fails before permission check
+      expect(userHasPermission).not.toHaveBeenCalled(); // Input validation fails before permission check
     });
 
     test("should throw NOT_FOUND if unit doesn't exist", async () => {
@@ -217,7 +217,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.update(input)).rejects.toThrowError(
         /Unit not found/, // Check TRPCError code 'NOT_FOUND'
       );
-      expect(hasPermission).toHaveBeenCalledOnce(); // Permission check should still happen
+      expect(userHasPermission).toHaveBeenCalledOnce(); // Permission check should still happen
     });
   });
 
@@ -240,7 +240,7 @@ describe("unitsRouter", () => {
 
       await expect(caller.units.reorder(input)).resolves.toBeUndefined();
 
-      expect(hasPermission).toHaveBeenCalledWith({
+      expect(userHasPermission).toHaveBeenCalledWith({
         userId: mockUser.id,
         courseId: input.courseId,
         permission: permissionNeeded,
@@ -251,7 +251,7 @@ describe("unitsRouter", () => {
     });
 
     test("should throw UNAUTHORIZED if user lacks permission", async () => {
-      vi.mocked(hasPermission).mockResolvedValue(false);
+      vi.mocked(userHasPermission).mockResolvedValue(false);
       const { caller } = await setupTest();
 
       type Input = inferProcedureInput<AppRouter["units"]["reorder"]>;
@@ -263,7 +263,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.reorder(input)).rejects.toThrowError(
         /You do not have permission/,
       );
-      expect(hasPermission).toHaveBeenCalledOnce();
+      expect(userHasPermission).toHaveBeenCalledOnce();
     });
 
     test("should throw BAD_REQUEST if input lacks courseId", async () => {
@@ -277,7 +277,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.reorder(invalidInput)).rejects.toThrowError(
         /Input validation failed: requires 'courseId'/,
       );
-      expect(hasPermission).not.toHaveBeenCalled();
+      expect(userHasPermission).not.toHaveBeenCalled();
     });
 
     // Add UNAUTHORIZED test if needed (similar to update)
@@ -329,7 +329,7 @@ describe("unitsRouter", () => {
 
       await expect(caller.units.create(input)).resolves.toBeUndefined();
 
-      expect(hasPermission).toHaveBeenCalledWith({
+      expect(userHasPermission).toHaveBeenCalledWith({
         userId: mockUser.id,
         courseId: input.courseId,
         permission: permissionNeeded,
@@ -340,7 +340,7 @@ describe("unitsRouter", () => {
     });
 
     test("should throw UNAUTHORIZED if user lacks permission", async () => {
-      vi.mocked(hasPermission).mockResolvedValue(false);
+      vi.mocked(userHasPermission).mockResolvedValue(false);
       const { caller } = await setupTest();
 
       type Input = inferProcedureInput<AppRouter["units"]["create"]>;
@@ -353,7 +353,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.create(input)).rejects.toThrowError(
         /You do not have permission/,
       );
-      expect(hasPermission).toHaveBeenCalledOnce();
+      expect(userHasPermission).toHaveBeenCalledOnce();
     });
 
     test("should throw BAD_REQUEST if input lacks courseId (caught by middleware)", async () => {
@@ -368,7 +368,7 @@ describe("unitsRouter", () => {
         //@ts-expect-error - Input is invalid
         caller.units.create(invalidInput),
       ).rejects.toThrowError(/Input validation failed: requires 'courseId'/);
-      expect(hasPermission).not.toHaveBeenCalled();
+      expect(userHasPermission).not.toHaveBeenCalled();
     });
 
     test("should throw Zod validation error if input is invalid (caught by procedure)", async () => {
@@ -405,7 +405,7 @@ describe("unitsRouter", () => {
       await expect(caller.units.create(input)).rejects.toThrowError(
         /Failed to create unit/, // Check TRPCError code 'INTERNAL_SERVER_ERROR'
       );
-      expect(hasPermission).toHaveBeenCalledOnce(); // Permission check should pass
+      expect(userHasPermission).toHaveBeenCalledOnce(); // Permission check should pass
     });
 
     // Add UNAUTHORIZED test if needed (similar to update)

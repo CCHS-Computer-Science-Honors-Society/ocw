@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { asc, eq, max } from "drizzle-orm";
+import { asc, eq, and, max } from "drizzle-orm";
 import {
   createPermissionCheckMiddleware,
   createTRPCRouter,
@@ -215,6 +215,7 @@ export const lessonRouter = createTRPCRouter({
     .input(
       z.object({
         courseId: z.string(),
+        unitId: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -231,7 +232,13 @@ export const lessonRouter = createTRPCRouter({
           embedId: lessonEmbed.id,
         })
         .from(lessons)
-        .leftJoin(lessonEmbed, eq(lessons.id, lessonEmbed.lessonId))
+        .leftJoin(
+          lessonEmbed,
+          and(
+            eq(lessons.id, lessonEmbed.lessonId),
+            input.unitId ? eq(lessons.unitId, input.unitId) : undefined,
+          ),
+        )
         .where(eq(lessons.courseId, input.courseId));
       return data;
     }),
