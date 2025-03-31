@@ -24,6 +24,10 @@ import { type DataItem } from ".";
 import { Label } from "@/components/ui/label";
 import { contentTypeMap } from "@/validators/lesson";
 import Link from "next/link";
+import { z } from "zod";
+import { toast } from "sonner";
+
+const url = z.string().url();
 
 function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({ id });
@@ -311,6 +315,58 @@ export const columns: ColumnDef<DataItem>[] = [
       );
     },
     size: 100,
+  },
+  {
+    accessorKey: "embedUrl",
+    header: "Resource URL",
+    cell: ({ row, table }) => {
+      const meta = table.options.meta;
+      const [value, setValue] = React.useState(row.original.embedUrl);
+      if (!meta?.getCellUpdatePending) {
+        console.log("No pending update function");
+        return <div>No pending update function</div>; // Add a fallback UI
+      }
+      const isPending =
+        meta?.getCellUpdatePending(row.original.id, "embedUrl") ?? false;
+
+      React.useEffect(() => {
+        setValue(row.original.embedUrl);
+      }, [row.original.embedUrl]);
+
+      const onBlur = () => {
+        if (value !== row.original.embedUrl) return;
+        if (!meta?.updateCell) return;
+        const data = url.safeParse(value);
+        if (!data.success) return toast.error("Enter a valid url.");
+        if (row.original.embedPassword === value) return;
+        meta.updateCell(row.original.id, "embedUrl", data.data);
+      };
+
+      const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onBlur();
+        (e.target as HTMLFormElement).querySelector("input")?.blur();
+      };
+
+      return (
+        <form onSubmit={onSubmit}>
+          <Label htmlFor={`${row.original.id}-embedUrl`} className="sr-only">
+            Embed Url
+          </Label>
+          <Input
+            id={`${row.original.id}-embedUrl`}
+            value={value ?? ""}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={onBlur}
+            disabled={isPending}
+            className={`h-8 w-full min-w-40 border-transparent bg-transparent shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background ${
+              isPending ? "cursor-not-allowed opacity-50" : ""
+            }`}
+          />
+        </form>
+      );
+    },
+    size: 250,
   },
   {
     id: "actions",

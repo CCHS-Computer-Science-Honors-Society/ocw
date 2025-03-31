@@ -37,6 +37,7 @@ import {
 } from "@tanstack/react-table";
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -154,7 +155,7 @@ export function LessonTable({
     courseId,
     unitId,
   });
-  const { data } = useSuspenseQuery(queryOptions);
+  const { data } = useQuery(queryOptions);
 
   // --- State for Pending Cell Updates ---
   const [pendingUpdates, setPendingUpdates] = React.useState<

@@ -1,5 +1,5 @@
 import { type RowData } from "@tanstack/react-table";
-import { type UnitOption } from "../../_components/table/lesson";
+import { type UnitOption } from "../../_table/lesson";
 
 // --- Import types that are used within your custom meta properties ---
 // Adjust the import path as necessary
