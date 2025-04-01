@@ -1,5 +1,4 @@
 import Navbar from "@/components/navbar";
-import { UserMenu } from "@/components/user-menu";
 import { getCourseById } from "@/server/api/scripts";
 import { type Metadata } from "next";
 import { Suspense } from "react";
@@ -21,20 +20,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function CoursePage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default function CoursePage(props: { params: Promise<{ id: string }> }) {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Main Content */}
-      <Navbar
-        isSearch
-        userNav={
-          <Suspense fallback="loading">
-            <UserMenu />
-          </Suspense>
-        }
-      />
+      <Navbar isSearch />
       <Suspense fallback={<CourseOverviewSkeleton />}>
         <CourseContent params={props.params} />
       </Suspense>

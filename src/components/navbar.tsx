@@ -1,3 +1,4 @@
+"use client";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -9,15 +10,12 @@ import Link from "next/link";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "./user-menu";
+import { Suspense } from "react";
 
 const navigationMenuTriggerStyle = cn(nv(), "text-primary");
-function Navbar({
-  userNav,
-  isSearch,
-}: {
-  userNav: React.ReactNode;
-  isSearch?: boolean;
-}) {
+
+function Navbar({ isSearch }: { isSearch?: boolean }) {
   return (
     <nav className="border bg-background">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -75,7 +73,11 @@ function Navbar({
             <div className="hidden md:block">
               {isSearch ? <SearchDropdownComponent /> : null}
             </div>
-            <div className="ml-4 flex items-center md:ml-6">{userNav}</div>
+            <div className="ml-4 flex items-center md:ml-6">
+              <Suspense fallback="loading">
+                <UserMenu />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>

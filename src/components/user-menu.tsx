@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -11,12 +12,11 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { SignOut, SignInButton } from "./sign-out";
-import { getSession } from "@/server/auth/auth.server";
+import { useSession } from "@/server/auth/auth.client";
 
-export async function UserMenu({ onlySignOut }: { onlySignOut?: boolean }) {
-  const session = await getSession();
+export function UserMenu({ onlySignOut }: { onlySignOut?: boolean }) {
+  const { data: session } = useSession();
   const user = session?.user;
-
   if (!user) {
     return <SignInButton />;
   }
