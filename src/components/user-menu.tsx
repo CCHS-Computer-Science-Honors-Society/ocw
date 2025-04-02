@@ -59,11 +59,11 @@ export function UserMenu({ onlySignOut }: { onlySignOut?: boolean }) {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <Link href="/account">
+              <Link href="/account" prefetch>
                 <DropdownMenuItem>Account</DropdownMenuItem>
               </Link>
               {session.user.role === "admin" ? (
-                <Link href="/admin">
+                <Link href="/admin" prefetch>
                   <DropdownMenuItem>Admin</DropdownMenuItem>
                 </Link>
               ) : null}

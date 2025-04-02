@@ -36,6 +36,7 @@ export default async function EditButton({
   return (
     <div className="relative">
       <Link
+        prefetch
         href={link}
         className={cn(
           buttonVariants({ variant: "default", size: "icon" }),

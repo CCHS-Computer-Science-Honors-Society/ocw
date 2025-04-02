@@ -49,6 +49,7 @@ export function CourseSwitcherClient() {
         </DropdownMenuLabel>
         {courses.map((course) => (
           <Link
+            prefetch
             key={course.id}
             href={`/dashboard/${course.id}/${path}`}
             className="items-start gap-2 px-1.5"
