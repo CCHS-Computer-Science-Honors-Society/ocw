@@ -12,6 +12,7 @@ import QRCode from "./_components/qr";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { type Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contribute To OCW",
@@ -25,7 +26,7 @@ export default function ContributePage() {
       title: "Write for OCW",
       description:
         "Share your knowledge and expertise by contributing written content to our open courseware platform.",
-      url: "https://forms.google.com/write-for-ocw",
+      url: "https://forms.gle/ALUL2GEsCRv7eifp9",
       icon: <FileEdit className="h-8 w-8 text-primary" />,
     },
     {
@@ -33,7 +34,7 @@ export default function ContributePage() {
       title: "Design for OCW",
       description:
         "Help improve the visual experience of our platform with your design skills and creative ideas.",
-      url: "https://forms.google.com/design-for-ocw",
+      url: "https://forms.gle/iFUVRvHtKehxVZah7",
       icon: <Paintbrush className="h-8 w-8 text-primary" />,
     },
     {
@@ -41,7 +42,7 @@ export default function ContributePage() {
       title: "Develop the Platform",
       description:
         "Contribute to the technical development of our platform with your coding and development expertise.",
-      url: "https://forms.google.com/develop-the-platform",
+      url: "https://forms.gle/g4PBXz5LE3GBYYhT6",
       icon: <Code className="h-8 w-8 text-primary" />,
     },
   ];
@@ -122,13 +123,13 @@ export default function ContributePage() {
             </CardContent>
             <CardFooter>
               <Button asChild variant="outline" className="w-full">
-                <a
+                <Link
                   href="https://github.com/CCHS-Computer-Science-Honors-Society/ocw.git"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Github className="mr-2 h-4 w-4" /> Visit GitHub Repository
-                </a>
+                </Link>
               </Button>
             </CardFooter>
           </Card>
