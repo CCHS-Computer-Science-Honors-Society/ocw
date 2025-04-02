@@ -6,7 +6,7 @@ export function HeroSection() {
     <section className="relative h-[38vh]">
       <div className="container relative z-auto mx-auto flex flex-col gap-5 px-4 text-center">
         <h2 className="mb-8 text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl">
-          Education with OpenCourseWare
+          Your Life At Creek Made Easy
         </h2>
         <div className="flex flex-row items-center justify-center gap-20">
           {[
