@@ -7,12 +7,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Github, FileEdit, Paintbrush, Code } from "lucide-react";
+import {
+  Github,
+  FileEdit,
+  Paintbrush,
+  Code,
+  Clock,
+  HelpCircle,
+} from "lucide-react";
 import QRCode from "./_components/qr";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const metadata: Metadata = {
   title: "Contribute To OCW",
@@ -44,6 +57,40 @@ export default function ContributePage() {
         "Contribute to the technical development of our platform with your coding and development expertise.",
       url: "https://forms.gle/g4PBXz5LE3GBYYhT6",
       icon: <Code className="h-8 w-8 text-primary" />,
+    },
+  ];
+
+  const meetingTimes = [
+    {
+      id: "wednesday",
+      day: "Wednesday",
+      time: "After School",
+      hours: "3:30 PM - 4:15 PM",
+      icon: <Clock className="h-8 w-8 text-primary" />,
+    },
+    {
+      id: "thursday",
+      day: "Thursday",
+      time: "Before School",
+      hours: "7:50 AM - 8:10 AM",
+      icon: <Clock className="h-8 w-8 text-primary" />,
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "How long will it take to hear back?",
+      answer: "We look over the forms every Sunday.",
+    },
+    {
+      question: "Does what I do count as community service hours?",
+      answer: "Yes.",
+    },
+    {
+      question:
+        "What if I want to contribute to a course that already has content on the website?",
+      answer:
+        "That's fine, we probably have something for you to do so include it when you fill the form out.",
     },
   ];
 
@@ -98,6 +145,30 @@ export default function ContributePage() {
         </section>
 
         <section className="py-8">
+          <h2 className="mb-6 text-2xl font-bold">Meeting Times</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {meetingTimes.map((meeting) => (
+              <Card key={meeting.id} className="flex h-full flex-col">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    {meeting.icon}
+                    <CardTitle>{meeting.day}</CardTitle>
+                  </div>
+                  <CardDescription>{meeting.time}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex h-full items-center justify-center">
+                    <p className="text-center text-xl font-semibold">
+                      {meeting.hours}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-8">
           <Card>
             <CardHeader>
               <div className="flex items-center gap-3">
@@ -132,6 +203,32 @@ export default function ContributePage() {
                 </Link>
               </Button>
             </CardFooter>
+          </Card>
+        </section>
+
+        <section className="py-8">
+          <h2 className="mb-6 text-2xl font-bold">
+            Frequently Asked Questions
+          </h2>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <HelpCircle className="h-8 w-8 text-primary" />
+                <CardTitle>FAQ</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-left">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent>{faq.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
           </Card>
         </section>
 
