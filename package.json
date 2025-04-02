@@ -88,6 +88,7 @@
     "postgres": "^3.4.5",
     "posthog-js": "^1.231.2",
     "prismjs": "^1.29.0",
+    "qr-code-styling": "^1.9.1",
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
