@@ -49,7 +49,7 @@ const navigationData: Section[] = [
         courses: [
           {
             name: "Abstract Math/Linear Algebra",
-            link: "/course/abstract-math-linear-algebra",
+            link: "/course/abstract-math",
           },
         ],
       },
@@ -218,11 +218,12 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            className={`fixed inset-0 z-40 bg-background ${isMobile ? "overflow-y-auto" : ""}`}
+            // Keep the background on the motion container for the fade effect
+            className={`fixed inset-0 z-40 h-screen bg-white dark:bg-black ${isMobile ? "overflow-y-auto" : ""}`}
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
-              <div className="sticky top-0 z-50 border-b bg-background p-4">
+              <div className="sticky top-0 z-50 border-b bg-white p-4 dark:bg-black">
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-medium text-gray-600"
@@ -234,50 +235,46 @@ function ExploreContent() {
             <ScrollArea
               className={isMobile ? "h-full" : "h-[calc(100vh-64px)]"}
             >
-              <div className="relative h-full min-h-screen">
-                <div className="h-full w-full p-6 md:p-20">
-                  <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {navigationData.map((section) => (
-                      <div key={section.title} className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-500">
-                          {section.title}
-                        </h3>
-                        {section.categories.map((category) => (
-                          <div key={category.name} className="space-y-2">
-                            {category.name !== section.title && (
-                              <h4 className="text-sm font-medium">
-                                {category.name}
-                              </h4>
-                            )}
-                            <ul className="space-y-2">
-                              {category.courses.map((course) => (
-                                <motion.li
-                                  key={course.name}
-                                  whileHover={{ scale: 1.003 }}
+              <div className="h-full w-full bg-white p-6 dark:bg-black md:p-20">
+                <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {navigationData.map((section) => (
+                    <div key={section.title} className="space-y-4">
+                      <h3 className="text-sm font-bold text-gray-500">
+                        {section.title}
+                      </h3>
+                      {section.categories.map((category) => (
+                        <div key={category.name} className="space-y-2">
+                          {category.name !== section.title && (
+                            <h4 className="text-sm font-medium">
+                              {category.name}
+                            </h4>
+                          )}
+                          <ul className="space-y-2">
+                            {category.courses.map((course) => (
+                              <motion.li
+                                key={course.name}
+                                whileHover={{ scale: 1.003 }}
+                              >
+                                <Link
+                                  prefetch
+                                  href={course.link}
+                                  className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
+                                  onClick={() => setIsOpen(false)}
                                 >
-                                  <Link
-                                    prefetch
-                                    href={course.link}
-                                    className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
-                                    onClick={() => setIsOpen(false)}
-                                  >
-                                    <span className="flex-1">
-                                      {course.name}
-                                    </span>
-                                    <div className="flex items-center gap-2">
-                                      {course.isNew && (
-                                        <Badge variant="new">NEW</Badge>
-                                      )}
-                                    </div>
-                                  </Link>
-                                </motion.li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+                                  <span className="flex-1">{course.name}</span>
+                                  <div className="flex items-center gap-2">
+                                    {course.isNew && (
+                                      <Badge variant="new">NEW</Badge>
+                                    )}
+                                  </div>
+                                </Link>
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </ScrollArea>
