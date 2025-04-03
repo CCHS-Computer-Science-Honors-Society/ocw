@@ -19,9 +19,9 @@ export default function FooterSections() {
     {
       title: "Legal",
       links: [
-        { text: "Terms of Service", href: "/tos" },
-        { text: "Privacy Policy", href: "/privacy" },
-        { text: "Cookie Policy", href: "/cookie" },
+        { text: "Terms of Service", href: "/legal/tos" },
+        { text: "Privacy Policy", href: "/legal/privacy" },
+        { text: "Cookie Policy", href: "/legal/cookie" },
       ],
     },
     {
