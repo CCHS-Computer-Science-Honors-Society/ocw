@@ -34,7 +34,7 @@ export function QuizletEmbed({
           <p className="ml-4 text-gray-600">Password: {password}</p>
         ) : null}
       </div>
-      <div className="flex-grow">
+      <div className="grow">
         <Embed src={url} className="h-full w-full border-0"></Embed>
       </div>
     </div>

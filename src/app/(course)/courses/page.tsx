@@ -34,8 +34,8 @@ export default async function Page(props: {
         </Suspense>
       </div>
       <div className="flex h-full flex-col">
-        <div className="min-h-[200px] flex-grow overflow-auto">
-          <div className="p-4 group-has-[[data-pending]]:animate-pulse">
+        <div className="min-h-[200px] grow overflow-auto">
+          <div className="p-4 group-has-data-pending:animate-pulse">
             <CoursesGrid courses={courses} searchParams={parsedSearchParams} />
           </div>
         </div>

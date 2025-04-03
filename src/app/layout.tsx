@@ -1,15 +1,8 @@
 import "@/styles/globals.css";
 
-import { IBM_Plex_Sans } from "next/font/google";
 import { type Metadata } from "next";
 import { Providers } from "./providers";
 import { Suspense } from "react";
-
-const ibm = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: "400",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://creekocw.com"),
   title: {
@@ -86,7 +79,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${ibm.className}`}>
+    <html lang="en">
       <body>
         <Suspense fallback={<div>Loading essential data...</div>}>
           <Providers>{children}</Providers>

@@ -11,7 +11,7 @@ import {
 const COOKIE_NAME = "active_theme";
 // You might want a default theme name that matches one in themes.css
 // Or keep 'default' if you define base :root variables in globals.css
-const DEFAULT_THEME = "blue"; // Changed default to 'blue'
+const DEFAULT_THEME = "orange"; // Changed default to 'blue'
 
 function setThemeCookie(theme: string) {
   if (typeof window === "undefined") return;

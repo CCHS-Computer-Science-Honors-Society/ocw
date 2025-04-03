@@ -30,7 +30,7 @@ export function CourseSwitcherClient() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full rounded-md ring-ring hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 data-[state=open]:bg-accent">
+      <DropdownMenuTrigger className="w-full rounded-md ring-ring hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 data-[state=open]:bg-accent">
         <div className="flex items-center gap-1.5 overflow-hidden px-2 py-1.5 text-left text-sm transition-all">
           <div className="line-clamp-1 flex-1 pr-2 font-medium">
             {activeCourse.name}

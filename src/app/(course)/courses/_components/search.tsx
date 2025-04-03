@@ -43,7 +43,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
     <Form
       ref={formRef}
       action={handleSubmit}
-      className="relative flex w-full flex-1 flex-shrink-0 rounded shadow-sm"
+      className="relative flex w-full flex-1 shrink-0 rounded shadow-xs"
     >
       <label htmlFor="search" className="sr-only">
         Search

@@ -474,7 +474,7 @@ export function LessonTable({
       <div className="relative">
         {/* Optional: Loading overlay during reorder save */}
         {isReorderPending && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-lg border bg-background/80 backdrop-blur-sm">
+          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-lg border bg-background/80 backdrop-blur-xs">
             <p className="text-sm text-muted-foreground">Saving order...</p>
           </div>
         )}

@@ -163,7 +163,7 @@ export default function ContributePage() {
                   </div>
                   <CardDescription>{form.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
+                <CardContent className="grow">
                   <div className="flex justify-center">
                     <Suspense
                       fallback={<Skeleton className="h-12 w-12"></Skeleton>}

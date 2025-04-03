@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";
 import { UserMenu } from "./user-menu";
+import { ThemeSelector } from "./theme/theme-selector";
 
 const navigationMenuTriggerStyle = cn(nv(), "text-primary");
 const navItems = [
@@ -37,15 +38,15 @@ const navItems = [
 
 function Navbar({ isSearch }: { isSearch?: boolean }) {
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 border-b backdrop-blur-sm">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Left Side: Logo, Explore, Desktop Nav */}
           <div className="flex items-center gap-4">
             {" "}
             {/* Adjusted gap */}
-            <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">OCW</span>
+            <Link href="/" className="shrink-0">
+              <span className="text-primary text-2xl font-bold">OCW</span>
             </Link>
             {/* Explore button remains visible on all screen sizes */}
             <Explore />
@@ -81,7 +82,7 @@ function Navbar({ isSearch }: { isSearch?: boolean }) {
             <Suspense fallback={<div>Loading...</div>}>
               {" "}
               {/* Simple text fallback */}
-              <UserMenu />
+              <ThemeSelector />
             </Suspense>
             {/* Mobile Menu Trigger */}
             <div className="block md:hidden">
@@ -115,7 +116,7 @@ function Navbar({ isSearch }: { isSearch?: boolean }) {
                       <SheetClose asChild key={item.href}>
                         <Link
                           href={item.href}
-                          className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
+                          className="text-foreground hover:bg-accent hover:text-accent-foreground block rounded-md px-3 py-2 text-base font-medium"
                         >
                           {item.label}
                         </Link>

@@ -49,7 +49,7 @@ function CourseLink({
         <div className="flex aspect-video items-center justify-center bg-gray-100">
           <BookOpen className="h-10 w-10 text-muted-foreground" />
         </div>
-        <CardContent className="flex-grow p-6">
+        <CardContent className="grow p-6">
           <h4 className="mb-2 text-lg font-semibold">{course.name}</h4>
           <p className="mb-4 line-clamp-3 overflow-hidden text-sm text-muted-foreground">
             {course.description}

@@ -144,7 +144,7 @@ export default function SearchPage() {
           placeholder="Search flashcards..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-grow"
+          className="grow"
         />
         <Button onClick={handleSearch} disabled={isLoading}>
           <Search className="mr-2 h-4 w-4" />

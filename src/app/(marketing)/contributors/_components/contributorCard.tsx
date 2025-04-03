@@ -34,7 +34,7 @@ export default function ContributorCard({
       >
         <div
           className={`relative ${
-            isExpanded ? "mb-4 aspect-[4/3] w-full" : "h-10 w-10"
+            isExpanded ? "mb-4 aspect-4/3 w-full" : "h-10 w-10"
           } transition-all duration-300 ease-in-out`}
         >
           <Image
@@ -49,7 +49,7 @@ export default function ContributorCard({
         </div>
         <div
           className={`${
-            isExpanded ? "w-full" : "ml-4 flex-grow"
+            isExpanded ? "w-full" : "ml-4 grow"
           } flex flex-col`}
         >
           <h2 className="text-lg font-semibold">{name}</h2>
