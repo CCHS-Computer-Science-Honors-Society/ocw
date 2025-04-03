@@ -1,6 +1,9 @@
 import { type MetadataRoute } from "next";
+import { eq } from "drizzle-orm";
+import { db } from "./server/db";
+import { units, lessons, courses } from "./server/db/schema";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://creekocw.com";
 
   // Static routes
@@ -78,5 +81,51 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
-  return [...staticRoutes];
+
+  const [allCourses, allUnits, allLessons] = await Promise.all([
+    db
+      .select({
+        id: courses.id,
+      })
+      .from(courses)
+      .where(eq(courses.isPublic, true)),
+    db
+      .select({
+        id: units.id,
+        courseId: units.courseId,
+      })
+      .from(units)
+      .where(eq(units.isPublished, true)),
+    db
+      .select({
+        id: lessons.id,
+        courseId: lessons.courseId,
+        unitId: lessons.unitId,
+      })
+      .from(lessons)
+      .where(eq(lessons.isPublished, true)),
+  ]);
+
+  const courseRoutes = allCourses.map((course) => ({
+    url: `${baseUrl}/course/${course.id}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const unitRoutes = allUnits.map((unit) => ({
+    url: `${baseUrl}/course/${unit.courseId}/${unit.id}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  const lessonRoutes = allLessons.map((lesson) => ({
+    url: `${baseUrl}/course/${lesson.courseId}/${lesson.unitId}/${lesson.id}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...courseRoutes, ...unitRoutes, ...lessonRoutes];
 }
