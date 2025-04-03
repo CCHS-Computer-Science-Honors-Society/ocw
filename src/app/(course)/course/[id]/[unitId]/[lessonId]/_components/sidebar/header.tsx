@@ -1,31 +1,44 @@
 import {
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { BookIcon } from "lucide-react";
 import React from "react";
 import { type SidebarData } from "../../_queries";
 
-export const Header = ({ data }: { data: SidebarData }) => {
+// Renamed component for clarity
+export const CourseHeader = ({ data }: { data: SidebarData }) => {
+  // Assuming data is not empty based on checks in parent
+  const course = data[0]?.course;
+
+  if (!course) {
+    return (
+      <SidebarHeader className="p-4">
+        <span className="text-sidebar-foreground">Course Not Found</span>
+      </SidebarHeader>
+    );
+  }
+
   return (
-    <SidebarHeader className="p-5">
+    // Use padding from parent or add here if needed e.g., p-4
+    <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton size="lg" className="" asChild disabled>
-            <div>
-              <div className="flex aspect-square size-20 items-center justify-center rounded-xl">
-                <BookIcon className="size-10" />
-              </div>
-              <div className="flex flex-col gap-0.5 leading-none">
-                <span className="text-lg font-semibold">
-                  {data[0]?.course.name}
-                </span>
-                <span className="">{data[0]?.course.subjectId}</span>
-              </div>
+          {/* Use div directly if not interactive */}
+          <div className="flex items-center gap-3 p-3">
+            <div className="flex aspect-square size-12 items-center justify-center rounded-lg bg-sidebar-accent">
+              <BookIcon className="size-6 text-white" />
             </div>
-          </SidebarMenuButton>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate text-xl font-semibold">
+                {course.name}
+              </span>
+              <span className="truncate text-xs text-sidebar-foreground">
+                {course.subjectId} {/* Or other relevant info */}
+              </span>
+            </div>
+          </div>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>

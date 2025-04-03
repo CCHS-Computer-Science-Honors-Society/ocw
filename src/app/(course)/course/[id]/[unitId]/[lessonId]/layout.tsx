@@ -6,12 +6,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { BreadcrumbCourse } from "./breadcrumb";
-import { LessonSidebar } from "./_components/sidebar";
 import { SearchDropdownComponent } from "@/components/search";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
+import { LessonSidebarContainer } from "./_components/sidebar";
 
 const Explore = dynamic(import("@/components/explore-button"), {
   ssr: true,
@@ -25,6 +25,7 @@ export default async function Layout({
   children: React.ReactNode;
   params: Promise<{
     id: string;
+    unitId: string;
     lessonId: string;
   }>;
 }) {
@@ -37,7 +38,7 @@ export default async function Layout({
         }}
       >
         <Suspense>
-          <LessonSidebar params={params} />
+          <LessonSidebarContainer params={params} />
         </Suspense>
         <SidebarInset>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

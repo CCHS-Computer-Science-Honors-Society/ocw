@@ -222,7 +222,7 @@ function ExploreContent() {
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
-              <div className="sticky top-0 z-50 border-b bg-white p-4">
+              <div className="sticky top-0 z-50 border-b bg-background p-4">
                 <button
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-medium text-gray-600"

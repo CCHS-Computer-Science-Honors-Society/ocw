@@ -22,7 +22,7 @@ export default function ContributorCard({
 
   return (
     <div
-      className={`cursor-pointer overflow-hidden rounded-lg bg-white shadow-md transition-all duration-300 ease-in-out ${
+      className={`cursor-pointer overflow-hidden rounded-lg bg-background shadow-md transition-all duration-300 ease-in-out ${
         isExpanded ? "max-h-[500px]" : "h-20"
       }`}
       onClick={handleClick}

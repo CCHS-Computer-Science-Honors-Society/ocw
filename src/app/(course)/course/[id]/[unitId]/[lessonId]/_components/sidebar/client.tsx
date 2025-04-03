@@ -1,28 +1,19 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useState, useMemo, useCallback, memo } from "react";
-import Link from "next/link";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
-import { SidebarGroup, SidebarMenuItem } from "@/components/ui/sidebar";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
+import { useState, useMemo, useCallback, memo } from "react";
 import { type SidebarData } from "../../_queries";
 import { GetIcon } from "./icons";
-import { Separator } from "@/components/ui/separator";
-
-const pageVariants = {
-  initial: { opacity: 0, x: "-100%" },
-  in: { opacity: 1, x: 0 },
-  out: { opacity: 0, x: "100%" },
-};
-
-const pageTransition = {
-  type: "tween",
-  ease: "anticipate",
-  duration: 0.5,
-};
+import { AnimatePresence, motion } from "framer-motion";
 
 const Overlay = ({
   data,
@@ -39,32 +30,40 @@ const Overlay = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background backdrop-blur-sm"
       aria-modal="true"
       role="dialog"
+      onClick={onClose}
     >
       <motion.div
-        initial={{ y: "-100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "-100%" }}
+        initial={{ y: "-50px", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "50px", opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="max-h-[80%] w-[80%] overflow-y-auto rounded-lg bg-background p-6"
+        className="bg-sidebar-background max-h-[80vh] w-[90vw] max-w-md overflow-y-auto rounded-lg border border-sidebar-border p-6 shadow-lg"
+        onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-2xl font-bold">All Units</h2>
-        <ul className="space-y-2">
+        <h2 className="mb-4 text-xl font-semibold text-sidebar-foreground">
+          Select Unit
+        </h2>
+        <ul className="space-y-1">
           {data.map((unit) => (
             <li key={unit.id}>
               <Button
                 variant="ghost"
                 onClick={() => onSelectUnit(unit.id)}
-                className="w-full justify-start"
+                className="w-full justify-start px-2 py-1.5 text-left text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
                 {unit.name}
               </Button>
             </li>
           ))}
         </ul>
-        <Button onClick={onClose} className="mt-4 w-full">
+        <Button
+          variant="outline"
+          onClick={onClose}
+          className="mt-6 w-full border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
           Close
         </Button>
       </motion.div>
@@ -72,83 +71,104 @@ const Overlay = ({
   </AnimatePresence>
 );
 
-function LessonsSidebar({
+function UnitLessonNav({
   data,
   courseId,
+  initialUnitId,
+  initialLessonId,
 }: {
   data: SidebarData;
   courseId: string;
+  initialUnitId: string;
+  initialLessonId: string;
 }) {
-  const { lessonId, unitId } = useParams();
-  const [currentUnitIndex, setCurrentUnitIndex] = useState<string>(
-    String(unitId) ?? "",
-  );
+  const [currentUnitId, setCurrentUnitId] = useState<string>(initialUnitId);
+  const [selectedLessonId, setSelectedLessonId] =
+    useState<string>(initialLessonId);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
+  const currentUnitIndex = useMemo(
+    () => data.findIndex((unit) => unit.id === currentUnitId),
+    [data, currentUnitId],
+  );
+
   const currentUnit = useMemo(
-    () => data.find((unit) => unit.id === currentUnitIndex),
+    () => (currentUnitIndex !== -1 ? data[currentUnitIndex] : undefined),
+    [data, currentUnitIndex],
+  );
+  const prevUnit = useMemo(
+    () => (currentUnitIndex > 0 ? data[currentUnitIndex - 1] : undefined),
+    [data, currentUnitIndex],
+  );
+  const nextUnit = useMemo(
+    () =>
+      currentUnitIndex !== -1 && currentUnitIndex < data.length - 1
+        ? data[currentUnitIndex + 1]
+        : undefined,
     [data, currentUnitIndex],
   );
 
-  const nextUnit = useMemo(
-    () => data.find((unit) => unit.order === (currentUnit?.order ?? 0) + 1),
-    [data, currentUnit],
-  );
-
-  const prevUnit = useMemo(
-    () => data.find((unit) => unit.order === (currentUnit?.order ?? 0) - 1),
-    [data, currentUnit],
+  // Modified: Only update state, do not navigate
+  const handleUnitChange = useCallback(
+    (newUnitId: string) => {
+      setCurrentUnitId(newUnitId);
+    },
+    [], // Removed courseId and router from dependencies
   );
 
   const handleNextUnit = useCallback(() => {
     if (nextUnit) {
-      setCurrentUnitIndex(nextUnit.id);
+      handleUnitChange(nextUnit.id);
     }
-  }, [nextUnit]);
+  }, [nextUnit, handleUnitChange]);
 
   const handlePrevUnit = useCallback(() => {
     if (prevUnit) {
-      setCurrentUnitIndex(prevUnit.id);
+      handleUnitChange(prevUnit.id);
     }
-  }, [prevUnit]);
+  }, [prevUnit, handleUnitChange]);
 
-  const handleLessonClick = useCallback(
-    ({ unitId }: { lessonId: string; unitId: string }) => {
-      setCurrentUnitIndex(unitId);
-    },
-    [],
-  );
+  // This function now only updates the visual selection state
+  const handleLessonClick = useCallback((lessonId: string) => {
+    setSelectedLessonId(lessonId);
+    // Navigation is handled by the Link component itself via its href
+  }, []);
 
   const toggleOverlay = useCallback(() => {
     setIsOverlayOpen((prev) => !prev);
   }, []);
 
-  const handleSelectUnit = useCallback((unitId: string) => {
-    setCurrentUnitIndex(unitId);
-    setIsOverlayOpen(false);
-  }, []);
+  // Selecting from overlay also only updates state now
+  const handleSelectUnitFromOverlay = useCallback(
+    (unitId: string) => {
+      handleUnitChange(unitId);
+      setIsOverlayOpen(false);
+    },
+    [handleUnitChange],
+  );
 
   if (!currentUnit) {
-    return null;
+    return <div className="p-4 text-sidebar-foreground">Unit not found.</div>;
   }
 
   return (
-    <SidebarGroup className="rounded-3xl">
-      <ScrollArea className="h-[calc(100vh-64px)] p-4 text-sm">
-        <div className="mb-4 flex items-center justify-between text-gray-500">
+    <>
+      <SidebarGroup className="bg-sidebar-background sticky top-0 z-10 border-b border-sidebar-border p-2">
+        <div className="flex items-center justify-between">
           <Button
             variant="ghost"
             size="icon"
             onClick={handlePrevUnit}
             disabled={!prevUnit}
             aria-label="Previous Unit"
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground disabled:opacity-50"
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             onClick={toggleOverlay}
-            className=""
+            className="w-[20px] flex-1 truncate px-2 text-center text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             aria-haspopup="dialog"
             aria-expanded={isOverlayOpen}
           >
@@ -160,57 +180,56 @@ function LessonsSidebar({
             onClick={handleNextUnit}
             disabled={!nextUnit}
             aria-label="Next Unit"
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground disabled:opacity-50"
           >
             <ChevronRightIcon className="h-4 w-4" />
           </Button>
         </div>
-        <AnimatePresence initial={false} mode="wait">
-          <motion.div
-            key={currentUnit.id}
-            variants={pageVariants}
-            initial="initial"
-            animate="in"
-            exit="out"
-            transition={pageTransition}
-            className="space-y-2"
-          >
+      </SidebarGroup>
+
+      <SidebarGroup>
+        <SidebarGroupContent>
+          <SidebarMenu className="list-none">
             {currentUnit.lessons.map((lesson) => (
               <SidebarMenuItem key={lesson.id}>
-                <Link
-                  prefetch
-                  onClick={() =>
-                    handleLessonClick({
-                      lessonId: lesson.id,
-                      unitId: lesson.unitId,
-                    })
-                  }
-                  className={`flex flex-col hover:bg-accent ${lessonId === lesson.id ? "bg-muted font-semibold text-black" : "text-gray-500"}`}
-                  href={{
-                    pathname: lesson.pureLink
-                      ? lesson.embeds.embedUrl
-                      : `/course/${courseId}/${lesson.unitId}/${lesson.id}`,
-                  }}
+                <SidebarMenuButton
+                  asChild
+                  isActive={selectedLessonId === lesson.id}
+                  // Use onClick to update visual state *before* navigation potentially happens
+                  onClick={() => handleLessonClick(lesson.id)}
+                  className="h-auto justify-start py-2 pl-3 pr-2 text-sm"
                 >
-                  <div className={`text-md flex items-center rounded-md p-2`}>
+                  <Link
+                    prefetch={false}
+                    href={
+                      lesson.pureLink
+                        ? (lesson.embeds.embedUrl ?? "#")
+                        : `/course/${courseId}/${lesson.unitId}/${lesson.id}`
+                    }
+                    target={lesson.pureLink ? "_blank" : undefined}
+                    rel={lesson.pureLink ? "noopener noreferrer" : undefined}
+                    // Prevent Link's default onClick if we handle state separately?
+                    // No, Link needs its onClick for navigation. handleLessonClick just updates state.
+                  >
                     <GetIcon type={lesson.contentType} />
-                    <span className="ml-2">{lesson.name}</span>
-                  </div>
-                  <Separator className="" orientation="horizontal" />
-                </Link>
+                    <span className="ml-2 truncate">{lesson.name}</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-          </motion.div>
-        </AnimatePresence>
-      </ScrollArea>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
       {isOverlayOpen && (
         <Overlay
           data={data}
-          onSelectUnit={handleSelectUnit}
+          onSelectUnit={handleSelectUnitFromOverlay}
           onClose={toggleOverlay}
         />
       )}
-    </SidebarGroup>
+    </>
   );
 }
 
-export const LessonSidebar = memo(LessonsSidebar);
+export const UnitLessonNavigation = memo(UnitLessonNav);

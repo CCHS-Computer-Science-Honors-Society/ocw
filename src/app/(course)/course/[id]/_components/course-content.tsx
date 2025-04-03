@@ -21,7 +21,7 @@ export const CourseContent = async (props: {
   return (
     <div className="flex flex-1">
       {/* Sidebar */}
-      <div className="hidden border-r bg-white p-6 lg:block lg:w-96">
+      <div className="hidden border-r bg-background p-6 lg:block lg:w-96">
         <div className="mb-6 rounded-lg bg-primary/10 p-4">
           <h2 className="text-xl font-bold text-primary/80">{course.name}</h2>
           <p className="mt-1 text-sm text-primary/60">

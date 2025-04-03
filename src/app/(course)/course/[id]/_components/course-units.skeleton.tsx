@@ -5,7 +5,7 @@ export default function CourseOverviewSkeleton() {
     <div className="flex min-h-screen flex-col">
       <div className="flex flex-1">
         {/* Sidebar Skeleton */}
-        <div className="w-96 border-r bg-white p-6">
+        <div className="w-96 border-r bg-background p-6">
           <div className="mb-6">
             <Skeleton className="h-16 w-full rounded-lg" />
           </div>
