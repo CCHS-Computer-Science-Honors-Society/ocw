@@ -15,8 +15,10 @@ import {
 import { useTRPC } from "@/trpc/react";
 
 import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/use-debounce"; // Assuming you have this hook
 
 const SEARCH_HISTORY_KEY = "searchHistoryOCWOverall";
+const DEBOUNCE_DELAY = 300; // milliseconds
 
 export function SearchDropdownComponent() {
   const api = useTRPC();
@@ -24,6 +26,9 @@ export function SearchDropdownComponent() {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [searchHistory, setSearchHistory] = React.useState<string[]>([]);
+
+  // Debounce the search term
+  const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
 
   const params = useParams();
 
@@ -46,11 +51,11 @@ export function SearchDropdownComponent() {
 
   React.useEffect(() => {
     if (params.lesson) {
-      setSearch(
+      const initialSearch =
         typeof params.lesson === "string"
           ? params.lesson.replaceAll("-", " ")
-          : "",
-      );
+          : "";
+      setSearch(initialSearch);
     }
   }, [params]);
 
@@ -66,12 +71,12 @@ export function SearchDropdownComponent() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // Use tRPC query for search
+  // Use tRPC query for search, using the debounced value
   const searchQuery = useQuery(
     api.search.search.queryOptions(
-      { q: search },
+      { q: debouncedSearch },
       {
-        enabled: search.length > 0,
+        enabled: debouncedSearch.length > 0,
       },
     ),
   );
@@ -81,16 +86,17 @@ export function SearchDropdownComponent() {
     units: [],
     lessons: [],
   };
-  const isLoading = searchQuery.isLoading;
+  // isFetching indicates a fetch is in progress (background or initial)
+  // isLoading is true only on initial load without data
+  const isLoading = searchQuery.isFetching;
 
   const handleAddToHistory = (item: string) => {
-    if (!item.trim()) return; // Don't add empty strings
+    if (!item.trim()) return;
 
-    // Remove duplicates and keep only the last 5 searches
     const newHistory = [item, ...searchHistory]
-      .filter((value, index) => {
-        return value === item ? index === 0 : true;
-      })
+      .filter(
+        (value, index, self) => self.findIndex((v) => v === value) === index,
+      )
       .slice(0, 5);
 
     setSearchHistory(newHistory);
@@ -104,9 +110,7 @@ export function SearchDropdownComponent() {
     type: "course" | "unit" | "lesson";
   }) => {
     setOpen(false);
-
-    // Add the search term to history when selecting from results
-    handleAddToHistory(search);
+    handleAddToHistory(search); // Add the term used for the search
 
     if (type === "course") {
       router.push(`/course/${id}`);
@@ -115,7 +119,23 @@ export function SearchDropdownComponent() {
     } else if (type === "lesson") {
       router.push(`/lesson/${id}`);
     }
+    // Optional: Clear search after selection?
+    // setSearch('');
   };
+
+  // Determine if we should show the "No results" message
+  const showNoResults =
+    !isLoading && // Not currently loading
+    debouncedSearch.length > 0 && // User has typed something (debounced)
+    searchResults.courses.length === 0 &&
+    searchResults.units.length === 0 &&
+    searchResults.lessons.length === 0;
+
+  // Determine if we should show the history
+  const showHistory =
+    !isLoading && // Not currently loading
+    search === "" && // Input is empty
+    searchHistory.length > 0;
 
   return (
     <>
@@ -137,20 +157,26 @@ export function SearchDropdownComponent() {
           value={search}
           onValueChange={setSearch}
         />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          {isLoading ? <CommandItem disabled>Searching...</CommandItem> : null}
+        {/* Disable cmdk's built-in filtering. We rely on the backend search. */}
+        <CommandList shouldFilter={false}>
+          {/* Show loading indicator */}
+          {isLoading && debouncedSearch.length > 0 && (
+            <CommandItem disabled>Searching...</CommandItem>
+          )}
 
-          {/* Show search history when search input is empty */}
-          {search === "" && searchHistory.length > 0 && (
+          {/* Show Empty state */}
+          {showNoResults && <CommandEmpty>No results found.</CommandEmpty>}
+
+          {/* Show search history */}
+          {showHistory && (
             <CommandGroup heading="Recent Searches">
               {searchHistory.map((item) => (
                 <CommandItem
                   key={item}
                   onSelect={() => {
                     setSearch(item);
-                    handleAddToHistory(item);
                   }}
+                  value={`history-${item}`} // Keep unique value
                 >
                   {item}
                 </CommandItem>
@@ -158,45 +184,62 @@ export function SearchDropdownComponent() {
             </CommandGroup>
           )}
 
-          {searchResults.courses.length > 0 && (
-            <CommandGroup heading="Courses">
-              {searchResults.courses.map((item) => (
-                <CommandItem
-                  key={item.id}
-                  onSelect={() => handleSelect({ id: item.id, type: "course" })}
-                >
-                  {item.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
-          {searchResults.units.length > 0 && (
-            <CommandGroup heading="Units">
-              {searchResults.units.map((item) => (
-                <CommandItem
-                  key={item.id}
-                  onSelect={() => handleSelect({ id: item.id, type: "unit" })}
-                >
-                  {item.name}{" "}
-                  <p className="text-xs text-gray-400"> | {item.courseName}</p>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
-          {searchResults.lessons.length > 0 && (
-            <CommandGroup heading="Lessons">
-              {searchResults.lessons.map((item) => (
-                <CommandItem
-                  key={item.id}
-                  onSelect={() => handleSelect({ id: item.id, type: "lesson" })}
-                >
-                  {item.name}
-                  <p className="text-xs text-gray-400">
-                    | {item.unitName} | {item.courseName}
-                  </p>
-                </CommandItem>
-              ))}
-            </CommandGroup>
+          {/* Show results only when not loading and debounced search has value */}
+          {!isLoading && debouncedSearch.length > 0 && (
+            <>
+              {searchResults.courses.length > 0 && (
+                <CommandGroup heading="Courses">
+                  {searchResults.courses.map((item) => (
+                    <CommandItem
+                      key={item.id}
+                      onSelect={() =>
+                        handleSelect({ id: item.id, type: "course" })
+                      }
+                      value={`course-${item.id}`}
+                    >
+                      {item.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+              {searchResults.units.length > 0 && (
+                <CommandGroup heading="Units">
+                  {searchResults.units.map((item) => (
+                    <CommandItem
+                      key={item.id}
+                      onSelect={() =>
+                        handleSelect({ id: item.id, type: "unit" })
+                      }
+                      value={`unit-${item.id}`}
+                    >
+                      {item.name}{" "}
+                      <span className="ml-2 text-xs text-gray-400">
+                        {" "}
+                        | {item.courseName}
+                      </span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+              {searchResults.lessons.length > 0 && (
+                <CommandGroup heading="Lessons">
+                  {searchResults.lessons.map((item) => (
+                    <CommandItem
+                      key={item.id}
+                      onSelect={() =>
+                        handleSelect({ id: item.id, type: "lesson" })
+                      }
+                      value={`lesson-${item.id}`}
+                    >
+                      {item.name}
+                      <span className="ml-2 text-xs text-gray-400">
+                        | {item.unitName} | {item.courseName}
+                      </span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+            </>
           )}
         </CommandList>
       </CommandDialog>

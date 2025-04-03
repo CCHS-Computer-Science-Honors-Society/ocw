@@ -4,6 +4,8 @@ import { CreateLessonForm } from "./lesson/[lessonId]/_components/form";
 import { CreateUnitForm } from "./_components/create-unit";
 import { UnitTable } from "./_table/unit";
 import { getData, getUnits } from "./_queries";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { TableSkeleton } from "./_table/loading";
 
 export default async function Page({
   params,
@@ -14,15 +16,14 @@ export default async function Page({
 }) {
   const courseId = (await params).id;
 
-  const [data, unitsMap] = await Promise.all([
-    getData(courseId),
-    getUnits(courseId),
-  ]);
+  const data = await getData(courseId);
+  const unitsMap = getUnits(courseId);
+
+  void prefetch(trpc.units.getTableData.queryOptions({ courseId }));
 
   if (!data) {
     notFound();
   }
-  console.log(unitsMap);
 
   return (
     <div className="container mx-auto flex flex-col gap-10 pt-10">
@@ -31,16 +32,16 @@ export default async function Page({
           <h1 className="text-3xl font-bold">{data.name}</h1>
         </div>
         <div className="flex flex-row gap-4">
-          <CreateLessonForm units={unitsMap} courseId={courseId} />
+          <CreateLessonForm unitsPromise={unitsMap} courseId={courseId} />
           <CreateUnitForm courseId={courseId} />
         </div>
       </div>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <Suspense>
+      <HydrateClient>
+        <Suspense fallback={<TableSkeleton />}>
           <UnitTable courseId={courseId} />
         </Suspense>
-      </Suspense>
+      </HydrateClient>
     </div>
   );
 }

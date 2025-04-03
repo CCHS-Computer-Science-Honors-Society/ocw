@@ -15,7 +15,7 @@ export async function generateMetadata({
   const course = await getCourseById(id);
 
   return {
-    title: `Dashboard | ${course?.name}`,
+    title: `${course?.name} | Course`,
     description: course?.description,
   };
 }

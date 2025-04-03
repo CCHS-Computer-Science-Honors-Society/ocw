@@ -1,105 +1,41 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+/* Optional: if you use tw-animate */
+/* @import "tw-animate-css"; */
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 346.67 7.96% 22.16%;
-  --card: 0 0% 100%;
-  --card-foreground: 346.67 7.96% 22.16%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 346.67 7.96% 22.16%;
-  --primary: 11.63 100% 68.63%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 8.57 100% 95.88%;
-  --secondary-foreground: 9.91 47.33% 47.65%;
-  --muted: 15 100% 96.08%;
-  --muted-foreground: 6.32 18.81% 39.61%;
-  --accent: 26.11 98.5% 73.92%;
-  --accent-foreground: 346.67 7.96% 22.16%;
-  --destructive: 355.49 77.58% 56.27%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 14.63 100% 91.96%;
-  --input: 14.63 100% 91.96%;
-  --ring: 11.63 100% 68.63%;
-  --chart-1: 11.63 100% 68.63%;
-  --chart-2: 26.11 98.5% 73.92%;
-  --chart-3: 23.86 100% 82.75%;
-  --chart-4: 16.07 100% 78.04%;
-  --chart-5: 9.58 54.84% 57.45%;
-  --sidebar: 15 100% 96.08%;
-  --sidebar-foreground: 346.67 7.96% 22.16%;
-  --sidebar-primary: 11.63 100% 68.63%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 26.11 98.5% 73.92%;
-  --sidebar-accent-foreground: 346.67 7.96% 22.16%;
-  --sidebar-border: 14.63 100% 91.96%;
-  --sidebar-ring: 11.63 100% 68.63%;
-  --font-sans: Montserrat, sans-serif;
-  --font-serif: Merriweather, serif;
-  --font-mono: Ubuntu Mono, monospace;
-  --radius: 0.625rem;
-  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow-md:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-  --shadow-lg:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-  --shadow-xl:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-}
+/* Define the custom dark variant for Tailwind v4 */
+@custom-variant dark (&:is(.dark *));
 
-.dark {
-  --background: 336 13.51% 14.51%;
-  --foreground: 21.43 35% 92.16%;
-  --card: 324 9.62% 20.39%;
-  --card-foreground: 21.43 35% 92.16%;
-  --popover: 324 9.62% 20.39%;
-  --popover-foreground: 21.43 35% 92.16%;
-  --primary: 11.63 100% 68.63%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 325 9.38% 25.1%;
-  --secondary-foreground: 21.43 35% 92.16%;
-  --muted: 324 9.62% 20.39%;
-  --muted-foreground: 22.22 25.23% 79.02%;
-  --accent: 26.11 98.5% 73.92%;
-  --accent-foreground: 336 13.51% 14.51%;
-  --destructive: 355.49 77.58% 56.27%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 325 9.38% 25.1%;
-  --input: 325 9.38% 25.1%;
-  --ring: 11.63 100% 68.63%;
-  --chart-1: 11.63 100% 68.63%;
-  --chart-2: 26.11 98.5% 73.92%;
-  --chart-3: 23.86 100% 82.75%;
-  --chart-4: 16.07 100% 78.04%;
-  --chart-5: 9.58 54.84% 57.45%;
-  --sidebar: 336 13.51% 14.51%;
-  --sidebar-foreground: 21.43 35% 92.16%;
-  --sidebar-primary: 11.63 100% 68.63%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 26.11 98.5% 73.92%;
-  --sidebar-accent-foreground: 336 13.51% 14.51%;
-  --sidebar-border: 325 9.38% 25.1%;
-  --sidebar-ring: 11.63 100% 68.63%;
-  --font-sans: undefined;
-  --font-serif: undefined;
-  --font-mono: undefined;
-  --radius: 0.625rem;
-  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow-md:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-  --shadow-lg:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-  --shadow-xl:
-    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+/* Import your theme definitions */
+@import "./themes.css";
+
+/* Your other global styles or base layer definitions */
+@layer base {
+  :root {
+    /* Define your DEFAULT light theme variables here if needed */
+    /* These will be overridden by .theme-* classes */
+    /* Example: */
+    /* --background: oklch(1 0 0); */
+    /* --foreground: oklch(0 0 0); */
+    /* ... other default variables ... */
+  }
+
+  .dark {
+    /* Define your DEFAULT dark theme variables here if needed */
+    /* These will be overridden by .theme-* classes */
+    /* Example: */
+    /* --background: oklch(0 0 0); */
+    /* --foreground: oklch(1 0 0); */
+    /* ... other default dark variables ... */
+  }
+
+  /* Add other base styles like border-box, etc. */
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Font smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }

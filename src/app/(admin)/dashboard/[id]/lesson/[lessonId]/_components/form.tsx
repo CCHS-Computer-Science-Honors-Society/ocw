@@ -66,22 +66,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ContentTypeEnum } from "@/server/db/schema";
+import React from "react";
 // Define the form schema type
 type CreateLessonFormValues = z.infer<typeof createLessonFormSchema>;
 
 export function CreateLessonForm({
   courseId,
-  units = [], // Provide a default empty array
+  unitsPromise, // Provide a default empty array
 }: {
   courseId: string;
-  units: {
-    label: string;
-    value: string;
-  }[];
+  unitsPromise: Promise<
+    {
+      label: string;
+      value: string;
+    }[]
+  >;
 }) {
-  console.log("Units received in component:", units);
   const api = useTRPC();
   const queryClient = useQueryClient();
+  const units = React.use(unitsPromise);
+
   const qKey = api.units.getUnitsForDashboard.queryKey();
   const { mutate, isPending: isLoading } = useMutation(
     api.lesson.create.mutationOptions({

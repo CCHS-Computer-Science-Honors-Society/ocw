@@ -35,12 +35,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   // CheckIcon, // Not used
   ChevronLeftIcon,
@@ -111,6 +106,8 @@ export type UnitOption = {
   label: string;
   value: string;
 };
+
+type GetUnitsFunc = Promise<{ label: string; value: string }[]>;
 // --- DraggableRow Component ---
 function DraggableRow({ row }: { row: Row<DataItem> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
@@ -140,15 +137,16 @@ function DraggableRow({ row }: { row: Row<DataItem> }) {
 // 4. DataTable Component using tRPC query/mutation
 export function LessonTable({
   courseId,
-  units,
+  unitsPromise,
   unitId,
 }: {
   courseId: string;
-  units: UnitOption[];
+  unitsPromise: GetUnitsFunc;
   unitId?: string;
 }) {
   const api = useTRPC();
   const queryClient = useQueryClient();
+  const units = React.use(unitsPromise);
 
   // --- Data Fetching ---
   const queryOptions = api.lesson.getTableData.queryOptions({
@@ -327,7 +325,7 @@ export function LessonTable({
   );
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ id }) => id) ?? [],
     [data],
   );
 

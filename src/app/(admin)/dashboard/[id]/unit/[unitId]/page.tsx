@@ -1,7 +1,8 @@
-import React from "react";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import React, { Suspense } from "react";
 import { LessonTable } from "../../_table/lesson";
 import { getUnits } from "../../_queries";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
+import { TableSkeleton } from "../../_table/loading";
 
 export default async function Page({
   params,
@@ -11,12 +12,19 @@ export default async function Page({
     id: string;
   }>;
 }) {
-  const { id, unitId } = await params;
-  const units = await getUnits(id);
+  const { unitId, id } = await params;
+  const units = getUnits(id);
+  prefetch(trpc.units.getTableData.queryOptions({ courseId: id }));
 
   return (
-    <main className="container mx-auto flex w-full flex-col">
-      <LessonTable courseId={id} unitId={unitId} units={units} />
-    </main>
+    <HydrateClient>
+      <main className="container mx-auto flex w-full flex-row">
+        <div className="w-1/2">
+          <Suspense fallback={<TableSkeleton />}>
+            <LessonTable courseId={id} unitId={unitId} unitsPromise={units} />
+          </Suspense>
+        </div>
+      </main>
+    </HydrateClient>
   );
 }

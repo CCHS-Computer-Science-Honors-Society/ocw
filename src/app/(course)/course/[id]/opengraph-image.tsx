@@ -1,5 +1,4 @@
-import { getCourseById } from "@/server/api/scripts";
-import { notFound } from "next/navigation";
+import { db } from "@/server/db";
 import { ImageResponse } from "next/og";
 
 // Route segment config
@@ -15,14 +14,32 @@ export const size = {
 export default async function OpenGraphImage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const id = (await params).id;
-  const course = await getCourseById(id);
-
-  if (!course) {
-    notFound();
-  }
+  const id = params.id;
+  const course = await db.query.courses.findFirst({
+    where: (courses, { eq }) => eq(courses.id, id),
+    with: {
+      units: {
+        columns: {
+          id: true,
+          order: true,
+          name: true,
+        },
+        where: (units, { eq }) => eq(units.isPublished, true),
+        with: {
+          lessons: {
+            columns: {
+              id: true,
+              name: true,
+              contentType: true,
+            },
+          },
+        },
+        orderBy: (units, { asc }) => asc(units.order),
+      },
+    },
+  });
   return new ImageResponse(
     (
       <div
@@ -40,8 +57,8 @@ export default async function OpenGraphImage({
       >
         {/* Background Image */}
         <img
-          src={course.imageUrl}
-          alt={course.name}
+          src={course?.imageUrl ?? ""}
+          alt={course?.name}
           style={{
             position: "absolute",
             top: 0,
@@ -79,7 +96,7 @@ export default async function OpenGraphImage({
             borderRadius: 10, // Added rounded corners
           }}
         >
-          {course.name + "| Creek OCW"}
+          {course?.name + "| Creek OCW"}
         </div>
         {/* Number of Units */}
         <div
@@ -93,10 +110,10 @@ export default async function OpenGraphImage({
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             padding: "10px 20px",
             borderRadius: 10,
-            zIndex: 10, // Ensure it's on top of other elements
+            zIndex: 10,
           }}
         >
-          {course.units.length} Units
+          {course?.units.length} Units
         </div>
       </div>
     ),

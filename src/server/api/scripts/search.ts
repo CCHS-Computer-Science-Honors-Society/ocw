@@ -56,29 +56,23 @@ const lessonsQuery = async (query: string) =>
     .innerJoin(courses, eq(units.courseId, courses.id))
     .limit(10);
 
-export const performSearch = cache(
-  async (q: string) => {
-    const query = q
-      .split(" ")
-      .filter((term) => term.trim() !== "") // Filter out empty terms
-      .map((term) => `${term}:*`)
-      .join(" & ");
-    console.log(query);
+export const performSearch = async (q: string) => {
+  const query = q
+    .split(" ")
+    .filter((term) => term.trim() !== "") // Filter out empty terms
+    .map((term) => `${term}:*`)
+    .join(" & ");
+  console.log(query);
 
-    const [coursesResult, unitsResult, lessonsResult] = await Promise.all([
-      coursesQuery(query, q),
-      unitsQuery(query),
-      lessonsQuery(query),
-    ]);
+  const [coursesResult, unitsResult, lessonsResult] = await Promise.all([
+    coursesQuery(query, q),
+    unitsQuery(query),
+    lessonsQuery(query),
+  ]);
 
-    return {
-      courses: coursesResult,
-      units: unitsResult,
-      lessons: lessonsResult,
-    };
-  },
-  ["search"],
-  {
-    revalidate: REVALIDATE,
-  },
-);
+  return {
+    courses: coursesResult,
+    units: unitsResult,
+    lessons: lessonsResult,
+  };
+};
