@@ -146,7 +146,7 @@ export const unitsRouter = createTRPCRouter({
         });
       }
 
-      callInvalidate(input.courseId);
+      callInvalidate(input.courseId, newUnit.id);
 
       after(async () => {
         await insertLog({

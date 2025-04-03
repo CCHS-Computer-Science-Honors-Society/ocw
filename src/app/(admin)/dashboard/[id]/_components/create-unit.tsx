@@ -51,7 +51,7 @@ export function CreateUnitForm({ courseId }: { courseId: string }) {
     api.units.create.mutationOptions({
       onSuccess: () => {
         toast.success("Lesson updated successfully!");
-        const qKey = api.units.getUnitsForDashboard.queryKey();
+        const qKey = api.units.getTableData.queryKey();
 
         void queryOption.invalidateQueries({
           queryKey: qKey,
