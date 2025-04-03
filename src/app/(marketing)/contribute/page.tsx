@@ -28,7 +28,51 @@ import {
 } from "@/components/ui/accordion";
 
 export const metadata: Metadata = {
-  title: "Contribute To OCW",
+  title: "Contribute to OCW | Join Our Open Education Community",
+  description:
+    "Share your expertise, design skills, or development knowledge to help build our open courseware platform. Join our community and make education more accessible.",
+  keywords:
+    "open courseware, OCW, contribute, education, volunteer, community service, open source education, teaching, learning, development, design, writing",
+  openGraph: {
+    title: "Contribute to OCW | Join Our Open Education Community",
+    description:
+      "Share your expertise, design skills, or development knowledge to help build our open courseware platform. Join our community and make education more accessible.",
+    url: "https://ocw.example.org/contribute",
+    siteName: "Open Courseware Project",
+    images: [
+      {
+        url: "/images/contribute-og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Open Courseware Project - Contribute page showing various ways to get involved",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contribute to OCW | Join Our Open Education Community",
+    description:
+      "Share your expertise, design skills, or development knowledge to help build our open courseware platform.",
+    images: [
+      {
+        url: "/images/contribute-og-image.jpg",
+        alt: "Open Courseware Project - Contribute page showing various ways to get involved",
+      },
+    ],
+    creator: "@ocw_project",
+    site: "@ocw_project",
+  },
+  alternates: {
+    canonical: "https://ocw.example.org/contribute",
+  },
+  authors: [{ name: "OCW Team" }],
+  category: "Education",
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function ContributePage() {
