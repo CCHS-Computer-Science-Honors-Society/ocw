@@ -81,7 +81,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Suspense fallback={<div>Loading essential data...</div>}>
+        <Suspense>
           <Providers>{children}</Providers>
         </Suspense>
       </body>

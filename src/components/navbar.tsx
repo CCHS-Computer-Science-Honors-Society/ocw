@@ -7,7 +7,6 @@ import { Menu } from "lucide-react"; // Import Menu icon
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle as nv,
 } from "@/components/ui/navigation-menu";
@@ -21,7 +20,6 @@ import {
 import { cn } from "@/lib/utils";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";
-import { UserMenu } from "./user-menu";
 import { ThemeSelector } from "./theme/theme-selector";
 
 const navigationMenuTriggerStyle = cn(nv(), "text-primary");
@@ -56,12 +54,11 @@ function Navbar({ isSearch }: { isSearch?: boolean }) {
                 <NavigationMenuList>
                   {navItems.map((item) => (
                     <NavigationMenuItem key={item.href}>
-                      <Link href={item.href} legacyBehavior passHref>
-                        <NavigationMenuLink
-                          className={navigationMenuTriggerStyle}
-                        >
-                          {item.label}
-                        </NavigationMenuLink>
+                      <Link
+                        href={item.href}
+                        className={navigationMenuTriggerStyle}
+                      >
+                        {item.label}
                       </Link>
                     </NavigationMenuItem>
                   ))}
