@@ -129,7 +129,6 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
 };
 
 export const findRelevantContent = async (userQuery: string) => {
-  "use cache";
   console.log(`embedding user request`);
   const userQueryEmbedded = await generateEmbedding(userQuery);
   console.log(`finished user request`);
