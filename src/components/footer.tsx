@@ -39,7 +39,7 @@ export default function FooterSections() {
         <div key={index}>
           <h5 className="mb-4 text-lg font-semibold">{section.title}</h5>
           {section.content && (
-            <p className="text-sm text-muted-foreground">{section.content}</p>
+            <p className="text-muted-foreground text-sm">{section.content}</p>
           )}
           {section.links && (
             <nav className="space-y-2">
@@ -48,7 +48,7 @@ export default function FooterSections() {
                   key={link.text} // Use link.text as key
                   href={link.href} // Use link.href for the URL
                   prefetch
-                  className="block text-sm text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary block text-sm"
                   // Add target="_blank" and rel="noopener noreferrer" for external links
                   {...(link.href.startsWith("http")
                     ? { target: "_blank", rel: "noopener noreferrer" }
@@ -61,6 +61,17 @@ export default function FooterSections() {
           )}
         </div>
       ))}
+      <div>
+        <h5 className="mb-4 text-lg font-semibold">Authentication</h5>
+        <nav>
+          <Link
+            href={"/login"}
+            className="text-muted-foreground hover:text-primary block text-sm"
+          >
+            Login
+          </Link>
+        </nav>
+      </div>
     </>
   );
 }
