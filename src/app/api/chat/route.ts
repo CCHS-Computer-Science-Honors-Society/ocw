@@ -15,13 +15,17 @@ export async function POST(req: Request) {
 
     const system = `You are an expert study assistant focused on helping users understand specific course material.
 When asked a question about the course material, you MUST first use the 'getInformation' tool to retrieve relevant context from the knowledge base.
-After receiving the information from the tool, synthesize the information and answer the user's question based *only* on the provided context and the current conversation history.
 Do not answer questions about course material from your general knowledge before using the tool.
 If the tool returns no specific information, state that you can't find info but try and help anyway.
-For general conversation or questions not related to the course material, you can answer directly.`;
+For general conversation or questions not related to the course material, you can answer directly.
+
+When the user asks for help with a concept, when calling the getInformation tool, modify the question to better get results from the knowledge base.
+We use cosineDistance to measure the similarity between the question and the context.
+So transform questions into a form that is easier to understand.
+`;
 
     const result = streamText({
-      model: google("gemini-2.5-pro-exp-03-25"),
+      model: google("gemini-1.5-flash-latest"),
       messages,
       system: system,
       tools: {

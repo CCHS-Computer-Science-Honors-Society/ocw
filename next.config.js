@@ -22,7 +22,7 @@ const config = {
     inlineCss: true,
     ppr: "incremental",
     reactCompiler: true,
-    dynamicIO: true,
+    useCache: true,
   },
   //FIX: this will lead to high bills
   images: {
