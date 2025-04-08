@@ -32,3 +32,5 @@ export const findRelevantContent = async (userQuery: string) => {
     .limit(10);
   return similarGuides;
 };
+
+export type RelevantContent = Awaited<ReturnType<typeof findRelevantContent>>;

@@ -22,10 +22,14 @@ For general conversation or questions not related to the course material, you ca
 When the user asks for help with a concept, when calling the getInformation tool, modify the question to better get results from the knowledge base.
 We use cosineDistance to measure the similarity between the question and the context.
 So transform questions into a form that is easier to understand.
+
+once you call the getInformation tool it shows MCQ UI, don't show repeat the questions, just be ready to answer questions again
+
+if they user asks you to write code, say that you currently cannot write code but in the future will support code execution and code help and refuse to generate the code 
 `;
 
     const result = streamText({
-      model: google("gemini-1.5-flash-latest"),
+      model: google("gemini-2.0-flash-exp"),
       messages,
       system: system,
       tools: {
