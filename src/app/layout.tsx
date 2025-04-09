@@ -79,7 +79,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
         <Suspense fallback={<div>Loading essential data...</div>}>
           <Providers>{children}</Providers>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { google } from "@ai-sdk/google";
 import {
   streamText,
@@ -14,22 +15,20 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     const system = `You are an expert study assistant focused on helping users understand specific course material.
-When asked a question about the course material, you MUST first use the 'getInformation' tool to retrieve relevant context from the knowledge base.
-Do not answer questions about course material from your general knowledge before using the tool.
 If the tool returns no specific information, state that you can't find info but try and help anyway.
 For general conversation or questions not related to the course material, you can answer directly.
 
-When the user asks for help with a concept, when calling the getInformation tool, modify the question to better get results from the knowledge base.
+When the user asks for help with a testing/practice quiz, call the getInformation tool and  modify the question to better get results from the knowledge base.
 We use cosineDistance to measure the similarity between the question and the context.
 So transform questions into a form that is easier to understand.
 
-once you call the getInformation tool it shows MCQ UI, don't show repeat the questions, just be ready to answer questions again
+once you call the getInformation tool it shows MCQ UI, don't repeat the questions that you gain as context, just be ready to answer questions about the practice quiz.
 
 if they user asks you to write code, say that you currently cannot write code but in the future will support code execution and code help and refuse to generate the code 
 `;
 
     const result = streamText({
-      model: google("gemini-2.0-flash-exp"),
+      model: google("gemini-2.5-pro-exp-03-25"),
       messages,
       system: system,
       tools: {
