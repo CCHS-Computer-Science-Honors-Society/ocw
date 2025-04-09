@@ -8,7 +8,7 @@ import {
 } from "ai";
 import { getInformationTool } from "@/lib/ai/tools/get-information-tool";
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
