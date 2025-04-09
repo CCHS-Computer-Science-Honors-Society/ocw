@@ -2,12 +2,12 @@ import React from "react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="bg-background min-h-screen px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-foreground mb-8 text-center text-3xl font-bold tracking-tight">
           About Us
         </h1>
-        <div className="space-y-6 text-gray-600">
+        <div className="text-foreground space-y-6">
           <p className="leading-relaxed">
             Creek OpenCourseWare (OCW) is dedicated to providing free,
             high-quality resources to students at Cherry Creek High School. Our
@@ -23,7 +23,7 @@ export default function AboutPage() {
             the level of our understanding.
           </p>
           <br />
-          <h1 className="mb-8 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="mb-8 text-center text-3xl font-bold tracking-tight">
             Our Mission
           </h1>
           <p className="leading-relaxed">

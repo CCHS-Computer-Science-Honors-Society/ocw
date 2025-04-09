@@ -21,10 +21,10 @@ export const CourseContent = async (props: {
   return (
     <div className="flex flex-1">
       {/* Sidebar */}
-      <div className="hidden border-r bg-background p-6 lg:block lg:w-96">
-        <div className="mb-6 rounded-lg bg-primary/10 p-4">
-          <h2 className="text-xl font-bold text-primary/80">{course.name}</h2>
-          <p className="mt-1 text-sm text-primary/60">
+      <div className="bg-background hidden border-r p-6 lg:block lg:w-96">
+        <div className="bg-primary/10 mb-6 rounded-lg p-4">
+          <h2 className="text-primary/80 text-xl font-bold">{course.name}</h2>
+          <p className="text-primary/60 mt-1 text-sm">
             {course.units.length} UNITS
           </p>
         </div>
@@ -54,7 +54,7 @@ export const CourseContent = async (props: {
                 <AccordionItem value="unit-1" className="rounded-lg border">
                   <AccordionTrigger className="px-4 hover:no-underline">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
+                      <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-full text-white">
                         {course.units.indexOf(unit) + 1}
                       </div>
                       <div className="text-left">
@@ -70,7 +70,7 @@ export const CourseContent = async (props: {
                           prefetch
                           key={index}
                           href={`/course/${course.id}/${unit.id}/${lesson.id}`}
-                          className="block text-[#1e3a7b] hover:underline"
+                          className="text-primary/20 block hover:underline"
                         >
                           {lesson.name}
                         </Link>
