@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { IBM_Plex_Sans } from "next/font/google";
 import { ThemeProvider } from "./_providers/theme";
 import { ActiveThemeProvider } from "@/components/theme/active-theme";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const ibm = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -43,7 +44,7 @@ export async function Providers({ children }: { children: React.ReactNode }) {
               >
                 {/* Your custom theme provider */}
                 <ActiveThemeProvider initialTheme={activeThemeValue}>
-                  {children}
+                  <TooltipProvider>{children}</TooltipProvider>
                 </ActiveThemeProvider>
               </ThemeProvider>
             </ExploreProvider>
