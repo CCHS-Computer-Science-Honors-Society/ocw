@@ -22,7 +22,7 @@ export const LessonSidebarContainer = (props: {
       collapsible="offcanvas"
       variant="floating"
       side="left"
-      className="border-none border-sidebar bg-sidebar" // Example: Use standard border or library's --sidebar-border
+      className="border-sidebar border-none" // Example: Use standard border or library's --sidebar-border
     >
       {/* Content is now rendered within Sidebar */}
       <Suspense fallback={<SidebarContent>Loading Course...</SidebarContent>}>

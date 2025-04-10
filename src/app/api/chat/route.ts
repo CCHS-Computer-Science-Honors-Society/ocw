@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { google } from "@ai-sdk/google";
-import {
-  streamText,
-  ToolExecutionError,
-  InvalidToolArgumentsError,
-  NoSuchToolError,
-} from "ai";
-import { getInformationTool } from "@/lib/ai/tools/get-information-tool";
-
 export const maxDuration = 60;
 
-export async function POST(req: Request) {
+export async function POST() {
+  return new Response("Internal Server Error", { status: 500 });
+}
+
+/*
+ * 
   try {
     const { messages } = await req.json();
 
@@ -58,4 +54,4 @@ if they user asks you to write code, say that you currently cannot write code bu
     console.error("Error in POST handler:", e);
     return new Response("Internal Server Error", { status: 500 });
   }
-}
+*/
