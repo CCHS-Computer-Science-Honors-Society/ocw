@@ -8,6 +8,15 @@ import { Messages } from "./messages";
 import { toast } from "sonner";
 
 export function Chat() {
+  return (
+    <div className="flex h-screen flex-col items-center justify-center">
+      Due to very high traffic, we are currently exceeding our free limit for
+      the AI. We apologize for the inconvenience and will be back soon.
+    </div>
+  );
+}
+
+const Unused = () => {
   const {
     messages,
     setMessages,
@@ -56,4 +65,4 @@ export function Chat() {
       </div>
     </>
   );
-}
+};

@@ -11,6 +11,7 @@ import { getInformationTool } from "@/lib/ai/tools/get-information-tool";
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
+  return new Response("Rate Limit Hit", { status: 429 });
   try {
     const { messages } = await req.json();
 
