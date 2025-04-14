@@ -31,11 +31,11 @@ export const CourseContent = async (props: {
         <div className="ml-4 max-w-[calc(100%-2rem)] space-y-4">
           {course.units.map((unit, index) => (
             <div key={index} className="text-sm">
-              <div className="mb-1 text-gray-500">UNIT {index + 1}</div>
+              <div className="text-foreground mb-1">UNIT {index + 1}</div>
               <Link
                 href={`/course/${course.id}/${unit.id}`}
                 prefetch
-                className="break-words text-[#1e3a7b] hover:underline"
+                className="text-foreground/80 break-words hover:underline"
               >
                 {unit.name}
               </Link>
@@ -46,7 +46,9 @@ export const CourseContent = async (props: {
 
       {/* Main Content Area */}
       <div className="flex-1 p-6 pt-8">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900">{course.name}</h1>
+        <h1 className="text-foreground mb-6 text-3xl font-bold">
+          {course.name}
+        </h1>
         <div className="gap-10">
           {course.units.map((unit) => (
             <div key={unit.id} className="py-1">
@@ -70,7 +72,7 @@ export const CourseContent = async (props: {
                           prefetch
                           key={index}
                           href={`/course/${course.id}/${unit.id}/${lesson.id}`}
-                          className="text-primary/20 block hover:underline"
+                          className="text-foreground block hover:underline"
                         >
                           {lesson.name}
                         </Link>
