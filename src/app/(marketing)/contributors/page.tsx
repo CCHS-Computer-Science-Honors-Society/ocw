@@ -90,6 +90,13 @@ const contributors = [
     description:
       "Rohith is a mathematical specialist and contributor to physical and high level mathematics courses on the platform",
   },
+  {
+    id: 13,
+    name: "Ani Gadepalli",
+    avatar: defaultPhoto,
+    description:
+      "Ani has contributed to the AP Comparative Government Course on the platform",
+  },
 ];
 
 export default function ContributorsPage() {
