@@ -30,12 +30,12 @@ export function CourseSwitcherClient() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full rounded-md ring-ring hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 data-[state=open]:bg-accent">
+      <DropdownMenuTrigger className="ring-ring hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-accent w-full rounded-md focus-visible:ring-2 focus-visible:outline-hidden">
         <div className="flex items-center gap-1.5 overflow-hidden px-2 py-1.5 text-left text-sm transition-all">
           <div className="line-clamp-1 flex-1 pr-2 font-medium">
             {activeCourse.name}
           </div>
-          <ChevronsUpDown className="ml-auto h-4 w-4 text-muted-foreground/50" />
+          <ChevronsUpDown className="text-muted-foreground/50 ml-auto h-4 w-4" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -44,7 +44,7 @@ export function CourseSwitcherClient() {
         side="right"
         sideOffset={4}
       >
-        <DropdownMenuLabel className="text-xs text-muted-foreground">
+        <DropdownMenuLabel className="text-muted-foreground text-xs">
           Groups
         </DropdownMenuLabel>
         {courses.map((course) => (
@@ -55,7 +55,7 @@ export function CourseSwitcherClient() {
             className="items-start gap-2 px-1.5"
           >
             <div className="flex flex-row items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary text-primary-foreground"></div>
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-sm"></div>
               <div className="grid flex-1 leading-tight">
                 <div className="line-clamp-1 font-medium">{course.name}</div>
               </div>

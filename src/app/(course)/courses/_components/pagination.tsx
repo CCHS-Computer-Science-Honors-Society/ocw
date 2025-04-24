@@ -68,7 +68,7 @@ export function BookPagination({
           </Form>
         </PaginationItem>
 
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           {totalResults.toLocaleString()} results (
           {currentPage.toLocaleString()} of {totalPages.toLocaleString()})
         </div>

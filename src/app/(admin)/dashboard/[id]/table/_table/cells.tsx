@@ -32,7 +32,7 @@ export const EditableTextCell = <T extends object>({
   return (
     <Input
       value={value ?? undefined}
-      className="h-8 w-full border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
+      className="hover:bg-input/30 focus-visible:bg-background h-8 w-full border-transparent bg-transparent text-left shadow-none focus-visible:border"
       onChange={(e) => setValue(e.target.value)}
       onBlur={handleBlur}
     />
@@ -102,7 +102,7 @@ export const EditableSelectCell = <T extends object>({
       open={open}
       onOpenChange={setOpen}
     >
-      <SelectTrigger className="h-8 w-[280px] border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background">
+      <SelectTrigger className="hover:bg-input/30 focus-visible:bg-background h-8 w-[280px] border-transparent bg-transparent text-left shadow-none focus-visible:border">
         <SelectValue placeholder="select a value" />
       </SelectTrigger>
       <SelectContent>

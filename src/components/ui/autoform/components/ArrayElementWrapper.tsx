@@ -13,7 +13,7 @@ export const ArrayElementWrapper: React.FC<ArrayElementWrapperProps> = ({
         onClick={onRemove}
         variant="ghost"
         size="sm"
-        className="absolute right-2 top-2"
+        className="absolute top-2 right-2"
         type="button"
       >
         <TrashIcon className="h-4 w-4" />

@@ -18,7 +18,6 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import Link from "next/link";
 
-// Define the Zod schema for a Unit based on your data structure
 export const unitSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -40,9 +39,9 @@ function DragHandle({ id }: { id: string }) {
       {...listeners}
       variant="ghost"
       size="icon"
-      className="size-7 cursor-grab text-muted-foreground hover:bg-transparent active:cursor-grabbing"
+      className="text-muted-foreground size-7 cursor-grab hover:bg-transparent active:cursor-grabbing"
     >
-      <GripVerticalIcon className="size-4 text-muted-foreground" />
+      <GripVerticalIcon className="text-muted-foreground size-4" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
   );
@@ -125,7 +124,7 @@ export const columns: ColumnDef<Unit>[] = [
             onChange={(e) => setValue(e.target.value)}
             onBlur={onBlur}
             disabled={isPending}
-            className={`h-8 w-full min-w-40 border-transparent bg-transparent shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background ${
+            className={`hover:bg-input/30 focus-visible:bg-background h-8 w-full min-w-40 border-transparent bg-transparent shadow-none focus-visible:border ${
               isPending ? "cursor-not-allowed opacity-50" : ""
             }`}
           />
@@ -175,7 +174,7 @@ export const columns: ColumnDef<Unit>[] = [
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
+            className="text-muted-foreground data-[state=open]:bg-muted flex size-8"
             size="icon"
           >
             <MoreVerticalIcon className="size-4" />

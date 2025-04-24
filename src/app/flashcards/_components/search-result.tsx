@@ -21,7 +21,7 @@ export function SearchResults({ results }: SearchResultsProps) {
           </CardHeader>
           <CardContent>
             <p>{result.back}</p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Similarity: {(result.similarity * 100).toFixed(2)}%
             </p>
           </CardContent>

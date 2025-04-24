@@ -27,14 +27,14 @@ export const CourseHeader = ({ data }: { data: SidebarData }) => {
         <SidebarMenuItem>
           {/* Use div directly if not interactive */}
           <div className="flex items-center gap-3 p-3">
-            <div className="flex aspect-square size-12 items-center justify-center rounded-lg bg-sidebar-accent">
+            <div className="bg-sidebar-accent flex aspect-square size-12 items-center justify-center rounded-lg">
               <BookIcon className="size-6 text-white" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate text-xl font-semibold">
                 {course.name}
               </span>
-              <span className="truncate text-xs text-sidebar-foreground">
+              <span className="text-sidebar-foreground truncate text-xs">
                 {course.subjectId} {/* Or other relevant info */}
               </span>
             </div>

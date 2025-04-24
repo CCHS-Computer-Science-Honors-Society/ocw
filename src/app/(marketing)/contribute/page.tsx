@@ -84,7 +84,7 @@ export default function ContributePage() {
       description:
         "Share your knowledge and expertise by contributing written content to our open courseware platform.",
       url: "https://forms.gle/ALUL2GEsCRv7eifp9",
-      icon: <FileEdit className="h-8 w-8 text-primary" />,
+      icon: <FileEdit className="text-primary h-8 w-8" />,
     },
     {
       id: "design",
@@ -92,7 +92,7 @@ export default function ContributePage() {
       description:
         "Help improve the visual experience of our platform with your design skills and creative ideas.",
       url: "https://forms.gle/iFUVRvHtKehxVZah7",
-      icon: <Paintbrush className="h-8 w-8 text-primary" />,
+      icon: <Paintbrush className="text-primary h-8 w-8" />,
     },
     {
       id: "develop",
@@ -100,7 +100,7 @@ export default function ContributePage() {
       description:
         "Contribute to the technical development of our platform with your coding and development expertise.",
       url: "https://forms.gle/g4PBXz5LE3GBYYhT6",
-      icon: <Code className="h-8 w-8 text-primary" />,
+      icon: <Code className="text-primary h-8 w-8" />,
     },
   ];
 
@@ -110,14 +110,14 @@ export default function ContributePage() {
       day: "Wednesday",
       time: "After School",
       hours: "3:30 PM - 4:15 PM",
-      icon: <Clock className="h-8 w-8 text-primary" />,
+      icon: <Clock className="text-primary h-8 w-8" />,
     },
     {
       id: "thursday",
       day: "Thursday",
       time: "Before School",
       hours: "7:50 AM - 8:10 AM",
-      icon: <Clock className="h-8 w-8 text-primary" />,
+      icon: <Clock className="text-primary h-8 w-8" />,
     },
   ];
 
@@ -145,7 +145,7 @@ export default function ContributePage() {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
             Contribute to the Project
           </h1>
-          <p className="mx-auto max-w-2xl text-muted-foreground">
+          <p className="text-muted-foreground mx-auto max-w-2xl">
             Join our community and help us improve the open courseware platform.
             There are several ways you can contribute.
           </p>
@@ -216,7 +216,7 @@ export default function ContributePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <Github className="h-8 w-8 text-primary" />
+                <Github className="text-primary h-8 w-8" />
                 <CardTitle>GitHub Repository</CardTitle>
               </div>
               <CardDescription>
@@ -257,7 +257,7 @@ export default function ContributePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <HelpCircle className="h-8 w-8 text-primary" />
+                <HelpCircle className="text-primary h-8 w-8" />
                 <CardTitle>FAQ</CardTitle>
               </div>
             </CardHeader>

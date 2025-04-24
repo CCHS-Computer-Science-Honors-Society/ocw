@@ -38,48 +38,48 @@ export function AuthClient({
             {/* Use library button */}
             <SidebarMenuButton
               size="lg" // Keep size if desired
-              className="w-full data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground w-full"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
-                <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-lg">
                   {user?.name?.charAt(0).toUpperCase() ?? "?"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold text-sidebar-foreground">
+                <span className="text-sidebar-foreground truncate font-semibold">
                   {user.name ?? "User"}
                 </span>
-                <span className="truncate text-xs text-sidebar-foreground/80">
+                <span className="text-sidebar-foreground/80 truncate text-xs">
                   {user.email ?? "No email"}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 text-sidebar-foreground/80" />
+              <ChevronsUpDown className="text-sidebar-foreground/80 ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             // Use sidebar variables for consistency
-            className="bg-sidebar-background min-w-[var(--radix-dropdown-menu-trigger-width)] rounded-lg border-sidebar-border text-sidebar-foreground shadow-md"
+            className="bg-sidebar-background border-sidebar-border text-sidebar-foreground min-w-[var(--radix-dropdown-menu-trigger-width)] rounded-lg shadow-md"
             side={isMobile ? "top" : "right"} // Adjusted side for footer
             align="end"
             sideOffset={8} // Increased offset slightly
           >
             {/* Label can be simplified or styled */}
-            <DropdownMenuLabel className="px-2 py-1.5 text-xs font-normal text-sidebar-foreground/80">
+            <DropdownMenuLabel className="text-sidebar-foreground/80 px-2 py-1.5 text-xs font-normal">
               Signed in as
             </DropdownMenuLabel>
-            <div className="mb-1 flex items-center gap-2 px-2 pb-1.5 pt-0 text-left text-sm">
+            <div className="mb-1 flex items-center gap-2 px-2 pt-0 pb-1.5 text-left text-sm">
               <Avatar className="h-7 w-7 rounded-md">
                 <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
-                <AvatarFallback className="rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground rounded-md">
                   {user?.name?.charAt(0).toUpperCase() ?? "?"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium text-sidebar-foreground">
+                <span className="text-sidebar-foreground truncate font-medium">
                   {user.name ?? "User"}
                 </span>
-                <span className="truncate text-xs text-sidebar-foreground/80">
+                <span className="text-sidebar-foreground/80 truncate text-xs">
                   {user.email ?? "No email"}
                 </span>
               </div>
@@ -88,7 +88,7 @@ export function AuthClient({
             {/* Ensure Link fills the item for clickability */}
             <DropdownMenuItem
               asChild
-              className="cursor-pointer focus:bg-sidebar-accent focus:text-sidebar-accent-foreground"
+              className="focus:bg-sidebar-accent focus:text-sidebar-accent-foreground cursor-pointer"
             >
               <Link href={"/logout"} className="flex items-center">
                 <LogOut className="mr-2 size-4" />

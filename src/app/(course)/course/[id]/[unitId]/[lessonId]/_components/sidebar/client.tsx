@@ -30,7 +30,7 @@ const Overlay = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background backdrop-blur-xs"
+      className="bg-background fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs"
       aria-modal="true"
       role="dialog"
       onClick={onClose}
@@ -40,10 +40,10 @@ const Overlay = ({
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: "50px", opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-sidebar-background max-h-[80vh] w-[90vw] max-w-md overflow-y-auto rounded-lg border border-sidebar-border p-6 shadow-lg"
+        className="bg-sidebar-background border-sidebar-border max-h-[80vh] w-[90vw] max-w-md overflow-y-auto rounded-lg border p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-xl font-semibold text-sidebar-foreground">
+        <h2 className="text-sidebar-foreground mb-4 text-xl font-semibold">
           Select Unit
         </h2>
         <ul className="space-y-1">
@@ -52,7 +52,7 @@ const Overlay = ({
               <Button
                 variant="ghost"
                 onClick={() => onSelectUnit(unit.id)}
-                className="w-full justify-start px-2 py-1.5 text-left text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full justify-start px-2 py-1.5 text-left"
               >
                 {unit.name}
               </Button>
@@ -62,7 +62,7 @@ const Overlay = ({
         <Button
           variant="outline"
           onClick={onClose}
-          className="mt-6 w-full border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          className="border-sidebar-border text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground mt-6 w-full"
         >
           Close
         </Button>
@@ -148,12 +148,12 @@ function UnitLessonNav({
   );
 
   if (!currentUnit) {
-    return <div className="p-4 text-sidebar-foreground">Unit not found.</div>;
+    return <div className="text-sidebar-foreground p-4">Unit not found.</div>;
   }
 
   return (
     <>
-      <SidebarGroup className="bg-sidebar-background sticky top-0 z-10 border-b border-sidebar-border p-2">
+      <SidebarGroup className="bg-sidebar-background border-sidebar-border sticky top-0 z-10 border-b p-2">
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
@@ -168,7 +168,7 @@ function UnitLessonNav({
           <Button
             variant="ghost"
             onClick={toggleOverlay}
-            className="w-[20px] flex-1 truncate px-2 text-center text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-[20px] flex-1 truncate px-2 text-center text-sm font-medium"
             aria-haspopup="dialog"
             aria-expanded={isOverlayOpen}
           >
@@ -197,7 +197,7 @@ function UnitLessonNav({
                   isActive={selectedLessonId === lesson.id}
                   // Use onClick to update visual state *before* navigation potentially happens
                   onClick={() => handleLessonClick(lesson.id)}
-                  className="h-auto justify-start py-2 pl-3 pr-2 text-sm"
+                  className="h-auto justify-start py-2 pr-2 pl-3 text-sm"
                 >
                   <Link
                     prefetch={false}

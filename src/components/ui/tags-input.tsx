@@ -256,7 +256,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
           ref={ref}
           dir={dir}
           className={cn(
-            "flex flex-wrap items-center gap-1 overflow-hidden rounded-lg bg-background p-1 ring-1 ring-muted",
+            "bg-background ring-muted flex flex-wrap items-center gap-1 overflow-hidden rounded-lg p-1 ring-1",
             {
               "focus-within:ring-ring": activeIndex === -1,
             },
@@ -270,7 +270,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
               aria-disabled={disableButton}
               data-active={activeIndex === index}
               className={cn(
-                "relative flex items-center gap-1 truncate rounded px-1 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[active='true']:ring-2 data-[active='true']:ring-muted-foreground",
+                "data-[active='true']:ring-muted-foreground relative flex items-center gap-1 truncate rounded px-1 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[active='true']:ring-2",
               )}
               variant={"secondary"}
             >
@@ -285,7 +285,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
                 className="disabled:cursor-not-allowed"
               >
                 <span className="sr-only">Remove {item} option</span>
-                <RemoveIcon className="h-4 w-4 hover:stroke-destructive" />
+                <RemoveIcon className="hover:stroke-destructive h-4 w-4" />
               </button>
             </Badge>
           ))}
@@ -301,7 +301,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
             placeholder={placeholder}
             onClick={() => setActiveIndex(-1)}
             className={cn(
-              "h-7 min-w-fit flex-1 border-none px-1 outline-0 placeholder:text-muted-foreground focus-visible:border-0 focus-visible:outline-0 focus-visible:ring-0 focus-visible:ring-offset-0",
+              "placeholder:text-muted-foreground h-7 min-w-fit flex-1 border-none px-1 outline-0 focus-visible:border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-0",
               activeIndex !== -1 && "caret-transparent",
             )}
           />

@@ -48,7 +48,7 @@ function SearchBase({ initialQuery }: { initialQuery: string }) {
       <label htmlFor="search" className="sr-only">
         Search
       </label>
-      <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
       <Input
         ref={inputRef}
         onChange={handleInputChange}
@@ -70,7 +70,7 @@ function LoadingSpinner() {
   return (
     <div
       data-pending={pending ? "" : undefined}
-      className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity duration-300"
+      className="absolute top-1/2 right-3 -translate-y-1/2 transition-opacity duration-300"
     >
       <svg className="h-5 w-5" viewBox="0 0 100 100">
         <circle

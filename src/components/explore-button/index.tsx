@@ -198,7 +198,7 @@ function ExploreContent() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium text-primary hover:bg-gray-100"
+        className="text-primary flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium hover:bg-gray-100"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -235,7 +235,7 @@ function ExploreContent() {
             <ScrollArea
               className={isMobile ? "h-full" : "h-[calc(100vh-64px)]"}
             >
-              <div className="h-full w-full bg-white p-6 dark:bg-black md:p-20">
+              <div className="h-full w-full bg-white p-6 md:p-20 dark:bg-black">
                 <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {navigationData.map((section) => (
                     <div key={section.title} className="space-y-4">

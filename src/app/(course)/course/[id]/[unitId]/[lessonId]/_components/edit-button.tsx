@@ -40,7 +40,7 @@ export default async function EditButton({
         href={link}
         className={cn(
           buttonVariants({ variant: "default", size: "icon" }),
-          "fixed bottom-4 right-4 rounded-full shadow-lg transition-shadow duration-200 hover:shadow-xl",
+          "fixed right-4 bottom-4 rounded-full shadow-lg transition-shadow duration-200 hover:shadow-xl",
         )}
       >
         <Edit className="h-4 w-4" />
@@ -53,7 +53,7 @@ export default async function EditButton({
 export const EditButtonSkeleton = () => {
   return (
     <div className="relative min-h-screen">
-      <Skeleton className="h-4 w-4 animate-pulse rounded-full bg-muted" />
+      <Skeleton className="bg-muted h-4 w-4 animate-pulse rounded-full" />
     </div>
   );
 };

@@ -22,7 +22,7 @@ export default function ContributorCard({
 
   return (
     <div
-      className={`cursor-pointer overflow-hidden rounded-lg bg-background shadow-md transition-all duration-300 ease-in-out ${
+      className={`bg-background cursor-pointer overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out ${
         isExpanded ? "max-h-[500px]" : "h-20"
       }`}
       onClick={handleClick}
@@ -47,11 +47,7 @@ export default function ContributorCard({
             }`}
           />
         </div>
-        <div
-          className={`${
-            isExpanded ? "w-full" : "ml-4 grow"
-          } flex flex-col`}
-        >
+        <div className={`${isExpanded ? "w-full" : "ml-4 grow"} flex flex-col`}>
           <h2 className="text-lg font-semibold">{name}</h2>
           {isExpanded && <p className="mt-2 text-gray-600">{description}</p>}
         </div>

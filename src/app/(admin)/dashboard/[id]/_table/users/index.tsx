@@ -474,8 +474,8 @@ export function LessonTable({
       <div className="relative">
         {/* Optional: Loading overlay during reorder save */}
         {isReorderPending && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-lg border bg-background/80 backdrop-blur-xs">
-            <p className="text-sm text-muted-foreground">Saving order...</p>
+          <div className="bg-background/80 absolute inset-0 z-20 flex items-center justify-center rounded-lg border backdrop-blur-xs">
+            <p className="text-muted-foreground text-sm">Saving order...</p>
           </div>
         )}
         <div className="overflow-hidden rounded-lg border">
@@ -487,7 +487,7 @@ export function LessonTable({
             id={sortableId}
           >
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-muted">
+              <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -535,7 +535,7 @@ export function LessonTable({
 
       {/* Pagination */}
       <div className="flex items-center justify-between pt-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>

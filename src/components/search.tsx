@@ -141,13 +141,13 @@ export function SearchDropdownComponent() {
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 rounded-2xl border-black/30 p-0 text-primary xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+        className="text-primary relative h-9 w-9 rounded-2xl border-black/30 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
         onClick={() => setOpen(true)}
       >
         <Search className="h-4 w-4 rounded-xl xl:mr-2" aria-hidden="true" />
         <span className="hidden xl:inline-flex">Search...</span>
         <span className="sr-only">Search</span>
-        <div className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded-2xl px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
+        <div className="pointer-events-none absolute top-2 right-1.5 hidden h-6 items-center gap-1 rounded-2xl px-1.5 font-mono text-[10px] font-medium opacity-100 select-none xl:flex">
           <span className="text-xs">⌘</span>K
         </div>
       </Button>

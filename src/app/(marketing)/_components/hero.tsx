@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 export function HeroSection() {
   return (
     <section className="relative h-[38vh]">
-      <div className="container relative z-auto mx-auto flex flex-col gap-5 px-4 text-center">
-        <h2 className="mb-8 text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl">
+      <div className="relative z-auto container mx-auto flex flex-col gap-5 px-4 text-center">
+        <h2 className="text-foreground mb-8 text-4xl font-extrabold sm:text-5xl lg:text-6xl">
           Your Life At Creek Made Easy
         </h2>
         <div className="flex flex-row items-center justify-center gap-20">
@@ -24,7 +24,7 @@ export function HeroSection() {
             </div>
           ))}
         </div>
-        <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+        <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
           <Button size="lg" className="" asChild>
             <Link prefetch href="/courses">
               See All Courses

@@ -295,19 +295,19 @@ export const FileUploaderItem = forwardRef<
       )}
       {...props}
     >
-      <div className="flex h-full w-full items-center gap-1.5 font-medium leading-none tracking-tight">
+      <div className="flex h-full w-full items-center gap-1.5 leading-none font-medium tracking-tight">
         {children}
       </div>
       <button
         type="button"
         className={cn(
           "absolute",
-          direction === "rtl" ? "left-1 top-1" : "right-1 top-1",
+          direction === "rtl" ? "top-1 left-1" : "top-1 right-1",
         )}
         onClick={() => removeFileFromSet(index)}
       >
         <span className="sr-only">remove item {index}</span>
-        <RemoveIcon className="h-4 w-4 duration-200 ease-in-out hover:stroke-destructive" />
+        <RemoveIcon className="hover:stroke-destructive h-4 w-4 duration-200 ease-in-out" />
       </button>
     </div>
   );

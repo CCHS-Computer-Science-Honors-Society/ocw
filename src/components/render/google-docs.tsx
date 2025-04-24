@@ -10,7 +10,7 @@ export function GoogleDocsEmbed({ embedId }: { embedId: string | null }) {
       {/* Make the iframe take up most of the screen */}
       <Embed
         src={embedId}
-        className="h-[87vh] w-full rounded-xl border-muted shadow-2xl"
+        className="border-muted h-[87vh] w-full rounded-xl shadow-2xl"
       />
 
       {/* Keep the header section */}

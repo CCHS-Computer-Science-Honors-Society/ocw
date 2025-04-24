@@ -69,7 +69,7 @@ export const Embed: React.FC<EmbedLoaderProps> = ({
       {isLoading && !hasError ? (
         <div className="loader" role="alert" aria-live="assertive">
           {loaderComponent ?? (
-            <div className="flex h-[87vh] w-full flex-col items-center justify-center rounded-xl border-muted shadow-2xl">
+            <div className="border-muted flex h-[87vh] w-full flex-col items-center justify-center rounded-xl shadow-2xl">
               <LoaderCircleIcon className="animate-spin" />
               <div className="text-center">
                 Loading...

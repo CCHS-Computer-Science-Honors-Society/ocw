@@ -46,7 +46,7 @@ export const UnitsForm = ({ courseId }: UnitsFormProps) => {
   return (
     <div className="relative mt-6 rounded-md border bg-slate-100 p-4">
       {isUpdating && (
-        <div className="rounded-m absolute right-0 top-0 flex h-full w-full items-center justify-center bg-slate-500/20">
+        <div className="rounded-m absolute top-0 right-0 flex h-full w-full items-center justify-center bg-slate-500/20">
           <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
         </div>
       )}
@@ -57,7 +57,7 @@ export const UnitsForm = ({ courseId }: UnitsFormProps) => {
       <div
         className={cn(
           "mt-2 text-sm",
-          !initialData.length && "italic text-slate-500",
+          !initialData.length && "text-slate-500 italic",
         )}
       >
         {!initialData.length && "No Units"}
@@ -67,7 +67,7 @@ export const UnitsForm = ({ courseId }: UnitsFormProps) => {
           items={initialData ?? []}
         />
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">
+      <p className="text-muted-foreground mt-4 text-xs">
         Drag and drop to reorder the units.
       </p>
     </div>

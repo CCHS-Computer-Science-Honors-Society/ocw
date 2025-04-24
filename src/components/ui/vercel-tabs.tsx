@@ -18,7 +18,7 @@ export function VercelTabs({
       {dataButtons.map((button, index) => (
         <Link href={`${button.href}`} key={button.label}>
           <button
-            className={`relative inline-flex w-fit whitespace-nowrap rounded px-2 py-1 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-600 dark:hover:text-neutral-400`}
+            className={`relative inline-flex w-fit rounded px-2 py-1 text-sm font-medium whitespace-nowrap text-neutral-500 transition-colors hover:text-neutral-600 dark:hover:text-neutral-400`}
             onClick={() => handleOnClickButton(index)}
             type="button"
           >
@@ -27,7 +27,7 @@ export function VercelTabs({
               {elementFocused === index && (
                 <motion.div
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute bottom-0 left-0 right-0 top-0 -z-10 rounded-md bg-neutral-200 dark:bg-neutral-800"
+                  className="absolute top-0 right-0 bottom-0 left-0 -z-10 rounded-md bg-neutral-200 dark:bg-neutral-800"
                   exit={{ opacity: 0, scale: 0.9 }}
                   initial={{ opacity: 0, scale: 0.95 }}
                   layout={true}
