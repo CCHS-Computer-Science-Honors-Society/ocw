@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense } from "react";
-import { Menu } from "lucide-react"; // Import Menu icon
+import { Menu } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -10,13 +10,13 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle as nv,
 } from "@/components/ui/navigation-menu";
-import { Button } from "@/components/ui/button"; // Import Button
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose, // Import SheetClose for better UX
-} from "@/components/ui/sheet"; // Import Sheet components
+  SheetClose,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import Explore from "./explore-button";
 import { SearchDropdownComponent } from "./search";

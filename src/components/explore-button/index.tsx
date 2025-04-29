@@ -198,7 +198,7 @@ function ExploreContent() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-primary flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium hover:bg-gray-100"
+        className="text-primary hover:bg-primary/10 flex w-max flex-row items-center justify-center gap-2 rounded-md p-2 text-sm font-medium"
         aria-expanded={isOpen}
         aria-label="Toggle course navigation"
       >
@@ -218,15 +218,14 @@ function ExploreContent() {
             animate="open"
             exit="closed"
             variants={containerVariants}
-            // Keep the background on the motion container for the fade effect
-            className={`fixed inset-0 z-40 h-screen bg-white dark:bg-black ${isMobile ? "overflow-y-auto" : ""}`}
+            className={`bg-background fixed inset-0 z-40 h-screen ${isMobile ? "overflow-y-auto" : ""}`}
             style={{ top: isMobile ? "0" : "64px" }}
           >
             {isMobile && (
-              <div className="sticky top-0 z-50 border-b bg-white p-4 dark:bg-black">
+              <div className="bg-background sticky top-0 z-50 border-b">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-sm font-medium text-gray-600"
+                  className="text-muted-foreground text-sm font-medium"
                 >
                   Close
                 </button>
@@ -235,11 +234,11 @@ function ExploreContent() {
             <ScrollArea
               className={isMobile ? "h-full" : "h-[calc(100vh-64px)]"}
             >
-              <div className="h-full w-full bg-white p-6 md:p-20 dark:bg-black">
+              <div className="bg-background h-full w-full p-6 md:p-20">
                 <div className="grid h-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {navigationData.map((section) => (
                     <div key={section.title} className="space-y-4">
-                      <h3 className="text-sm font-bold text-gray-500">
+                      <h3 className="text-muted-foreground text-sm font-bold">
                         {section.title}
                       </h3>
                       {section.categories.map((category) => (
@@ -258,7 +257,7 @@ function ExploreContent() {
                                 <Link
                                   prefetch
                                   href={course.link}
-                                  className="group flex items-center text-sm text-gray-700 hover:text-blue-600"
+                                  className="group text-foreground/70 hover:text-primary flex items-center text-sm"
                                   onClick={() => setIsOpen(false)}
                                 >
                                   <span className="flex-1">{course.name}</span>
