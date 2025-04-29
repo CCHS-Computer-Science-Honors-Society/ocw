@@ -1,7 +1,5 @@
 import { ContentTypeEnum, lessons } from "@/server/db/schema";
-import { lt } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
-import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
 import { z } from "zod";
 
 export const updateLesson = z.object({

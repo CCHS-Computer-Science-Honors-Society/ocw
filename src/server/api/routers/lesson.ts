@@ -111,23 +111,18 @@ export const lessonRouter = createTRPCRouter({
       });
     }),
   update: protectedProcedure
-    .input(updateLesson) // Make sure updateLesson allows the fields you intend to update
+    .input(updateLesson)
     .use(createPermissionCheckMiddleware("edit_lesson"))
     .mutation(async ({ ctx, input }) => {
-      // Separate embed data, IDs, and other lesson data
-      // Explicitly exclude id and courseId from lessonData passed to .set()
       const { embed, id, courseId, ...otherLessonData } = input;
 
-      // Determine if there are actual fields to update in each object
       const lessonFieldsToUpdate = Object.keys(otherLessonData);
       const hasLessonUpdates = lessonFieldsToUpdate.length > 0;
 
       const embedFieldsToUpdate = embed ? Object.keys(embed) : [];
       const hasEmbedUpdates = embed && embedFieldsToUpdate.length > 0;
 
-      // Prevent mutation if no actual data fields are being changed
       if (!hasLessonUpdates && !hasEmbedUpdates) {
-        // This might happen if input only contains id and courseId after validation
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "No fields provided to update.",
@@ -135,19 +130,17 @@ export const lessonRouter = createTRPCRouter({
       }
 
       const updatedLessonData = await ctx.db.transaction(async (tx) => {
-        let lessonUpdateResult: any[] = []; // Use Lesson type alias
+        let lessonUpdateResult: any[] = [];
 
-        // 1. Conditionally update the main 'lessons' table
         if (hasLessonUpdates) {
           lessonUpdateResult = await tx
             .update(lessons)
-            .set(otherLessonData) // Pass only the fields intended for this table
+            .set(otherLessonData)
             .where(eq(lessons.id, id))
-            .returning(); // Get the updated lesson data
+            .returning();
 
           if (lessonUpdateResult.length === 0) {
-            // If hasLessonUpdates was true but nothing returned, the ID likely didn't match
-            tx.rollback(); // Rollback transaction if the main update failed unexpectedly
+            tx.rollback();
             throw new TRPCError({
               code: "NOT_FOUND",
               message: `Lesson with id ${id} not found for update.`,
@@ -155,45 +148,34 @@ export const lessonRouter = createTRPCRouter({
           }
         }
 
-        // 2. Conditionally update the 'lessonEmbed' table
         if (hasEmbedUpdates) {
           const embedUpdateResult = await tx
             .update(lessonEmbed)
-            .set(embed) // Pass the embed object directly
+            .set(embed)
             .where(eq(lessonEmbed.lessonId, id))
-            .returning({ updatedId: lessonEmbed.id }); // Check if update occurred
+            .returning({ updatedId: lessonEmbed.id });
 
           if (embedUpdateResult.length === 0) {
-            // If hasEmbedUpdates was true but nothing returned, the lessonId might not exist in lessonEmbed
-            // This might be acceptable if embed data is optional, or an error depending on your logic
             console.warn(
               `No lessonEmbed record found for lessonId ${id} during update.`,
             );
-            // Decide if this should be an error or just a warning
-            // await tx.rollback();
-            // throw new TRPCError({ code: "NOT_FOUND", message: `Embed data for lesson id ${id} not found.` });
           }
         }
 
-        // 3. Return the updated lesson data (or fetch if only embed was updated)
         if (lessonUpdateResult.length > 0) {
-          return lessonUpdateResult[0]; // Return data from the first update if it happened
+          return lessonUpdateResult[0];
         } else {
-          // If only embed was updated, fetch the lesson data to return consistent object
           const finalLesson = await tx.query.lessons.findFirst({
             where: eq(lessons.id, id),
-            // Optionally include embed data here if needed in the return value
-            // with: { lessonEmbed: true }
           });
           if (!finalLesson) {
-            // Should not happen if embed update succeeded, but safety check
             tx.rollback();
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
               message: `Failed to retrieve lesson ${id} after embed update.`,
             });
           }
-          return finalLesson; // Cast or ensure type compatibility
+          return finalLesson;
         }
       });
 

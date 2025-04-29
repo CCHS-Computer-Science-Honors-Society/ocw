@@ -19,7 +19,7 @@ export default async function Page({
   return (
     <HydrateClient>
       <main className="container mx-auto flex w-full flex-row">
-        <div className="w-1/2">
+        <div className="">
           <Suspense fallback={<TableSkeleton />}>
             <LessonTable courseId={id} unitId={unitId} unitsPromise={units} />
           </Suspense>

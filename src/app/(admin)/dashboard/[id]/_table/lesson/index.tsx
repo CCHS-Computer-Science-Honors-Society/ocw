@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-// --- Imports for dnd-kit, react-table, lucide-icons, shadcn components ---
 import {
   DndContext,
   KeyboardSensor,
@@ -37,15 +36,12 @@ import {
 } from "@tanstack/react-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  // CheckIcon, // Not used
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
   ColumnsIcon,
-  // LoaderIcon, // Not explicitly used, pending state handled by disabling
   PlusIcon,
-  // XIcon, // Not used
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -72,8 +68,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// Correct import path for your tRPC hook
-import { type RouterInputs, useTRPC } from "@/trpc/react"; // Adjust if your path is different
+
+import { type RouterInputs, useTRPC } from "@/trpc/react";
 import { columns } from "./columns";
 
 // Inside the DataTable component function, before useReactTable
@@ -97,18 +93,17 @@ export const itemSchema = z.object({
   embedId: z.string().nullable(),
 });
 
-// Type alias for the data item (matching tRPC Lesson)
+// --- Render Logic ---
 export type DataItem = z.infer<typeof itemSchema>;
-export type Lesson = DataItem; // Alias for clarity
+export type Lesson = DataItem;
 
-// Type for the units prop
 export type UnitOption = {
   label: string;
   value: string;
 };
 
 type GetUnitsFunc = Promise<{ label: string; value: string }[]>;
-// --- DraggableRow Component ---
+
 function DraggableRow({ row }: { row: Row<DataItem> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
@@ -134,7 +129,6 @@ function DraggableRow({ row }: { row: Row<DataItem> }) {
   );
 }
 
-// 4. DataTable Component using tRPC query/mutation
 export function LessonTable({
   courseId,
   unitsPromise,
@@ -231,7 +225,7 @@ export function LessonTable({
           });
         }
       },
-      onSettled(data, error, variables, context) {
+      onSettled(context) {
         const { optimisticUpdateKey } = context as {
           optimisticUpdateKey?: string;
         };
@@ -259,33 +253,26 @@ export function LessonTable({
     useMutation(
       api.lesson.reorder.mutationOptions({
         async onMutate(variables) {
-          // variables = { unitId, courseId, data: [{ id, position }] }
           await queryClient.cancelQueries({ queryKey: queryOptions.queryKey });
           const prevData = queryClient.getQueryData<Lesson[]>(
             queryOptions.queryKey,
           );
 
-          // Optimistically update cache based on the *new order* provided
           queryClient.setQueryData<Lesson[]>(
             queryOptions.queryKey,
             (oldData) => {
               if (!oldData) return [];
-              // Create a map for quick lookup
               const itemMap = new Map(oldData.map((item) => [item.id, item]));
-              // Build the new array based on the input order data
               const reordered = variables.data
                 .map((orderedItem) => itemMap.get(orderedItem.id))
-                .filter((item): item is Lesson => !!item); // Filter out potential undefined if IDs mismatch
+                .filter((item): item is Lesson => !!item);
 
-              // Include items not in the reorder list (if applicable, depends on logic)
-              // This assumes variables.data contains ALL items being reordered for the view
-              // If the table shows multiple units, this optimistic update might need refinement
               return reordered;
             },
           );
           return { prevData };
         },
-        onError(error, variables, context) {
+        onError(error, context) {
           const { prevData } = context as { prevData?: Lesson[] };
           if (prevData) {
             queryClient.setQueryData(queryOptions.queryKey, prevData);
@@ -295,7 +282,6 @@ export function LessonTable({
           );
         },
         onSettled() {
-          // Invalidate to fetch the confirmed order from the server
           void queryClient.invalidateQueries({
             queryKey: queryOptions.queryKey,
           });
@@ -303,7 +289,6 @@ export function LessonTable({
       }),
     );
 
-  // --- Local Table State ---
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -349,30 +334,21 @@ export function LessonTable({
     onPaginationChange: setPagination,
     meta: {
       units,
-      courseId, // Pass courseId down
-      updateCell: (
-        rowId,
-        // Ensure 'field' type includes all possible updatable fields
-        field,
-        value,
-      ) => {
-        const mutationInput: LessonUpdateInput = {
-          id: rowId,
-          courseId,
-          [field]: value,
-        };
-        console.log({
-          [field]: value,
-        });
-        console.log("mutationInput", mutationInput);
-        // --- Trigger the tRPC update mutation ---
-        // The input object now strictly conforms to LessonUpdateInput
-        // Only the 'id', 'courseId', and the single changed field (or embed object) will have values
-        updateLessonMutate(mutationInput);
+      courseId,
+      updateCell: (rowId: string, field: string, value: unknown) => {
+        const input: LessonUpdateInput = { id: rowId, courseId };
+        if (field === "embedUrl" || field === "embedPassword") {
+          const key = field === "embedUrl" ? "embedUrl" : "password";
+          input.embed = { [key]: value as string };
+        } else {
+          // @ts-expect-error dynamic assignment
+          input[field] = value;
+        }
+        console.log(input);
+        updateLessonMutate(input);
       },
-      getCellUpdatePending: (rowId, field) => {
-        return !!pendingUpdates[`${rowId}-${field}`];
-      },
+      getCellUpdatePending: (rowId, field) =>
+        !!pendingUpdates[`${rowId}-${field}`],
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

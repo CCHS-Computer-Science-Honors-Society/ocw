@@ -10,11 +10,6 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  compiler: {
-    removeConsole: {
-      exclude: ["error"],
-    },
-  },
   typescript: {
     ignoreBuildErrors: true,
   },

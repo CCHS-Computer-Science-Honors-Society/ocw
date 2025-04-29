@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useSortable } from "@dnd-kit/sortable";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import {
@@ -334,7 +335,6 @@ export const columns: ColumnDef<DataItem>[] = [
       }, [row.original.embedUrl]);
 
       const onBlur = () => {
-        if (value !== row.original.embedUrl) return;
         if (!meta?.updateCell) return;
         const data = url.safeParse(value);
         if (!data.success) return toast.error("Enter a valid url.");
