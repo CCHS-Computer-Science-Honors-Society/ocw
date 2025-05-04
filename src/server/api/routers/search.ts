@@ -31,6 +31,7 @@ export const searchRouter = createTRPCRouter({
         }
 
         const results = await performSearch(input.q);
+        console.log(`Search results for ${input.q}:`, results);
         return results ?? { courses: [], units: [], lessons: [] };
       } catch (error) {
         console.error("Search error:", error);

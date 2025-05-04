@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -15,10 +16,28 @@ import {
 import { useTRPC } from "@/trpc/react";
 
 import { useQuery } from "@tanstack/react-query";
-import { useDebounce } from "@/hooks/use-debounce"; // Assuming you have this hook
+import { useDebounce } from "@/hooks/use-debounce";
 
-const SEARCH_HISTORY_KEY = "searchHistoryOCWOverall";
+const SEARCH_HISTORY_KEY = "ocwSearchHistory";
 const DEBOUNCE_DELAY = 300; // milliseconds
+
+interface SearchItemBase {
+  id: string;
+  name: string;
+}
+interface CourseItem extends SearchItemBase {
+  type: "course";
+}
+interface UnitItem extends SearchItemBase {
+  type: "unit";
+  courseName: string;
+}
+interface LessonItem extends SearchItemBase {
+  type: "lesson";
+  courseName: string;
+  unitName: string;
+}
+type SearchItem = CourseItem | UnitItem | LessonItem;
 
 export function SearchDropdownComponent() {
   const api = useTRPC();
@@ -27,37 +46,32 @@ export function SearchDropdownComponent() {
   const [search, setSearch] = React.useState("");
   const [searchHistory, setSearchHistory] = React.useState<string[]>([]);
 
-  // Debounce the search term
   const debouncedSearch = useDebounce(search, DEBOUNCE_DELAY);
 
   const params = useParams();
 
-  // Load search history from localStorage on component mount
   React.useEffect(() => {
     const savedHistory = localStorage.getItem(SEARCH_HISTORY_KEY);
     if (savedHistory) {
       try {
-        setSearchHistory(JSON.parse(savedHistory) as string[]);
+        const parsedHistory = JSON.parse(savedHistory);
+        if (Array.isArray(parsedHistory)) {
+          setSearchHistory(
+            parsedHistory.filter((item) => typeof item === "string"),
+          );
+        }
       } catch (error) {
         console.error("Error loading search history:", error);
+        localStorage.removeItem(SEARCH_HISTORY_KEY); // Clear corrupted history
       }
     }
   }, []);
 
-  // Save search history to localStorage whenever it changes
   React.useEffect(() => {
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(searchHistory));
   }, [searchHistory]);
 
-  React.useEffect(() => {
-    if (params.lesson) {
-      const initialSearch =
-        typeof params.lesson === "string"
-          ? params.lesson.replaceAll("-", " ")
-          : "";
-      setSearch(initialSearch);
-    }
-  }, [params]);
+  // Removed useEffect for params - let user initiate search
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -71,27 +85,20 @@ export function SearchDropdownComponent() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // Use tRPC query for search, using the debounced value
   const searchQuery = useQuery(
     api.search.search.queryOptions(
       { q: debouncedSearch },
       {
-        enabled: debouncedSearch.length > 0,
+        enabled: debouncedSearch.trim().length > 0, // Ensure enabled only on non-empty search
       },
     ),
   );
 
-  const searchResults = searchQuery.data ?? {
-    courses: [],
-    units: [],
-    lessons: [],
-  };
-  // isFetching indicates a fetch is in progress (background or initial)
-  // isLoading is true only on initial load without data
-  const isLoading = searchQuery.isFetching;
+  const searchResults = searchQuery.data; // Can be undefined initially
+  const isLoading = searchQuery.isFetching; // Use isFetching for loading state with debounce
 
   const handleAddToHistory = (item: string) => {
-    if (!item.trim()) return;
+    if (!item?.trim()) return;
 
     const newHistory = [item, ...searchHistory]
       .filter(
@@ -102,40 +109,45 @@ export function SearchDropdownComponent() {
     setSearchHistory(newHistory);
   };
 
-  const handleSelect = ({
-    id,
-    type,
-  }: {
-    id: string;
-    type: "course" | "unit" | "lesson";
-  }) => {
+  const handleSelect = (item: SearchItem) => {
     setOpen(false);
-    handleAddToHistory(search); // Add the term used for the search
+    handleAddToHistory(item.name);
 
-    if (type === "course") {
-      router.push(`/course/${id}`);
-    } else if (type === "unit") {
-      router.push(`/unit/${id}`);
-    } else if (type === "lesson") {
-      router.push(`/lesson/${id}`);
+    // Navigate based on type
+    if (item.type === "course") {
+      router.push(`/course/${item.id}`);
+    } else if (item.type === "unit") {
+      router.push(`/unit/${item.id}`); // Assuming unit route exists
+    } else if (item.type === "lesson") {
+      router.push(`/lesson/${item.id}`);
     }
-    // Optional: Clear search after selection?
-    // setSearch('');
+    // setSearch(''); // Optional: Clear search on select
   };
 
-  // Determine if we should show the "No results" message
-  const showNoResults =
-    !isLoading && // Not currently loading
-    debouncedSearch.length > 0 && // User has typed something (debounced)
-    searchResults.courses.length === 0 &&
-    searchResults.units.length === 0 &&
-    searchResults.lessons.length === 0;
+  const hasResults =
+    searchResults &&
+    (searchResults.courses.length > 0 ||
+      searchResults.units.length > 0 ||
+      searchResults.lessons.length > 0);
 
-  // Determine if we should show the history
+  const showNoResults =
+    !isLoading && debouncedSearch.trim().length > 0 && !hasResults;
   const showHistory =
-    !isLoading && // Not currently loading
-    search === "" && // Input is empty
-    searchHistory.length > 0;
+    !isLoading && search.trim() === "" && searchHistory.length > 0;
+
+  // --- DEBUG LOG ---
+  console.log("Search State:", {
+    search,
+    debouncedSearch,
+    isLoading,
+    data: searchResults, // Log the potentially undefined data
+    error: searchQuery.error,
+    hasResults,
+    showNoResults,
+    showHistory,
+    enabled: debouncedSearch.trim().length > 0,
+  });
+  // --- END DEBUG LOG ---
 
   return (
     <>
@@ -147,102 +159,112 @@ export function SearchDropdownComponent() {
         <Search className="h-4 w-4 rounded-xl xl:mr-2" aria-hidden="true" />
         <span className="hidden xl:inline-flex">Search...</span>
         <span className="sr-only">Search</span>
-        <div className="pointer-events-none absolute top-2 right-1.5 hidden h-6 items-center gap-1 rounded-2xl px-1.5 font-mono text-[10px] font-medium opacity-100 select-none xl:flex">
+        <kbd className="bg-muted pointer-events-none absolute top-2 right-1.5 hidden h-6 items-center gap-1 rounded-2xl border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none xl:flex">
           <span className="text-xs">⌘</span>K
-        </div>
+        </kbd>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput
-          placeholder="Type to search..."
-          value={search}
-          onValueChange={setSearch}
-        />
-        {/* Disable cmdk's built-in filtering. We rely on the backend search. */}
-        <CommandList shouldFilter={false}>
-          {/* Show loading indicator */}
-          {isLoading && debouncedSearch.length > 0 && (
-            <CommandItem disabled>Searching...</CommandItem>
-          )}
+      <Command shouldFilter={false}>
+        <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandInput
+            placeholder="Type to search..."
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            {isLoading && debouncedSearch.trim().length > 0 && (
+              <div className="text-muted-foreground p-4 text-center text-sm">
+                Searching...
+              </div>
+            )}
 
-          {/* Show Empty state */}
-          {showNoResults && <CommandEmpty>No results found.</CommandEmpty>}
+            {showNoResults && <CommandEmpty>No results found.</CommandEmpty>}
 
-          {/* Show search history */}
-          {showHistory && (
-            <CommandGroup heading="Recent Searches">
-              {searchHistory.map((item) => (
-                <CommandItem
-                  key={item}
-                  onSelect={() => {
-                    setSearch(item);
-                  }}
-                  value={`history-${item}`} // Keep unique value
-                >
-                  {item}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
+            {showHistory && (
+              <CommandGroup heading="Recent Searches">
+                {searchHistory.map((item) => (
+                  <CommandItem
+                    key={item}
+                    onSelect={() => {
+                      setSearch(item); // Set search bar to history item on click
+                    }}
+                    value={item} // Keep unique value
+                  >
+                    {item}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-          {/* Show results only when not loading and debounced search has value */}
-          {!isLoading && debouncedSearch.length > 0 && (
-            <>
-              {searchResults.courses.length > 0 && (
-                <CommandGroup heading="Courses">
-                  {searchResults.courses.map((item) => (
-                    <CommandItem
-                      key={item.id}
-                      onSelect={() =>
-                        handleSelect({ id: item.id, type: "course" })
-                      }
-                      value={`course-${item.id}`}
-                    >
-                      {item.name}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-              {searchResults.units.length > 0 && (
-                <CommandGroup heading="Units">
-                  {searchResults.units.map((item) => (
-                    <CommandItem
-                      key={item.id}
-                      onSelect={() =>
-                        handleSelect({ id: item.id, type: "unit" })
-                      }
-                      value={`unit-${item.id}`}
-                    >
-                      {item.name}{" "}
-                      <span className="ml-2 text-xs text-gray-400">
-                        {" "}
-                        | {item.courseName}
-                      </span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-              {searchResults.lessons.length > 0 && (
-                <CommandGroup heading="Lessons">
-                  {searchResults.lessons.map((item) => (
-                    <CommandItem
-                      key={item.id}
-                      onSelect={() =>
-                        handleSelect({ id: item.id, type: "lesson" })
-                      }
-                      value={`lesson-${item.id}`}
-                    >
-                      {item.name}
-                      <span className="ml-2 text-xs text-gray-400">
-                        | {item.unitName} | {item.courseName}
-                      </span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </>
-          )}
-        </CommandList>
-      </CommandDialog>
+            {!isLoading && hasResults && (
+              <>
+                {searchResults.courses.length > 0 && (
+                  <CommandGroup heading="Courses">
+                    {searchResults.courses.map((item) => (
+                      <CommandItem
+                        key={item.id}
+                        onSelect={() =>
+                          handleSelect({ ...item, type: "course" })
+                        }
+                        value={item.name}
+                      >
+                        {item.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+                {searchResults.units.length > 0 && (
+                  <CommandGroup heading="Units">
+                    {searchResults.units.map((item) => (
+                      <CommandItem
+                        key={item.id}
+                        onSelect={() =>
+                          handleSelect({
+                            ...item,
+                            type: "unit",
+                            // Ensure courseName is passed if needed by handleSelect/routing
+                            courseName: item.courseName || "Unknown Course",
+                          })
+                        }
+                        value={item.name}
+                      >
+                        {item.name}{" "}
+                        <span className="text-muted-foreground ml-2 text-xs">
+                          {" "}
+                          | {item.courseName}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+                {searchResults.lessons.length > 0 && (
+                  <CommandGroup heading="Lessons">
+                    {searchResults.lessons.map((item) => (
+                      <CommandItem
+                        key={item.id}
+                        onSelect={() =>
+                          handleSelect({
+                            ...item,
+                            type: "lesson",
+                            // Ensure names are passed if needed
+                            unitName: item.unitName || "Unknown Unit",
+                            courseName: item.courseName || "Unknown Course",
+                          })
+                        }
+                        value={item.name}
+                      >
+                        {item.name}
+                        <span className="text-muted-foreground ml-2 text-xs">
+                          | {item.unitName} | {item.courseName}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </>
+            )}
+          </CommandList>
+        </CommandDialog>
+      </Command>
     </>
   );
 }
