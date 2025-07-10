@@ -34,7 +34,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -147,7 +152,7 @@ export function LessonTable({
     courseId,
     unitId,
   });
-  const { data } = useQuery(queryOptions);
+  const { data } = useSuspenseQuery(queryOptions);
 
   // --- State for Pending Cell Updates ---
   const [pendingUpdates, setPendingUpdates] = React.useState<
