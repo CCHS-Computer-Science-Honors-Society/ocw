@@ -1,4 +1,8 @@
-# Cherry Creek High School Open CourseWare
+# Moved to http://github.com/not-ani/ocw-rewrite
+
+```md
+
+# Old Readme:  Cherry Creek High School Open CourseWare
 
 Welcome to the **Cherry Creek High School Open CourseWare (OCW)** project! This repository hosts the codebase for [creekocw.com](https://creekocw.com), an initiative dedicated to providing free educational resources and course materials from Cherry Creek High School.
 
@@ -61,7 +65,6 @@ The **Cherry Creek High School Open CourseWare** project aims to make high-quali
 ├── tailwind.config.ts
 ├── tsconfig.json
 └── ...
-```
 
 ```plaintext
 src/            Main application code.
@@ -71,7 +74,7 @@ styles/         Global styles for the application.
 SETUP.md        Guide for setting up the development environment.
 package.json    Project dependencies and scripts.
 tailwind.config.ts  Tailwind CSS configuration.
-```
+
 
 ## Technologies Used
 
@@ -99,13 +102,13 @@ Follow these steps to set up the project locally:
 ```bash
 git clone <repo-url> creekocw
 cd creekocw
-```
+
 
 ### 2. Copy Environment Variables
 
 ```bash
 cp .env.example .env
-```
+
 
 Fill in the `.env` file with the necessary configuration settings.
 
@@ -115,7 +118,6 @@ Using **Bun**:
 
 ```bash
 bun install
-```
 
 ### 4. Set Up the Database with Neon.tech
 
@@ -131,13 +133,11 @@ bun install
    ```plaintext
    DATABASE_URL="your-neon-connection-string"
 
-   ```
 
 3. **Run Database Migrations**:
 
-   ```bash
+bash
    bun run db:push
-   ```
 
 ---
 
@@ -149,7 +149,7 @@ Using **Bun**:
 
 ```bash
 bun dev
-```
+``
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
 
@@ -176,22 +176,21 @@ We welcome contributions! Follow these steps to contribute:
 1. **Fork the Repository**: Click the "Fork" button on the repository page.
 2. **Clone Your Fork**:
 
-   ```bash
+   ``bash
    git clone https://github.com/yourusername/creekocw.git
-   ```
+   ``
 
 3. **Create a New Branch**:
 
    ```bash
    git checkout -b feature/your-feature-name
-   ```
+   ``
 
 4. **Make Your Changes**: Implement your feature or fix the bug.
 5. **Commit Your Changes** using **Conventional Commits**:
-
-   ```bash
+   ``bash
    git commit -m "feat: add new feature description"
-   ```
+   ``
 
    Examples of Conventional Commit prefixes:
 
@@ -205,7 +204,7 @@ We welcome contributions! Follow these steps to contribute:
 
    ```bash
    git push origin feature/your-feature-name
-   ```
+   ``
 
 7. **Create a Pull Request**: Open a PR to the main repository with a detailed description of your changes.
 
@@ -230,3 +229,4 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 - **Email**: [cherrycreekcshs@gmail.com](mailto:cherrycreekcshs@gmail.com)
 
 ---
+```
